@@ -16,6 +16,9 @@ esbuild
     bundle: true,
     minify: true,
     outdir: "dist",
+    loader: {
+      ".ttf": "file",
+    },
     plugins: [postcss()],
     define,
   })

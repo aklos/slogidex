@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("./assets/fonts/IBMPlexMono-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Poppins Bold";
+  src: url("./assets/fonts/Poppins-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Poppins Light";
+  src: url("./assets/fonts/Poppins-Light.ttf");
+}
