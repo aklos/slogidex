@@ -14,9 +14,7 @@ export default function App() {
 
   return (
     <div className="w-full h-full min-h-screen text-gray-900 font-body">
-      <div className="mx-auto my-0 max-w-screen-xl">
-        <Document />
-      </div>
+      <Document />
     </div>
   );
 }

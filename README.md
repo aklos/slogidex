@@ -8,9 +8,9 @@ Codebook is a similar tool to Jupyter notebooks for Python, except that it is ab
 
 ### Security
 
-Since this is primarily a web app, there is a Rust client that subscribes to a protocol for running scripts locally. Each script is encrypted with the user's signature (PGP, SHA256?).
+Since this is primarily a web app, there is a Rust client that subscribes to a protocol for running scripts locally. Each script is encrypted with the user's signature (PGP, SHA256?) and stored in the database. The Rust client creates a local HTTP server for receiving script code and executing it.
 
-For remote execution, each organization/user is provisioned a sandboxed server with encryption. The user sets environment variables and has network access to remote servers.
+For remote execution, users may provide a custom URL for the Rust client HTTP server.
 
 ## Setup
 

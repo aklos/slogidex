@@ -2,35 +2,29 @@ import * as React from "react";
 import cx from "classnames";
 
 export default function Button(props) {
-  const { size, active, disabled, label, icon, onClick } = props;
+  const { className, small, icon, label, hint, onClick } = props;
 
   return (
     <button
-      className={cx("flex items-center font-bold", "py-1", {
-        "px-4": label && !icon,
-        "pl-3 pr-4": label && !!icon,
-        "text-blue-300": active,
-        "opacity-20": disabled,
-      })}
-      disabled={disabled || active}
+      type="button"
+      className={cx(className, "flex items-center")}
+      title={hint}
       onClick={onClick}
     >
-      {icon ? (
+      {!!icon ? (
         <div
-          className={cx({
-            "w-4 h-4": size === "small",
-            "w-6 h-6": !size,
+          className={cx("flex-shrink-0", {
             "mr-2": !!label,
+            "w-5 h-5": !small,
+            "w-4 h-4": small,
           })}
         >
           {icon}
         </div>
       ) : null}
-      {label ? (
+      {!!label ? (
         <div
-          className={cx("leading-none", {
-            "text-sm mt-1": size === "small",
-          })}
+          className={cx("w-full text-center", { "text-sm mt-1 mr-1": small })}
         >
           {label}
         </div>
