@@ -150,7 +150,6 @@ export default function FormEditor(props: {
 
 function Field(props) {
   const {
-    id,
     name,
     label,
     value,
@@ -353,7 +352,7 @@ function MinimalInput(props) {
   return (
     <input
       type="text"
-      className={cx("focus:outline-none", { "font-bold": !!value })}
+      className="focus:outline-none"
       value={value}
       placeholder="Field label"
       onChange={(e) => onChange(e.target.value)}

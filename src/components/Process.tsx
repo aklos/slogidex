@@ -10,7 +10,7 @@ import {
   PlugXIcon,
 } from "./lib/icons";
 import Section from "./Section";
-import { FormField, InputType } from "./FormEditor";
+import { FormField } from "./FormEditor";
 
 type SectionType = "script" | "markdown" | "form";
 type SectionStatus = "initial" | "in-progress" | "completed";
@@ -53,6 +53,37 @@ export default function Process() {
 
       _sections[index].value = value;
 
+      if (_sections[index].type === "form") {
+        const fields = _sections
+          .filter((s) => s.type === "form")
+          .reduce((accu: FormField[], curr) => {
+            return accu.concat(curr.value as FormField[]);
+          }, []);
+
+        for (const formSection of _sections.filter(
+          (s) => s.type === "script"
+        )) {
+          if (formSection.args) {
+            const deleteArgs: string[] = [];
+
+            for (const arg of formSection.args) {
+              const match = fields.find((f) => f.id === arg.id);
+
+              if (match) {
+                arg.name = match.name;
+                arg.value = match.value;
+              } else {
+                deleteArgs.push(arg.id);
+              }
+            }
+
+            formSection.args = formSection.args.filter(
+              (a) => !deleteArgs.includes(a.id)
+            );
+          }
+        }
+      }
+
       setSections(_sections);
     },
     [sections]
@@ -62,8 +93,39 @@ export default function Process() {
     (id: string) => {
       const _sections = Array.from(sections);
       const index = _sections.findIndex((s) => s.id === id);
+      const element = _sections[index];
 
       _sections.splice(index, 1);
+
+      if (element.type === "form") {
+        const fields = _sections
+          .filter((s) => s.type === "form")
+          .reduce((accu: FormField[], curr) => {
+            return accu.concat(curr.value as FormField[]);
+          }, []);
+
+        for (const formSection of _sections.filter(
+          (s) => s.type === "script"
+        )) {
+          if (formSection.args) {
+            const deleteArgs: string[] = [];
+
+            for (const arg of formSection.args) {
+              const match = fields.find((f) => f.id === arg.id);
+
+              if (match) {
+                continue;
+              } else {
+                deleteArgs.push(arg.id);
+              }
+            }
+
+            formSection.args = formSection.args.filter(
+              (a) => !deleteArgs.includes(a.id)
+            );
+          }
+        }
+      }
 
       setSections(_sections);
     },
@@ -78,6 +140,38 @@ export default function Process() {
 
       _sections.splice(index, 1);
       _sections.splice(index + dir, 0, element);
+
+      const fields = _sections
+        .filter(
+          (s, _index) =>
+            s.type === "form" &&
+            _index <= index + (element.type === "script" ? dir : 0)
+        )
+        .reduce((accu: FormField[], curr) => {
+          return accu.concat(curr.value as FormField[]);
+        }, []);
+
+      for (const formSection of _sections.filter(
+        (s, _index) => s.type === "script" && _index <= index
+      )) {
+        if (formSection.args) {
+          const deleteArgs: string[] = [];
+
+          for (const arg of formSection.args) {
+            const match = fields.find((f) => f.id === arg.id);
+
+            if (match) {
+              continue;
+            } else {
+              deleteArgs.push(arg.id);
+            }
+          }
+
+          formSection.args = formSection.args.filter(
+            (a) => !deleteArgs.includes(a.id)
+          );
+        }
+      }
 
       setSections(_sections);
     },
