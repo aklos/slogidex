@@ -17,3 +17,7 @@ For remote execution, users may provide a custom URL for the Rust client HTTP se
 1. Install dependencies: `yarn`.
 2. Create `.env` file, using `example.env` as a template.
 3. Start the app with `yarn dev`.
+
+## Notes
+
+- Use react-hook-form: https://react-hook-form.com/

@@ -2,11 +2,11 @@ import * as React from "react";
 import cx from "classnames";
 
 export default function Button(props) {
-  const { className, small, icon, label, hint, onClick } = props;
+  const { className, type, small, icon, label, hint, onClick } = props;
 
   return (
     <button
-      type="button"
+      type={type || "button"}
       className={cx(className, "flex items-center")}
       title={hint}
       onClick={onClick}

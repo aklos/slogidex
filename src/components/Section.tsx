@@ -15,6 +15,7 @@ import {
   CirclePlayIcon,
   NumberIcon,
   PlusIcon,
+  SelectIcon,
   TextIcon,
   TrashIcon,
 } from "./lib/icons";
@@ -81,7 +82,7 @@ export default function Section(props) {
             className={cx("grid gap-4", {
               "grid-cols-3": type === "script",
               "grid-cols-4": type === "markdown",
-              "grid-cols-7": type === "form",
+              "grid-cols-8": type === "form",
             })}
           >
             {type === "markdown" || type === "form" ? (
@@ -108,11 +109,11 @@ export default function Section(props) {
                   hint="Add checkbox field"
                   onClick={() => addFormField("checkbox")}
                 />
-                {/* <Button
+                <Button
                   icon={SelectIcon}
                   hint="Add select field"
                   onClick={() => addFormField("select")}
-                /> */}
+                />
               </>
             ) : null}
             <Button
@@ -187,7 +188,7 @@ export default function Section(props) {
               "max-h-72 overflow-auto": type === "script",
             })}
           >
-            {type === "script" && fields.length ? (
+            {type === "script" && (fields.length || args?.length) ? (
               <div className="py-2 pl-2 pr-4 bg-gray-200 font-mono text-sm">
                 {argumentModal ? (
                   <Modal onClose={() => toggleArgumentModal(false)}>
