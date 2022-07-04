@@ -239,13 +239,13 @@ function Field(props) {
       {/* Tool bar */}
       <div
         className={cx(
-          "absolute h-full border-l border-gray-400 pl-4 left-full top-1/2 transform -translate-y-1/2 focus-within:block",
+          "absolute h-full border-l pl-4 left-full top-1/2 transform -translate-y-1/2 focus-within:block",
           {
             hidden: !hovering,
           }
         )}
       >
-        <div className="absolute top-1/2 transform -translate-y-1/2 px-2 py-1 text-sm">
+        <div className="absolute top-1/2 transform -translate-y-1/2 px-2 py-1">
           <label className="flex items-center">
             <div className="mr-2 flex-shrink-0">Field name:</div>
             <div className="w-48">
@@ -352,7 +352,7 @@ function MinimalInput(props) {
   return (
     <input
       type="text"
-      className="focus:outline-none"
+      className={cx("focus:outline-none", { "font-bold": !!value })}
       value={value}
       placeholder="Field label"
       onChange={(e) => onChange(e.target.value)}

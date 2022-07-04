@@ -11,4 +11,3 @@ export const getHealth = () =>
     const res = await api.get("healthz");
     return res.data;
   });
-  

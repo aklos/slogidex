@@ -13,7 +13,7 @@ export default function App() {
   // }, [isLoading]);
 
   return (
-    <div className="w-full h-full min-h-screen text-gray-900 font-body">
+    <div className="w-full h-full min-h-screen text-gray-900 font-sans">
       <Document />
     </div>
   );

@@ -40,6 +40,7 @@ export default function Section(props) {
     toggleStep,
     addArgument,
     deleteArgument,
+    runScript,
   } = props;
   const [hovering, setHovering] = React.useState(false);
   const [argumentModal, toggleArgumentModal] = React.useState(false);
@@ -79,7 +80,7 @@ export default function Section(props) {
           )}
         >
           <div
-            className={cx("grid gap-4", {
+            className={cx("grid gap-2", {
               "grid-cols-3": type === "script",
               "grid-cols-4": type === "markdown",
               "grid-cols-8": type === "form",
@@ -175,7 +176,10 @@ export default function Section(props) {
                     icon={
                       status === "completed" ? CircleCheckIcon : CirclePlayIcon
                     }
-                    onClick={() => setSectionStatus(id, "in-progress")}
+                    onClick={() => {
+                      setSectionStatus(id, "in-progress");
+                      runScript(id);
+                    }}
                   />
                 )}
               </div>
@@ -185,78 +189,85 @@ export default function Section(props) {
           <div
             style={{ width: `calc(100% - 48px)` }}
             className={cx({
-              "max-h-72 overflow-auto": type === "script",
+              "": type === "script",
             })}
           >
-            {type === "script" && (fields.length || args?.length) ? (
-              <div className="py-2 pl-2 pr-4 bg-gray-200 font-mono text-sm">
-                {argumentModal ? (
-                  <Modal onClose={() => toggleArgumentModal(false)}>
-                    <div className="w-80">
-                      {fields.map((f) => (
-                        <div
-                          key={`arg-field-${f.id}`}
-                          className="cursor-pointer hover:bg-gray-100"
-                          onClick={() => {
-                            addArgument(id, f.id);
-                            toggleArgumentModal(false);
-                          }}
-                        >
-                          {f.name}
-                        </div>
-                      ))}
-                    </div>
-                  </Modal>
-                ) : null}
-                {args?.length
-                  ? args.map((a) => (
-                      <div
-                        key={`arg-${a.id}`}
-                        className="inline-block mr-2 cursor-pointer hover:bg-gray-300"
-                        onClick={() => deleteArgument(id, a.id)}
-                      >
-                        --{a.name}={a.value}
+            <div
+              className={cx({ "max-h-96 overflow-auto": type === "script" })}
+            >
+              {type === "script" && (fields.length || args?.length) ? (
+                <div className="pt-4 pb-2 pl-2 pr-4 border-b font-mono text-sm">
+                  {argumentModal ? (
+                    <Modal onClose={() => toggleArgumentModal(false)}>
+                      <div className="w-80">
+                        {fields.map((f) => (
+                          <div
+                            key={`arg-field-${f.id}`}
+                            className="cursor-pointer hover:bg-gray-100"
+                            onClick={() => {
+                              addArgument(id, f.id);
+                              toggleArgumentModal(false);
+                            }}
+                          >
+                            {f.name}
+                          </div>
+                        ))}
                       </div>
-                    ))
-                  : null}
-                {fields.length ? (
-                  <div className="inline-block">
-                    <Button
-                      small
-                      icon={PlusIcon}
-                      label="Add arg"
-                      onClick={() => toggleArgumentModal(true)}
-                    />
-                  </div>
-                ) : null}
+                    </Modal>
+                  ) : null}
+                  {args?.length
+                    ? args.map((a) => (
+                        <div
+                          key={`arg-${a.id}`}
+                          className="inline-block mr-2 cursor-pointer hover:bg-gray-300"
+                          onClick={() => deleteArgument(id, a.id)}
+                        >
+                          --{a.name}={a.value}
+                        </div>
+                      ))
+                    : null}
+                  {fields.length ? (
+                    <div className="inline-block">
+                      <Button
+                        small
+                        icon={PlusIcon}
+                        label="Add arg"
+                        onClick={() => toggleArgumentModal(true)}
+                      />
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+              <div className="py-4 pr-4">
+                {type === "markdown" ? (
+                  <MarkdownEditor
+                    value={value}
+                    updateSection={(value) => updateSection(id, value)}
+                  />
+                ) : type === "script" ? (
+                  <ScriptEditor
+                    status={status}
+                    value={value}
+                    output={output}
+                    updateSection={(value) => updateSection(id, value)}
+                  />
+                ) : (
+                  <FormEditor
+                    value={value}
+                    updateSection={(value) => updateSection(id, value)}
+                  />
+                )}
+              </div>
+            </div>
+            {/* Output */}
+            {type === "script" && !!output ? (
+              <div className="border-t px-2 py-4 bg-gray-200 max-h-72 overflow-auto flex flex-col-reverse">
+                <pre className="font-mono text-sm">{output}</pre>
               </div>
             ) : null}
-            <div className="py-4 pr-4">
-              {type === "markdown" ? (
-                <MarkdownEditor
-                  value={value}
-                  updateSection={(value) => updateSection(id, value)}
-                />
-              ) : type === "script" ? (
-                <ScriptEditor
-                  status={status}
-                  value={value}
-                  updateSection={(value) => updateSection(id, value)}
-                />
-              ) : (
-                <FormEditor
-                  value={value}
-                  updateSection={(value) => updateSection(id, value)}
-                />
-              )}
-            </div>
           </div>
         </div>
       </div>
-      {/* Output */}
-      {type === "script" && !!output ? (
-        <div className="p-4 bg-gray-200"></div>
-      ) : null}
     </li>
   );
 }

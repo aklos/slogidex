@@ -8,10 +8,7 @@ export default function MarkdownEditor(props) {
   return (
     <Editor
       className="prose max-w-none pl-2"
-      theme={Object.assign({}, light, {
-        fontFamily: "Poppins Light",
-        fontFamilyMono: "IBM Plex Mono",
-      })}
+      theme={Object.assign({}, light)}
       defaultValue={value}
       onChange={(value) => updateSection(value())}
     />

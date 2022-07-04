@@ -15,9 +15,9 @@ export default function ScriptEditor(props) {
         onValueChange={(code) => updateSection(code)}
         highlight={(code) => {
           if (code.startsWith("#!/bin/bash")) {
-            return highlight(code, languages.bash);
+            return highlight(code, languages.bash, "bash");
           } else {
-            return highlight(code, languages.python);
+            return highlight(code, languages.python, "python");
           }
         }}
         tabSize={4}

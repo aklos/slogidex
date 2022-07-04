@@ -11,6 +11,7 @@ import {
 } from "./lib/icons";
 import Section from "./Section";
 import { FormField } from "./FormEditor";
+import Context from "../context";
 
 type SectionType = "script" | "markdown" | "form";
 type SectionStatus = "initial" | "in-progress" | "completed";
@@ -27,7 +28,7 @@ type Section = {
 
 export default function Process() {
   const doc = window.localStorage.getItem("doc");
-  const [connected, toggleConnection] = React.useState(false);
+  const context = React.useContext(Context);
   const [sections, setSections] = React.useState<Section[]>(
     doc
       ? JSON.parse(doc)
@@ -42,9 +43,64 @@ export default function Process() {
         ]
   );
 
+  const outputMessageHandler = (e) => {
+    const _sections = Array.from(sections);
+    const index = _sections.findIndex((s) => s.id === e.detail.id);
+
+    if (e.detail.output !== "__finished__") {
+      if (_sections[index].output) {
+        _sections[index].output += "\n" + e.detail.output;
+      } else {
+        _sections[index].output = e.detail.output;
+      }
+    } else {
+      _sections[index].status = "completed";
+    }
+
+    setSections(_sections);
+  };
+
   React.useEffect(() => {
     window.localStorage.setItem("doc", JSON.stringify(sections));
+    document.addEventListener("output-message", outputMessageHandler);
+
+    return () => {
+      document.removeEventListener("output-message", outputMessageHandler);
+    };
   }, [sections]);
+
+  React.useEffect(() => {
+    context.connectWebSocket();
+  }, []);
+
+  const runScript = React.useCallback(
+    (id: String) => {
+      if (context.connected) {
+        const section = sections.find((s) => s.id === id);
+
+        if (section) {
+          const _sections = Array.from(sections);
+          const index = _sections.findIndex((s) => s.id === section.id);
+
+          _sections[index].output = undefined;
+
+          setSections(_sections);
+
+          context.socket?.send(
+            JSON.stringify({
+              id: section.id,
+              args:
+                section.args?.reduce((accu, curr) => {
+                  return `${accu} --${curr.name}=${curr.value}`;
+                }, "") || "",
+              script: section.value,
+            })
+          );
+        }
+      }
+    },
+    [sections, context.connected]
+  );
 
   const updateSection = React.useCallback(
     (id: string, value: string | FormField[]) => {
@@ -241,6 +297,7 @@ export default function Process() {
     },
     [sections]
   );
+
   const deleteArgument = React.useCallback(
     (id: string, fieldId: string) => {
       const _sections = Array.from(sections);
@@ -263,24 +320,32 @@ export default function Process() {
         <div></div>
         <div className="flex items-center">
           <div
-            className={cx("w-5 h-5 mr-2", {
-              "text-green-600": connected,
-              "text-red-500": !connected,
+            className={cx("w-5 h-5 mr-2 cursor-pointer", {
+              "text-green-600": context.connected,
+              "text-red-500": !context.connected,
             })}
+            onClick={() => {
+              context.connectWebSocket();
+            }}
           >
-            {connected ? PlugIcon : PlugXIcon}
+            {context.connected ? PlugIcon : PlugXIcon}
           </div>
           <div className="mt-1 mr-2">
-            <span>{connected ? `Connected.` : `Not connected.`}</span>
+            <span>{context.connected ? `Connected.` : `Not connected.`}</span>
           </div>
           <div>
-            {!connected ? (
-              <Button small className="underline" label="Connect to app" />
+            {!context.connected ? (
+              <a
+                href={`codebook://hello`}
+                className="inline-block mt-1 underline"
+              >
+                Launch app
+              </a>
             ) : null}
           </div>
         </div>
       </div>
-      <ul className="list-none mt-8">
+      <ul className="list-none mt-8 pb-16">
         {sections.map((s, index) => {
           const fields = sections
             .slice(0, index)
@@ -305,6 +370,7 @@ export default function Process() {
                 toggleStep={toggleStep}
                 addArgument={addArgument}
                 deleteArgument={deleteArgument}
+                runScript={runScript}
               />
               <SectionDivider id={s.id} insertSection={insertSection} />
             </div>
@@ -319,16 +385,12 @@ function SectionDivider(props) {
   const { id, insertSection } = props;
 
   return (
-    <div
-      className={cx(
-        "relative flex items-center py-1 justify-center opacity-0 hover:opacity-100"
-      )}
-    >
+    <div className={cx("relative py-2 opacity-0 hover:opacity-100")}>
       {/* Divider line */}
       <div className="absolute border-b w-full top-1/2"></div>
       {/* Buttons */}
-      <div className="bg-white px-4 py-1 border border-gray-400 rounded-full drop-shadow-md">
-        <div className="grid grid-cols-3 gap-4">
+      <div className="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-4 py-1 border border-gray-400 rounded-full drop-shadow-md">
+        <div className="grid grid-cols-3 gap-2">
           <Button
             icon={MarkdownIcon}
             hint="Add markdown"
