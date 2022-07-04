@@ -14,14 +14,14 @@ import { FormField } from "./FormEditor";
 import Context from "../context";
 
 type SectionType = "script" | "markdown" | "form";
-type SectionStatus = "initial" | "in-progress" | "completed";
+type SectionStatus = "initial" | "in-progress" | "completed" | "failed";
 
 type Section = {
   id: string;
   step: boolean;
   type: SectionType;
   value: string | FormField[];
-  status: "initial" | "in-progress" | "completed";
+  status: SectionStatus;
   output?: string;
   args?: FormField[];
 };
@@ -53,8 +53,12 @@ export default function Process() {
       } else {
         _sections[index].output = e.detail.output;
       }
-    } else {
+    } else if (_sections[index].status !== "failed") {
       _sections[index].status = "completed";
+    }
+
+    if (e.detail.error) {
+      _sections[index].status = "failed";
     }
 
     setSections(_sections);
@@ -91,7 +95,8 @@ export default function Process() {
               id: section.id,
               args:
                 section.args?.reduce((accu, curr) => {
-                  return `${accu} --${curr.name}=${curr.value}`;
+                  // Uses ! as delimiter
+                  return `${accu}!--${curr.name}=${curr.value}`;
                 }, "") || "",
               script: section.value,
             })

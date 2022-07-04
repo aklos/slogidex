@@ -10,6 +10,7 @@ import {
   CheckboxCompleteIcon,
   ChecklistIcon,
   ChecklistXIcon,
+  CircleAlertIcon,
   CircleCheckIcon,
   CircleDashIcon,
   CirclePlayIcon,
@@ -154,6 +155,7 @@ export default function Section(props) {
               "flex-shrink-0 relative bg-white w-12 h-full border-r-2 border-transparent",
               {
                 "border-green-600": status === "completed",
+                "border-red-500": status === "failed",
               }
             )}
           >
@@ -174,7 +176,11 @@ export default function Section(props) {
                 ) : (
                   <Button
                     icon={
-                      status === "completed" ? CircleCheckIcon : CirclePlayIcon
+                      status === "completed"
+                        ? CircleCheckIcon
+                        : status === "failed"
+                        ? CircleAlertIcon
+                        : CirclePlayIcon
                     }
                     onClick={() => {
                       setSectionStatus(id, "in-progress");
@@ -186,12 +192,7 @@ export default function Section(props) {
             ) : null}
           </div>
           {/* Editor */}
-          <div
-            style={{ width: `calc(100% - 48px)` }}
-            className={cx({
-              "": type === "script",
-            })}
-          >
+          <div style={{ width: `calc(100% - 48px)` }}>
             <div
               className={cx({ "max-h-96 overflow-auto": type === "script" })}
             >
