@@ -1,0 +1,86 @@
+use crate::{types::ScriptOptions, runner::spawn};
+use std::io::{BufReader, BufRead};
+use serde::{Serialize, Deserialize};
+use tauri::{Window};
+
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct RunScriptJSON {
+    id: String,
+    args: String,
+    script: String
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct ScriptOutput {
+    id: String,
+    output: String,
+    error: bool
+}
+
+#[derive(Clone, serde::Serialize)]
+struct Payload {
+  message: String,
+}
+
+pub async fn run(data: RunScriptJSON, window: Window) {
+    let options = ScriptOptions::new();
+    
+    let mut args: Vec<String> = data.args.split("!").map(|s| s.to_string()).collect();
+    args.remove(0);
+
+    // FIXME: Running bash but {1..10} ranges not working, despite bash v5. Why?
+    let mut child = spawn(&data.script, &args, &options).unwrap();
+
+    {
+        let stdout = child.stdout.as_mut().unwrap();
+        let stdout_reader = BufReader::new(stdout);
+        let stdout_lines = stdout_reader.lines();
+        
+        for line in stdout_lines {
+            let line_str = line.unwrap();
+            println!("Read: {}", line_str);
+            
+            let output = ScriptOutput {
+                id: data.id.clone(),
+                output: line_str,
+                error: false
+            };
+            
+            let output_str = serde_json::to_string(&output).unwrap();
+            
+            window.emit("script-output", Payload { message: output_str }).unwrap();
+        }
+        
+        let stderr = child.stderr.as_mut().unwrap();
+        let stderr_reader = BufReader::new(stderr);
+        let stderr_lines = stderr_reader.lines();
+        
+        for line in stderr_lines {
+            let line_str = line.unwrap();
+            println!("ERROR Read: {}", line_str);
+            
+            let output = ScriptOutput {
+                id: data.id.clone(),
+                output: line_str,
+                error: true
+            };
+            
+            let output_str = serde_json::to_string(&output).unwrap();
+
+            window.emit("script-output", Payload { message: output_str }).unwrap();
+        }
+    }
+    
+    let final_output = ScriptOutput {
+        id: data.id.clone(),
+        output: "__finished__".to_string(),
+        error: false
+    };
+    
+    let final_output_str = serde_json::to_string(&final_output).unwrap();
+
+    window.emit("script-output", Payload { message: final_output_str }).unwrap();
+    
+    child.wait().unwrap();
+}

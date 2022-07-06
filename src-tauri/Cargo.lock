@@ -57,6 +57,8 @@ checksum = "bb07d2053ccdbe10e2af2995a2f116c1330396493dc1269f6a91d0ae82e19704"
 name = "app"
 version = "0.1.0"
 dependencies = [
+ "fsio",
+ "run_script",
  "serde",
  "serde_json",
  "tauri",
@@ -589,6 +591,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "dunce"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "453440c271cf5577fd2a40e4942540cb7d0d2f85e27c8d07dd0023c925a67541"
+
+[[package]]
 name = "embed-resource"
 version = "1.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -677,6 +685,16 @@ checksum = "5fc25a87fa4fd2094bffb06925852034d90a17f0d1e05197d4956d3555752191"
 dependencies = [
  "matches",
  "percent-encoding",
+]
+
+[[package]]
+name = "fsio"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "de6fce87c901c64837f745e7fffddeca1de8e054b544ba82c419905d40a0e1be"
+dependencies = [
+ "dunce",
+ "rand 0.8.5",
 ]
 
 [[package]]
@@ -2251,6 +2269,15 @@ dependencies = [
  "wasm-bindgen-futures",
  "web-sys",
  "windows 0.37.0",
+]
+
+[[package]]
+name = "run_script"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5dd85213e37f76b40186ee781cf3a689b05c518c3102c987acf679c573d8e4ef"
+dependencies = [
+ "fsio",
 ]
 
 [[package]]
