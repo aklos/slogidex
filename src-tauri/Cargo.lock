@@ -61,6 +61,7 @@ dependencies = [
  "run_script",
  "serde",
  "serde_json",
+ "sudo",
  "tauri",
  "tauri-build",
 ]
@@ -2667,6 +2668,16 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "sudo"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2a88e74edf206f281aff2820aa2066c781331044c770626dcafe19491f214e05"
+dependencies = [
+ "libc",
+ "log",
 ]
 
 [[package]]

@@ -324,11 +324,7 @@ export default function Process() {
 
   return (
     <div className="min-h-screen">
-      <div className="h-10 px-4 py-2 border-b flex items-center justify-between text-sm">
-        <div></div>
-        <div className="flex items-center"></div>
-      </div>
-      <ul className="list-none mt-8 pb-16">
+      <ul className="list-none pt-8 pb-16">
         {sections.map((s, index) => {
           const fields = sections
             .slice(0, index)
@@ -370,9 +366,9 @@ function SectionDivider(props: any) {
   return (
     <div className={cx("relative py-2 opacity-0 hover:opacity-100")}>
       {/* Divider line */}
-      <div className="absolute border-b w-full top-1/2"></div>
+      <div className="absolute border-b dark:border-black w-full top-1/2"></div>
       {/* Buttons */}
-      <div className="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-4 py-1 border border-gray-400 rounded-full drop-shadow-md">
+      <div className="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-black px-4 py-1 border border-gray-400 dark:border-black rounded-full drop-shadow-md">
         <div className="grid grid-cols-3 gap-2">
           <Button
             icon={MarkdownIcon}

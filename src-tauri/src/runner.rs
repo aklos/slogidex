@@ -13,6 +13,7 @@ fn create_command_builder(
     options: &ScriptOptions,
 ) -> Command {
     let mut command = Command::new(&command_string);
+    // let mut command = Command::new(file);
 
     if options.env_vars.is_some() {
         command.envs(options.env_vars.as_ref().unwrap());
@@ -113,8 +114,6 @@ fn modify_script(script: &String, options: &ScriptOptions) -> ScriptResult<Strin
 
                     let updated_script = script_lines.join("\n");
                     
-                    // println!("{}", updated_script);
-
                     Ok(updated_script)
                 }
                 None => Err(ScriptError::Description(
@@ -144,21 +143,24 @@ fn spawn_script(
                         if cfg!(windows) {
                             "cmd.exe"
                         } else {
-                            "sh"
+                            &file
                         }
                     }
                 };
-
-                let mut all_args = if cfg!(windows) {
-                    let win_file = fix_path(&file);
-                    vec!["/C".to_string(), win_file]
-                } else {
-                    vec!["-c".to_string(), file.to_string()]
-                };
-
-                all_args.extend(args.iter().cloned());
                 
-                let mut command = create_command_builder(&command, &all_args, &options);
+                // FIXME: Broke Windows scripts by commenting this out
+                // let mut all_args = if cfg!(windows) {
+                //     let win_file = fix_path(&file);
+                //     vec!["/C".to_string(), win_file]
+                // } else {
+                //     // vec!["-c".to_string(), file.to_string()]
+                //     vec![file.to_string()]
+                // };
+                
+                // all_args.extend(args.iter().cloned());
+                
+                let mut command = create_command_builder(&command, &args, &options);
+                println!("{:?}", command);
 
                 let result = command.spawn();
 

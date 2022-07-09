@@ -22,6 +22,8 @@ async fn run_script(window: Window, invoke_message: String) {
 }
 
 fn main() {
+    sudo::escalate_if_needed();
+
     let context = tauri::generate_context!();
     tauri::Builder::default()
         .menu(if cfg!(target_os = "macos") {

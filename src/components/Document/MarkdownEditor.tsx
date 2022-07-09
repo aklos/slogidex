@@ -14,6 +14,13 @@ const Container = styled.div`
   .cm-s-easymde {
     border: 0;
     padding: 0;
+    background: none;
+  }
+
+  &.dark {
+    .cm-s-easymde {
+      color: rgb(229 231 235);
+    }
   }
 `;
 
@@ -30,6 +37,7 @@ export default function MarkdownEditor(props: Props) {
       toolbar: false,
       status: false,
       placeholder: "Write markdown here...",
+      spellChecker: false,
     }),
     []
   );

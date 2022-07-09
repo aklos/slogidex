@@ -1,5 +1,5 @@
-use crate::{types::ScriptOptions, runner::spawn};
-use std::io::{BufReader, BufRead};
+use crate::{types::ScriptOptions, types::IoOptions, runner::spawn};
+use std::io::{BufReader, BufRead, BufWriter};
 use serde::{Serialize, Deserialize};
 use tauri::{Window};
 
@@ -24,7 +24,8 @@ struct Payload {
 }
 
 pub async fn run(data: RunScriptJSON, window: Window) {
-    let options = ScriptOptions::new();
+    let mut options = ScriptOptions::new();
+    options.input_redirection = IoOptions::Pipe;
     
     let mut args: Vec<String> = data.args.split("!").map(|s| s.to_string()).collect();
     args.remove(0);

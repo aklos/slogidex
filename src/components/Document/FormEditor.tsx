@@ -352,7 +352,9 @@ function MinimalInput(props: { value: string; onChange: any }) {
   return (
     <input
       type="text"
-      className={cx("focus:outline-none", { "font-bold": !!value })}
+      className={cx("focus:outline-none bg-transparent", {
+        "font-bold": !!value,
+      })}
       value={value}
       placeholder="Field label"
       onChange={(e) => onChange(e.target.value)}

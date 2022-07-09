@@ -73,7 +73,7 @@ export default function Section(props: any) {
         {/* Tool bar */}
         <div
           className={cx(
-            "absolute z-20 px-4 py-1 bg-white border border-gray-400 rounded-full drop-shadow-md",
+            "absolute z-20 px-4 py-1 bg-white dark:bg-black border border-gray-400 dark:border-black rounded-full drop-shadow-md",
             "top-0 right-0 transform -translate-y-1/4",
             {
               "opacity-0 pointer-events-none": !hovering,
@@ -143,19 +143,22 @@ export default function Section(props: any) {
         {/* Edit & preview */}
         <div
           className={cx(
-            "flex w-full border border-transparent focus-within:border-gray-400",
+            "flex w-full border focus-within:border-gray-400 dark:focus-within:border-black/70",
             {
-              "bg-gray-100": type === "script",
+              "border-transparent": type !== "script",
+              "bg-gray-100 dark:bg-gray-700 dark:border-gray-800":
+                type === "script",
             }
           )}
         >
           {/* Side bar */}
           <div
             className={cx(
-              "flex-shrink-0 relative bg-white w-12 h-full border-r-2 border-transparent",
+              "flex-shrink-0 relative w-12 h-full border-r-2 border-transparent",
               {
                 "border-green-600": status === "completed",
                 "border-red-500": status === "failed",
+                "bg-white dark:bg-gray-800": type === "script",
               }
             )}
           >
@@ -260,7 +263,7 @@ export default function Section(props: any) {
             </div>
             {/* Output */}
             {type === "script" && !!output ? (
-              <div className="border-t px-2 py-4 bg-gray-200 max-h-72 overflow-auto flex flex-col-reverse">
+              <div className="border-t px-2 py-4 bg-gray-200 dark:border-black dark:bg-black/70 max-h-72 overflow-auto flex flex-col-reverse">
                 <pre className="font-mono text-sm">{output}</pre>
               </div>
             ) : null}
