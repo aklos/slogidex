@@ -2,26 +2,53 @@ import React from "react";
 import cx from "classnames";
 
 type Props = {
-  number?: boolean;
-  name?: string;
+  type?: "text" | "number" | "email" | "password";
   placeholder?: string;
+  required?: boolean;
+  disabled?: boolean;
+  defaultValue?: string;
   value?: string;
-  onChange?: any;
+  className?: string;
+  onChange?: (value: string) => void;
 };
 
 export default function Input(props: Props) {
-  const { number, name, placeholder, value, onChange } = props;
+  const {
+    type,
+    placeholder,
+    required,
+    disabled,
+    defaultValue,
+    value,
+    className,
+    onChange,
+  } = props;
 
   return (
     <input
-      name={name}
-      type={number ? "number" : "text"}
-      className={cx(
-        "px-2 py-1 border border-gray-400 bg-white dark:bg-gray-500 dark:border-0 rounded-md w-full"
-      )}
-      value={value !== undefined ? value : undefined}
+      type={type || "text"}
       placeholder={placeholder}
-      onChange={!!onChange ? (e) => onChange(e.target.value) : undefined}
+      required={required}
+      disabled={disabled}
+      defaultValue={defaultValue}
+      value={value}
+      onInput={
+        type === "number"
+          ? (e) => {
+              let v = (e.target as any).value as string;
+              v = v.replace(/[^0-9\.]/g, "");
+              (e.target as any).value = v;
+            }
+          : undefined
+      }
+      onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+      className={cx(
+        "px-3 py-1 w-full border border-gray-400 rounded-sm drop-shadow-sm",
+        className,
+        {
+          "bg-gray-100": disabled,
+        }
+      )}
     />
   );
 }

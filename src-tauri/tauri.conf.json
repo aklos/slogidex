@@ -7,7 +7,7 @@
     "distDir": "../build"
   },
   "package": {
-    "productName": "codebook",
+    "productName": "tbd",
     "version": "0.1.0"
   },
   "tauri": {
@@ -29,7 +29,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "com.aklos.dev",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -58,7 +58,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "Codebook",
+        "title": "",
         "width": 800
       }
     ]

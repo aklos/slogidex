@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import SimpleMDE from "react-simplemde-editor";
+import ReactMarkdown from "react-markdown";
 import "easymde/dist/easymde.min.css";
 
 // https://typora.io/
@@ -25,12 +26,13 @@ const Container = styled.div`
 `;
 
 type Props = {
-  value: any;
-  updateSection: any;
+  editing: boolean;
+  value: string;
+  updateStep: (key: keyof Types.Step, value: string) => void;
 };
 
-export default function MarkdownEditor(props: Props) {
-  const { value, updateSection } = props;
+export default function Markdown(props: Props) {
+  const { editing, value, updateStep } = props;
 
   const options = React.useMemo(
     () => ({
@@ -43,8 +45,18 @@ export default function MarkdownEditor(props: Props) {
   );
 
   return (
-    <Container>
-      <SimpleMDE value={value} onChange={updateSection} options={options} />
-    </Container>
+    <div className="relative">
+      <Container className="prose max-w-none min-h-[32px]">
+        {editing ? (
+          <SimpleMDE
+            value={value}
+            onChange={(v) => updateStep("value", v)}
+            options={options}
+          />
+        ) : (
+          <ReactMarkdown>{value || "Write markdown here..."}</ReactMarkdown>
+        )}
+      </Container>
+    </div>
   );
 }

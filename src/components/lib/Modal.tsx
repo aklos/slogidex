@@ -1,20 +1,27 @@
 import React from "react";
+import cx from "classnames";
 import Button from "./Button";
-import { XIcon } from "./icons";
+import * as Icon from "react-bootstrap-icons";
 
 type Props = {
-  children: any;
-  onClose: any;
+  children?: any;
+  onClose: () => void;
 };
 
 export default function Modal(props: Props) {
-  const { children, onClose } = props;
   return (
-    <div className="absolute z-30 transform -translate-y-1/2 -translate-x-1/2 px-4 pt-8 pb-4 bg-white rounded-md border border-gray-300 drop-shadow-md">
-      <div className="absolute top-0 right-0 p-2">
-        <Button small icon={XIcon} onClick={onClose} />
+    // <div className="fixed z-10 w-screen h-screen top-0 left-0 bg-black/50">
+    <div
+      className={cx(
+        "absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
+        "w-80 bg-white drop-shadow-lg border"
+      )}
+    >
+      <div className="flex justify-end">
+        <Button Icon={Icon.X} className="p-2 w-auto" onClick={props.onClose} />
       </div>
-      {children}
+      <div>{props.children}</div>
     </div>
+    // </div>
   );
 }

@@ -1,27 +1,23 @@
 import React from "react";
-import { CheckboxCompleteIcon, CheckboxIcon } from "./icons";
+import cx from "classnames";
+import * as Icon from "react-bootstrap-icons";
 
 type Props = {
-  label?: string;
-  checked?: boolean;
-  onChange?: any;
+  checked: boolean;
+  onChange?: () => void;
 };
 
 export default function Checkbox(props: Props) {
-  const { label, checked, onChange } = props;
-
+  const { checked, onChange } = props;
   return (
-    <label className="flex items-center cursor-pointer">
-      <div className="w-5 h-5">
-        {checked ? CheckboxCompleteIcon : CheckboxIcon}
-      </div>
+    <label className="cursor-pointer">
+      {checked ? <Icon.CheckSquareFill /> : <Icon.Square />}
       <input
-        className="hidden"
         type="checkbox"
+        className="hidden"
         checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
+        onChange={onChange}
       />
-      {!!label ? <span className="ml-2">{label}</span> : null}
     </label>
   );
 }

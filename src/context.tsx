@@ -1,11 +1,12 @@
 import React from "react";
+import { setApiSessionTokenHeader } from "./queries";
 
 type Props = { children: any };
 
-type ContextState = {};
+type ContextState = { session: Types.User | null };
 
 type ContextMethods = {
-  connectWebSocket: () => void;
+  setSession: (session: Types.User | null) => void;
 };
 
 const internalMethods = [
@@ -21,37 +22,14 @@ const internalMethods = [
 const Context = React.createContext({} as ContextState & ContextMethods);
 
 class ContextProvider extends React.Component<Props, ContextState> {
-  state = {};
-
-  connectWebSocket = () => {
-    // const _socket = new WebSocket(
-    //   process.env.LOCAL_WS_URL || "ws://localhost:8000/ws"
-    // );
-    // _socket.addEventListener("open", this.#handleSocketOpen);
-    // _socket.addEventListener("message", this.#handleSocketMessage);
-    // _socket.addEventListener("close", this.#handleSocketClose);
-    // this.setState({
-    //   socket: _socket,
-    // });
+  state = {
+    session: null,
   };
 
-  // #handleSocketOpen = (e: any) => {
-  //   console.log("open", e);
-  //   this.setState({ connected: true });
-  // };
-
-  // #handleSocketMessage = (e: any) => {
-  //   console.log("message", e);
-
-  //   document.dispatchEvent(
-  //     new CustomEvent("output-message", { detail: JSON.parse(e.data) })
-  //   );
-  // };
-
-  // #handleSocketClose = (e: any) => {
-  //   console.log("close", e);
-  //   this.setState({ connected: false });
-  // };
+  setSession = (session: Types.User | null) => {
+    setApiSessionTokenHeader(session?.session_token || "");
+    this.setState({ session });
+  };
 
   #getPublicMethods = () => {
     const methodNames: string[] = Object.getOwnPropertyNames(this).filter(
