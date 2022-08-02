@@ -1,4 +1,5 @@
 import React from "react";
+import cx from "classnames";
 import Editor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs/components/prism-core";
 import "prismjs/components/prism-bash";
@@ -12,7 +13,6 @@ import Selectable from "../lib/Selectable";
 
 type Props = {
   stepId: string;
-  required: boolean;
   value: string;
   args: Types.Field[];
   output: string;
@@ -62,34 +62,39 @@ export default function Script(props: Props) {
 
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between">
-        <div>
-          {args.map((a) => {
-            const field = fields.find((f) => f.id === a.id);
+      {fields.length ? (
+        <div className="mb-2 flex items-center justify-between">
+          <div>
+            {args.map((a) => {
+              const field = fields.find((f) => f.id === a.id);
 
-            if (!field) {
-              return null;
-            }
+              if (!field) {
+                return null;
+              }
 
-            return (
-              <Selectable
-                onClick={() =>
-                  updateStep(
-                    "args",
-                    args.filter((_a) => _a.id !== a.id)
-                  )
-                }
-              >
-                <span className="mr-2 font-mono text-sm cursor-pointer">{`--${field.name}=${field.value}`}</span>
-              </Selectable>
-            );
-          })}
+              return (
+                <Selectable
+                  onClick={() =>
+                    updateStep(
+                      "args",
+                      args.filter((_a) => _a.id !== a.id)
+                    )
+                  }
+                >
+                  <span className="mr-2 font-mono text-sm cursor-pointer">{`--${field.name}=${field.value}`}</span>
+                </Selectable>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      ) : null}
       <div className="relative">
-        <div className="absolute transform -translate-x-full p-2">
+        <div className="absolute transform -translate-x-full p-3">
           <Button
-            Icon={Icon.PlayFill}
+            Icon={status === "running" ? Icon.Asterisk : Icon.CaretRightSquare}
+            className={cx("bg-transparent", {
+              "animate-spin": status === "running",
+            })}
             onClick={() => {
               updateStep("output", "");
               updateStep("status", "running");
@@ -118,7 +123,7 @@ export default function Script(props: Props) {
           />
         </div>
         <div
-          className="p-2 bg-gray-100 w-full overflow-auto"
+          className="p-3 bg-gray-50 w-full overflow-auto"
           style={{ maxHeight: "240px" }}
         >
           <Editor
@@ -140,11 +145,11 @@ export default function Script(props: Props) {
       </div>
       {output ? (
         <pre
-          className="relative bg-gray-200 p-2 text-sm overflow-auto"
+          className="relative bg-gray-100 p-3 text-sm overflow-auto"
           style={{ maxHeight: "240px" }}
         >
           <div
-            className="absolute top-0 right-0 p-2 cursor-pointer"
+            className="absolute top-0 right-0 p-3 cursor-pointer"
             onClick={() => {
               updateStep("output", "");
             }}

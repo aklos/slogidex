@@ -64,59 +64,26 @@ export default function TopBar(props: Props) {
   }, [blueprintId, instanceId]);
 
   return (
-    <div className="w-full h-[42px] bg-white border-b border-gray-300 drop-shadow-sm flex">
+    <div
+      className={cx("w-full h-[42px] border-b border-gray-300 flex", {
+        "bg-white": !blueprintId && !instanceId,
+        "bg-blue-400": blueprintId && !instanceId,
+        "bg-yellow-400": instanceId,
+      })}
+    >
       <Cell>
         <Button
           link
           to="/"
-          active={location.pathname === "/"}
-          disabled={location.pathname === "/"}
+          active={location.pathname !== "/feedback"}
+          disabled={location.pathname !== "/feedback"}
           className="px-4 py-2"
           Icon={Icon.Book}
-          label="Library"
+          label="Documents"
           onClick={() => null}
         />
       </Cell>
-      {/* Tabs */}
-      <div className="w-full bg-gray-200 grid grid-cols-5">
-        {tabs.map((t) => {
-          const blueprint = blueprints.find((b) => b.id === t.blueprintId);
-          const instance = instances.find((i) => i.id === t.instanceId);
-
-          return (
-            <div
-              key={t.id}
-              className={cx(
-                "relative group h-[42px] px-4 py-2 bg-white border-b-2 border-transparent mr-[1px]",
-                {
-                  italic: !blueprint?.name,
-                  "border-b-2 border-gray-900":
-                    blueprintId === t.blueprintId &&
-                    instanceId === t.instanceId,
-                }
-              )}
-            >
-              <div
-                className="w-11/12 whitespace-nowrap overflow-hidden overflow-ellipsis cursor-pointer"
-                onClick={() => selectTab(t.id)}
-              >
-                <span className="mr-1">{instance ? "[I]" : "[B]"}</span>
-                {blueprint?.name ? blueprint.name : "New document"}
-              </div>
-              <div
-                className={cx(
-                  "absolute top-1/2 right-0 transform -translate-y-1/2",
-                  "p-3 cursor-pointer"
-                )}
-                onClick={() => closeTab(t.id)}
-              >
-                <Icon.X size={16} />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      {/* <Cell>
+      <Cell>
         <Button
           link
           to="feedback"
@@ -127,17 +94,17 @@ export default function TopBar(props: Props) {
           label="Feedback"
           onClick={() => null}
         />
+      </Cell>
+      {/* <Cell>
+        <Button className="px-4 py-2" Icon={IconLogin} onClick={() => null} />
       </Cell> */}
-      {/* <Cell> */}
-      {/*   <Button className="px-4 py-2" Icon={IconLogin} onClick={() => null} /> */}
-      {/* </Cell> */}
-      {/* <Cell> */}
-      {/*   <Button */}
-      {/*     className="px-4 py-2" */}
-      {/*     Icon={IconMoonStars} */}
-      {/*     onClick={() => null} */}
-      {/*   /> */}
-      {/* </Cell> */}
+      <Cell>
+        <Button
+          className="px-4 py-2"
+          Icon={Icon.MoonStars}
+          onClick={() => null}
+        />
+      </Cell>
     </div>
   );
 }

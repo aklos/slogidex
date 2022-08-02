@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 import { Routes, Route, Outlet, useParams } from "react-router-dom";
 import TopBar from "./TopBar";
 import LibraryPanel from "./LibraryPanel";
-import BlueprintPanel from "./BlueprintPanel";
 import FeedbackPanel from "./FeedbackPanel";
+import BlueprintPanel from "./BlueprintPanel";
 import { setApiSessionTokenHeader, useSessionQuery } from "../queries";
 import Context from "../context";
 import saveData from "../storage";
@@ -61,24 +61,34 @@ export default function App() {
               </div>
             }
           >
+            {/* TODO: Rename to "DocumentPanel" */}
             <Route
-              index
+              path="/"
               element={
                 <LibraryPanel storage={storage} setStorage={setStorage} />
               }
-            />
-            <Route
-              path=":blueprintId"
-              element={
-                <BlueprintWrapper storage={storage} setStorage={setStorage} />
-              }
-            />
-            <Route
-              path=":blueprintId/:instanceId"
-              element={
-                <BlueprintWrapper storage={storage} setStorage={setStorage} />
-              }
-            />
+            >
+              <Route
+                index
+                element={
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 prose">
+                    <h1>Stepper</h1>
+                  </div>
+                }
+              />
+              <Route
+                path=":blueprintId"
+                element={
+                  <BlueprintWrapper storage={storage} setStorage={setStorage} />
+                }
+              />
+              <Route
+                path=":blueprintId/:instanceId"
+                element={
+                  <BlueprintWrapper storage={storage} setStorage={setStorage} />
+                }
+              />
+            </Route>
             <Route path="feedback" element={<FeedbackPanel />} />
           </Route>
         </Routes>
@@ -93,6 +103,7 @@ function BlueprintWrapper(props: {
 }) {
   const { storage, setStorage } = props;
   const { blueprintId, instanceId } = useParams();
+
   let document = storage.instances
     .concat(storage.blueprints as Types.BlueprintInstance[])
     .find((d) => (instanceId ? d.id === instanceId : d.id === blueprintId));
@@ -118,7 +129,7 @@ function BlueprintWrapper(props: {
             value: "",
             type: "markdown",
             status: "initial",
-            required: false,
+            required: true,
           },
         ],
         createdAt: new Date(),
@@ -162,6 +173,7 @@ function BlueprintWrapper(props: {
     return <div></div>;
   }
 
+  /* TODO: Rename to "Document" */
   return (
     <BlueprintPanel
       key={`bp_panel_${blueprintId}_${instanceId}`}

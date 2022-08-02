@@ -45,7 +45,7 @@ export default function Markdown(props: Props) {
   );
 
   return (
-    <div className="relative">
+    <div className="relative px-3 py-1 mt-4 mb-4">
       <Container className="prose max-w-none min-h-[32px]">
         {editing ? (
           <SimpleMDE

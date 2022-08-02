@@ -69,9 +69,14 @@ export default function Step(props: Props) {
   return (
     <li
       ref={containerRef}
-      className={cx("list-inside relative group border border-transparent", {
-        "focus-within:border-gray-400": editable,
-      })}
+      className={cx(
+        "list-inside relative group bg-white border border-l-[2px] border-r-[3px] border-b-[3px] border-gray-300",
+        {
+          "border-l-green-500": status === "completed",
+          "border-l-red-500": status === "failed",
+          "focus-within:border-gray-400": editable,
+        }
+      )}
       onClick={(e) => (!focused ? toggleFocused(true) : null)}
       onFocus={(e) => toggleFocused(true)}
       onBlur={(e) => toggleFocused(false)}
@@ -159,30 +164,28 @@ export default function Step(props: Props) {
       {/* Editor & preview */}
       <div id={name} className="relative">
         {required ? (
-          <div className="absolute p-2 transform -translate-x-2x">
+          <div className="absolute p-3 transform -translate-x-full">
             <Checkbox
               checked={status === "completed"}
               onChange={toggleCheckbox}
             />
           </div>
         ) : null}
-        {required ? (
-          <div className="prose mb-2">
-            <h2>
-              {editable ? (
-                <input
-                  type="text"
-                  className="outline-none"
-                  placeholder={`Step #${index}`}
-                  value={name}
-                  onChange={(e) => updateStep("name", e.target.value)}
-                />
-              ) : (
-                name
-              )}
-            </h2>
-          </div>
-        ) : null}
+        <div className="prose border-b-2 max-w-none px-3 py-1">
+          <h2>
+            {editable ? (
+              <input
+                type="text"
+                className="outline-none w-full"
+                placeholder={required ? `Step #${index}` : "Unnamed section"}
+                value={name}
+                onChange={(e) => updateStep("name", e.target.value)}
+              />
+            ) : (
+              name || `Step #${index}`
+            )}
+          </h2>
+        </div>
         {type === "markdown" ? (
           <Markdown
             editing={editable && focused}
@@ -193,7 +196,6 @@ export default function Step(props: Props) {
         {type === "script" ? (
           <Script
             stepId={id}
-            required={required}
             value={value}
             args={args || []}
             fields={fields}

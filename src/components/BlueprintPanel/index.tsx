@@ -32,7 +32,7 @@ export default function BlueprintPanel(props: Props) {
         value: type === "script" ? "#!/bin/bash" : "",
         type,
         status: "initial",
-        required: false,
+        required: true,
       });
 
       updateDocument(_doc);
@@ -74,92 +74,89 @@ export default function BlueprintPanel(props: Props) {
   const editable = !document.blueprintId;
 
   return (
-    <div className="flex flex-grow">
+    <div className="flex flex-grow bg-gray-100">
       {document.steps.filter((s) => s.required).length ? (
-        <div className="flex-shrink-0 bg-gray-50 w-80 prose px-4 py-2">
+        <div className="flex-shrink-0 w-80 prose p-2 border-r">
           <ul>
-            {document.steps
-              .filter((s) => s.required)
-              .map((s) => {
-                const stepIndex =
-                  document.steps
-                    .filter((_s) => _s.required)
-                    .findIndex((_s) => _s.id === s.id) + 1;
-
-                return (
-                  <li key={`li_${s.id}`}>
-                    <a href={`#${s.name}`}>{s.name || `Step #${stepIndex}`}</a>
-                  </li>
-                );
-              })}
-          </ul>
-        </div>
-      ) : null}
-      <div className="w-full">
-        <div className="max-w-screen-xl mx-auto my-4">
-          <div
-            className={cx(
-              "prose max-w-none border border-transparent",
-              "focus-within:border-gray-400"
-            )}
-          >
-            <h1 className={cx({ "mb-6": !editable })}>
-              {editable ? (
-                <input
-                  type="text"
-                  className="outline-none"
-                  placeholder="Document title"
-                  value={document.name}
-                  onChange={(e) => updateTitle(e.target.value)}
-                />
-              ) : (
-                document.name
-              )}
-            </h1>
-          </div>
-          <ul className="list-none">
-            {editable ? (
-              <Division insertStep={(type) => insertStep(0, type)} />
-            ) : null}
-            {document.steps.map((s, index) => {
-              const fields = document.steps
-                .slice(0, index)
-                .filter((_s) => _s.type === "form")
-                .reduce((accu, curr) => {
-                  const data: Types.Field[] = JSON.parse(curr.value).filter(
-                    (f: Types.Field) => f.name
-                  );
-
-                  return accu.concat(data);
-                }, [] as Types.Field[]);
-
-              const stepIndex = s.required
-                ? document.steps
-                    .filter((_s) => _s.required)
-                    .findIndex((_s) => _s.id === s.id) + 1
-                : undefined;
+            {document.steps.map((s) => {
+              const stepIndex =
+                document.steps.findIndex((_s) => _s.id === s.id) + 1;
 
               return (
-                <div key={s.id} className={cx({ "mb-4": !editable })}>
-                  <Step
-                    {...s}
-                    index={stepIndex}
-                    editable={editable}
-                    fields={fields}
-                    updateStep={(key, value) => updateStep(key, value, index)}
-                    deleteStep={() => deleteStep(index)}
-                    moveStep={(direction) => moveStep(index, direction)}
-                  />
-                  {editable ? (
-                    <Division
-                      insertStep={(type) => insertStep(index + 1, type)}
-                    />
-                  ) : null}
-                </div>
+                <li key={`li_${s.id}`}>
+                  <a href={`#${s.name}`} className="font-bold">
+                    {s.name ||
+                      (s.required ? `Step #${stepIndex}` : `Unnamed section`)}
+                  </a>
+                </li>
               );
             })}
           </ul>
         </div>
+      ) : null}
+      <div className="mx-auto my-4 px-16 w-full max-w-screen-2xl">
+        <div
+          className={cx(
+            "prose max-w-none border border-transparent px-3 py-1",
+            "focus-within:border-gray-400"
+          )}
+        >
+          <h1 className={cx({ "mb-6": !editable })}>
+            {editable ? (
+              <input
+                type="text"
+                className="outline-none w-full bg-transparent"
+                placeholder="Document title"
+                value={document.name}
+                onChange={(e) => updateTitle(e.target.value)}
+              />
+            ) : (
+              document.name
+            )}
+          </h1>
+        </div>
+        <ul className="list-none">
+          {editable ? (
+            <Division insertStep={(type) => insertStep(0, type)} />
+          ) : null}
+          {document.steps.map((s, index) => {
+            const fields = document.steps
+              .slice(0, index)
+              .filter((_s) => _s.type === "form")
+              .reduce((accu, curr) => {
+                const data: Types.Field[] = JSON.parse(
+                  curr.value || "[]"
+                ).filter((f: Types.Field) => f.name);
+
+                return accu.concat(data);
+              }, [] as Types.Field[]);
+
+            const stepIndex = s.required
+              ? document.steps
+                  .filter((_s) => _s.required)
+                  .findIndex((_s) => _s.id === s.id) + 1
+              : undefined;
+
+            return (
+              <div key={s.id} className={cx({ "mb-6": !editable })}>
+                <Step
+                  {...s}
+                  index={stepIndex}
+                  editable={editable}
+                  fields={fields}
+                  updateStep={(key, value) => updateStep(key, value, index)}
+                  deleteStep={() => deleteStep(index)}
+                  moveStep={(direction) => moveStep(index, direction)}
+                />
+                {editable ? (
+                  <Division
+                    insertStep={(type) => insertStep(index + 1, type)}
+                  />
+                ) : null}
+              </div>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );
@@ -170,7 +167,7 @@ function Division(props: { insertStep: (type: Types.StepType) => void }) {
 
   return (
     <div className={cx("relative py-3 opacity-0 hover:opacity-100")}>
-      <div className="absolute z-10 w-full border-b border-gray-400">
+      <div className="absolute z-10 w-full border-b border-gray-400 top-1/2 transform -translate-y-1/2">
         <div className="absolute bg-white border border-gray-400 top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex">
           <Button
             Icon={Icon.ChatSquareQuote}
