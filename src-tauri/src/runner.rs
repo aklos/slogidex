@@ -18,8 +18,9 @@ fn create_command_builder(
     if options.env_vars.is_some() {
         command.envs(options.env_vars.as_ref().unwrap());
     }
-
+    
     for arg in args.iter() {
+        println!("ARG: {:?}", arg);
         command.arg(arg);
     }
 
@@ -154,7 +155,7 @@ fn spawn_script(
                 //     vec!["/C".to_string(), win_file]
                 // } else {
                 //     // vec!["-c".to_string(), file.to_string()]
-                //     vec![file.to_string()]
+                //     vec![]
                 // };
                 
                 // all_args.extend(args.iter().cloned());

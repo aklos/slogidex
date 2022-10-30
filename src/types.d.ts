@@ -2,30 +2,22 @@ declare module "prismjs/components/prism-core";
 
 namespace Types {
   export type Storage = {
-    sessionToken: string;
-    darkMode: boolean;
-    blueprints: Blueprint[];
-    instances: BlueprintInstance[];
+    session_token: string;
+    dark_mode: boolean;
+    documents: Document[];
+    instances: Instance[];
   };
 
-  export type Panel = "library" | "settings";
-
-  export type Tab = {
-    id: string;
-    blueprintId: string;
-    instanceId?: string;
-  };
-
-  export type Blueprint = {
+  export type Document = {
     id: string;
     name: string;
     steps: Step[];
-    createdAt: Date;
-    updatedAt: Date;
+    created_at: Date;
+    updated_at: Date;
   };
 
-  export type BlueprintInstance = Blueprint & {
-    blueprintId: string;
+  export type Instance = Document & {
+    document_id: string;
   };
 
   export type StepType = "script" | "markdown" | "form";

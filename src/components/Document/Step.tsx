@@ -49,7 +49,7 @@ export default function Step(props: Props) {
 
   const addField = React.useCallback(
     (type: Types.FieldType) => {
-      const data = JSON.parse(value);
+      const data = JSON.parse(value || "[]");
 
       data.push({
         id: uuidv4(),
@@ -89,9 +89,7 @@ export default function Step(props: Props) {
               label={f.name}
               className="p-2 font-mono"
               onClick={() => {
-                if (args) {
-                  updateStep("args", args.concat([f]));
-                }
+                updateStep("args", (args || []).concat([f]));
                 toggleModal(false);
               }}
             />

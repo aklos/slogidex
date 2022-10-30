@@ -50,7 +50,7 @@ export default function LoginForm(props: Props) {
     } else {
       return (
         <div>
-          <div className="prose mb-4">
+          <div className="mb-4">
             <p>
               <span className="font-bold mr-1">We sent you an email.</span>
               <span>
@@ -91,9 +91,7 @@ export default function LoginForm(props: Props) {
 
   return (
     <div>
-      <div className="prose mb-4">
-        <h2>{title || "Please login"}</h2>
-      </div>
+      <h2 className="text-xl mb-4">{title || "Please login"}</h2>
       {renderForm()}
     </div>
   );

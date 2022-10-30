@@ -43,7 +43,8 @@ export default function Input(props: Props) {
       }
       onChange={onChange ? (e) => onChange(e.target.value) : undefined}
       className={cx(
-        "px-3 py-1 w-full border border-gray-400 rounded-sm drop-shadow-sm",
+        "px-3 py-1 w-full rounded-sm drop-shadow-sm",
+        "dark:bg-black",
         className,
         {
           "bg-gray-100": disabled,

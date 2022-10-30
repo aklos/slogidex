@@ -6,72 +6,29 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import * as Icon from "react-bootstrap-icons";
 
 type Props = {
-  tabs: Types.Tab[];
-  setTabs: Dispatch<SetStateAction<Types.Tab[]>>;
-  blueprints: Types.Blueprint[];
-  instances: Types.BlueprintInstance[];
+  documents: Types.Document[];
+  instances: Types.Instance[];
+  toggleDarkMode: () => void;
 };
 
 export default function TopBar(props: Props) {
-  const { tabs, setTabs, blueprints, instances } = props;
+  const { documents, instances, toggleDarkMode } = props;
   const location = useLocation();
   const navigate = useNavigate();
-  const { blueprintId, instanceId } = useParams();
-
-  const selectTab = React.useCallback(
-    (id: string) => {
-      const tab = tabs.find((t) => t.id === id);
-      if (tab) {
-        navigate(
-          `${tab.blueprintId}${tab.instanceId ? `/${tab.instanceId}` : ""}`
-        );
-      }
-    },
-    [tabs]
-  );
-
-  const closeTab = React.useCallback(
-    (id: string) => {
-      const _tabs = Array.from(tabs);
-      const index = _tabs.findIndex((t) => t.id === id);
-      const tab = _tabs[index];
-
-      if (tab.blueprintId === blueprintId && tab.instanceId === instanceId) {
-        navigate("/");
-      }
-
-      _tabs.splice(index, 1);
-      setTabs(_tabs);
-    },
-    [tabs, blueprintId, instanceId]
-  );
-
-  // Create or select tab when route changes
-  React.useEffect(() => {
-    if (blueprintId) {
-      const existingTab = tabs.find(
-        (t) => t.blueprintId === blueprintId && t.instanceId === instanceId
-      );
-
-      if (!existingTab) {
-        const _tabs = Array.from(tabs);
-        _tabs.push({ id: uuidv4(), blueprintId, instanceId });
-        setTabs(_tabs);
-      } else {
-        selectTab(existingTab.id);
-      }
-    }
-  }, [blueprintId, instanceId]);
+  const { documentId, instanceId } = useParams();
 
   return (
     <div
-      className={cx("w-full h-[42px] border-b border-gray-300 flex", {
-        "bg-white": !blueprintId && !instanceId,
-        "bg-blue-400": blueprintId && !instanceId,
-        "bg-yellow-400": instanceId,
-      })}
+      className={cx(
+        "absolute z-10 top-0 w-full h-[42px] flex justify-between drop-shadow-lg",
+        {
+          "bg-white dark:bg-gray-800": !documentId && !instanceId,
+          "bg-blue-400": documentId && !instanceId,
+          "bg-yellow-400": instanceId,
+        }
+      )}
     >
-      <Cell>
+      {/* <Cell>
         <Button
           link
           to="/"
@@ -94,25 +51,54 @@ export default function TopBar(props: Props) {
           label="Feedback"
           onClick={() => null}
         />
-      </Cell>
+      </Cell> */}
       {/* <Cell>
         <Button className="px-4 py-2" Icon={IconLogin} onClick={() => null} />
       </Cell> */}
-      <Cell>
-        <Button
-          className="px-4 py-2"
-          Icon={Icon.MoonStars}
-          onClick={() => null}
-        />
-      </Cell>
+      <div className="flex">
+        <Cell
+          active={location.pathname === "/" || !!documentId || !!instanceId}
+        >
+          <Button
+            className="px-4 py-2"
+            Icon={Icon.Book}
+            label="Documents"
+            onClick={() => navigate("/")}
+          />
+        </Cell>
+        <Cell active={location.pathname === "/feedback"}>
+          <Button
+            className="px-4 py-2"
+            Icon={Icon.ChatHeart}
+            label="Feedback"
+            onClick={() => navigate("/feedback")}
+          />
+        </Cell>
+      </div>
+      <div className="flex">
+        <Cell>
+          <Button
+            className="px-4 py-2"
+            Icon={Icon.MoonStars}
+            onClick={toggleDarkMode}
+          />
+        </Cell>
+      </div>
     </div>
   );
 }
 
-function Cell(props: { children: any }) {
+function Cell(props: { active?: boolean; noBorder?: boolean; children: any }) {
+  const { active, noBorder, children } = props;
+
   return (
-    <div className="flex-shrink-0 border-r border-gray-300">
-      {props.children}
+    <div
+      className={cx("flex-shrink-0 dark:border-gray-900", {
+        "dark:bg-gray-900": active,
+        "border-r": !noBorder,
+      })}
+    >
+      {children}
     </div>
   );
 }

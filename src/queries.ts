@@ -8,7 +8,7 @@ const api = axios.create({
   baseURL: "https://localhost:3030",
   withCredentials: true,
   headers: {
-    "X-Session-Token": saveData.sessionToken,
+    "X-Session-Token": saveData.session_token,
   },
 });
 

@@ -60,6 +60,12 @@ export default function Script(props: Props) {
     };
   }, []);
 
+  // React.useEffect(() => {
+  //   if (fields.length) {
+  //     console.log(fields);
+  //   }
+  // }, [fields]);
+
   return (
     <div>
       {fields.length ? (
@@ -74,6 +80,7 @@ export default function Script(props: Props) {
 
               return (
                 <Selectable
+                  key={a.id}
                   onClick={() =>
                     updateStep(
                       "args",
@@ -106,12 +113,12 @@ export default function Script(props: Props) {
                     const field = fields.find((f) => f.id === curr.id);
 
                     if (field) {
-                      const arg = `--${curr.name}=${curr.value}`;
+                      const arg = `--${field.name}=${field.value}`;
                       if (!accu) {
                         return arg;
                       }
 
-                      return accu + " " + arg;
+                      return accu + "!" + arg;
                     } else {
                       return accu;
                     }

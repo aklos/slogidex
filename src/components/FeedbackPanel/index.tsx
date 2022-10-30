@@ -17,9 +17,9 @@ export default function FeedbackPanel() {
 
   return (
     <div className="flex flex-grow">
-      <div className="flex-shrink-0 w-1/3 bg-gray-50 border-r">
+      <div className="flex-shrink-0 w-1/3">
         {!context.session ? (
-          <div className="bg-blue-50 p-8 mb-8">
+          <div className="p-8 mb-8">
             <LoginForm title="Please login to participate" />
           </div>
         ) : null}
@@ -52,9 +52,7 @@ function FeedbackForm(props: { disabled: boolean }) {
       }}
       className="p-8"
     >
-      <div className="prose mb-4">
-        <h2>Post feedback</h2>
-      </div>
+      <h2 className="text-xl mb-4">Post feedback</h2>
       <div className="mb-4">
         <label>
           <Input

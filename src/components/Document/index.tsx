@@ -6,8 +6,8 @@ import Button from "../lib/Button";
 import * as Icon from "react-bootstrap-icons";
 
 type Props = {
-  document: Types.BlueprintInstance;
-  updateDocument: (document: Types.BlueprintInstance) => void;
+  document: Types.Instance;
+  updateDocument: (_document: Types.Instance) => void;
 };
 
 export default function BlueprintPanel(props: Props) {
@@ -71,11 +71,11 @@ export default function BlueprintPanel(props: Props) {
     [document]
   );
 
-  const editable = !document.blueprintId;
+  const editable = !document.document_id;
 
   return (
     <div className="flex flex-grow bg-gray-100">
-      {document.steps.filter((s) => s.required).length ? (
+      {/* {document.steps.filter((s) => s.required).length ? (
         <div className="flex-shrink-0 w-80 prose p-2 border-r">
           <ul>
             {document.steps.map((s) => {
@@ -93,7 +93,7 @@ export default function BlueprintPanel(props: Props) {
             })}
           </ul>
         </div>
-      ) : null}
+      ) : null} */}
       <div className="mx-auto my-4 px-16 w-full max-w-screen-2xl">
         <div
           className={cx(

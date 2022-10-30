@@ -11,7 +11,7 @@ function dateTimeReviver(key: string, value: string) {
 
 const storage: Types.Storage = JSON.parse(
   window.localStorage.getItem("tbd") ||
-    JSON.stringify({ blueprints: [], instances: [] }),
+    JSON.stringify({ documents: [], instances: [] }),
   dateTimeReviver
 );
 

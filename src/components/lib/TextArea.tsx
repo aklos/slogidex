@@ -23,10 +23,8 @@ export default function TextArea(props: Props) {
       value={value}
       onChange={onChange ? (e) => onChange(e.target.value) : undefined}
       className={cx(
-        "px-3 py-1 w-full h-40 border border-gray-400 rounded-sm drop-shadow-sm resize-none",
-        {
-          "bg-gray-100": disabled,
-        }
+        "px-3 py-1 w-full h-40 rounded-sm drop-shadow-sm resize-none",
+        "dark:bg-black"
       )}
     />
   );

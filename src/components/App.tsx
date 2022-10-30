@@ -3,9 +3,9 @@ import cx from "classnames";
 import { v4 as uuidv4 } from "uuid";
 import { Routes, Route, Outlet, useParams } from "react-router-dom";
 import TopBar from "./TopBar";
-import LibraryPanel from "./LibraryPanel";
+import DocumentPanel from "./DocumentPanel";
 import FeedbackPanel from "./FeedbackPanel";
-import BlueprintPanel from "./BlueprintPanel";
+import Document from "./Document";
 import { setApiSessionTokenHeader, useSessionQuery } from "../queries";
 import Context from "../context";
 import saveData from "../storage";
@@ -14,11 +14,10 @@ export default function App() {
   const context = React.useContext(Context);
   const { isLoading, error, data } = useSessionQuery();
   const [storage, setStorage] = React.useState<Types.Storage>(saveData);
-  const [tabs, setTabs] = React.useState<Types.Tab[]>([]);
 
   // On start, load existing session token from storage
   React.useEffect(() => {
-    setApiSessionTokenHeader(storage.sessionToken);
+    setApiSessionTokenHeader(storage.session_token);
   }, []);
 
   // Save storage on change
@@ -30,7 +29,7 @@ export default function App() {
   React.useEffect(() => {
     const sessionToken = context.session?.session_token || "";
 
-    if (sessionToken !== storage.sessionToken) {
+    if (sessionToken !== storage.session_token) {
       const _storage = Object.assign({}, storage, { sessionToken });
       setStorage(_storage);
     }
@@ -44,48 +43,52 @@ export default function App() {
   }, [data]);
 
   return (
-    <div className={cx({ dark: storage.darkMode })}>
-      <div className="w-full h-full font-sans text-gray-900 dark:bg-gray-800 dark:text-gray-100">
+    <div className={cx({ dark: storage.dark_mode })}>
+      <div className="w-full h-full font-sans text-gray-900 dark:bg-gray-900 dark:text-gray-300">
         <Routes>
           <Route
             path="/"
             element={
-              <div className="min-h-screen h-full flex flex-col">
+              <div className="relative min-h-screen h-full flex flex-col pt-[42px]">
                 <TopBar
-                  tabs={tabs}
-                  setTabs={setTabs}
-                  blueprints={storage.blueprints}
+                  documents={storage.documents}
                   instances={storage.instances}
+                  toggleDarkMode={() =>
+                    setStorage(
+                      Object.assign({}, storage, {
+                        dark_mode: !storage.dark_mode,
+                      })
+                    )
+                  }
                 />
                 <Outlet />
               </div>
             }
           >
-            {/* TODO: Rename to "DocumentPanel" */}
             <Route
               path="/"
               element={
-                <LibraryPanel storage={storage} setStorage={setStorage} />
+                <DocumentPanel storage={storage} setStorage={setStorage} />
               }
             >
               <Route
                 index
                 element={
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 prose">
-                    <h1>Stepper</h1>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <h1>RUNME</h1>
                   </div>
                 }
               />
               <Route
-                path=":blueprintId"
+                path=":documentId"
                 element={
-                  <BlueprintWrapper storage={storage} setStorage={setStorage} />
+                  <DocumentWrapper storage={storage} setStorage={setStorage} />
                 }
               />
               <Route
-                path=":blueprintId/:instanceId"
+                path=":documentId/:instanceId"
                 element={
-                  <BlueprintWrapper storage={storage} setStorage={setStorage} />
+                  <DocumentWrapper storage={storage} setStorage={setStorage} />
                 }
               />
             </Route>
@@ -97,31 +100,31 @@ export default function App() {
   );
 }
 
-function BlueprintWrapper(props: {
+function DocumentWrapper(props: {
   storage: Types.Storage;
   setStorage: Dispatch<SetStateAction<Types.Storage>>;
 }) {
   const { storage, setStorage } = props;
-  const { blueprintId, instanceId } = useParams();
+  const { documentId, instanceId } = useParams();
 
   let document = storage.instances
-    .concat(storage.blueprints as Types.BlueprintInstance[])
-    .find((d) => (instanceId ? d.id === instanceId : d.id === blueprintId));
+    .concat(storage.documents as Types.Instance[])
+    .find((d) => (instanceId ? d.id === instanceId : d.id === documentId));
 
   if (!document) {
     if (instanceId) {
-      const blueprint = storage.blueprints.find((b) => b.id === blueprintId);
+      const blueprint = storage.documents.find((b) => b.id === documentId);
 
       document = Object.assign({}, blueprint, {
         id: instanceId,
-        blueprintId,
+        document_id: documentId,
         steps: blueprint?.steps.map(
           (s) => Object.assign({}, s, { id: uuidv4() }) || []
         ),
-      }) as Types.BlueprintInstance;
+      }) as Types.Instance;
     } else {
       document = {
-        id: blueprintId,
+        id: documentId,
         name: "",
         steps: [
           {
@@ -132,17 +135,17 @@ function BlueprintWrapper(props: {
             required: true,
           },
         ],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      } as Types.BlueprintInstance;
+        created_at: new Date(),
+        updated_at: new Date(),
+      } as Types.Instance;
     }
   }
 
   const updateDocument = React.useCallback(
-    (_document: Types.BlueprintInstance) => {
+    (_document: Types.Instance) => {
       const _storage = Object.assign({}, storage);
 
-      if (_document.blueprintId) {
+      if (_document.document_id) {
         const index = _storage.instances.findIndex(
           (i) => i.id === _document.id
         );
@@ -153,14 +156,14 @@ function BlueprintWrapper(props: {
           _storage.instances[index] = _document;
         }
       } else {
-        const index = _storage.blueprints.findIndex(
+        const index = _storage.documents.findIndex(
           (i) => i.id === _document.id
         );
 
         if (index === -1) {
-          _storage.blueprints.push(_document);
+          _storage.documents.push(_document);
         } else {
-          _storage.blueprints[index] = _document;
+          _storage.documents[index] = _document;
         }
       }
 
@@ -175,8 +178,8 @@ function BlueprintWrapper(props: {
 
   /* TODO: Rename to "Document" */
   return (
-    <BlueprintPanel
-      key={`bp_panel_${blueprintId}_${instanceId}`}
+    <Document
+      key={`doc_panel_${documentId}_${instanceId}`}
       document={document}
       updateDocument={updateDocument}
     />
