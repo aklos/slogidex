@@ -1,60 +1,28 @@
-import React from "react";
+import * as React from "react";
+import * as Icons from "react-bootstrap-icons";
 import cx from "classnames";
-import { Link } from "react-router-dom";
-import { Icon } from "react-bootstrap-icons";
 
-type Props = {
-  Icon?: Icon;
-  loose?: boolean;
-  callToAction?: boolean;
-  positive?: boolean;
-  negative?: boolean;
+interface Props {
+  Icon?: Icons.Icon;
+  style?: "normal" | "positive" | "negative";
   label?: string;
-  submit?: boolean;
-  link?: boolean;
-  to?: string;
-  active?: boolean;
-  disabled?: boolean;
-  className?: string;
+  title?: string;
   onClick?: () => void;
-};
+}
 
 export default function Button(props: Props) {
-  const {
-    link,
-    to,
-    loose,
-    callToAction,
-    positive,
-    negative,
-    className,
-    submit,
-    Icon,
-    label,
-    active,
-    disabled,
-    onClick,
-  } = props;
-  const [mouseDown, toggleMouseDown] = React.useState(false);
+  const { Icon, style, title, label, onClick } = props;
 
   return (
     <button
-      type={submit ? "submit" : "button"}
-      disabled={disabled || false}
-      className={cx(
-        "cursor-pointer relative group h-full flex items-center",
-        className,
-        {}
-      )}
+      className={cx("h-[28px] px-2 py-1 flex items-center", {
+        "bg-lime-500": style === "positive",
+      })}
+      title={title}
       onClick={onClick}
-      onMouseDown={() => toggleMouseDown(true)}
-      onMouseUp={() => toggleMouseDown(false)}
-      onMouseLeave={() => toggleMouseDown(false)}
     >
-      <div className="flex items-center">
-        {!!Icon ? <Icon className={cx({ "mr-2": !!label })} /> : null}
-        {label ? <div className={cx({ "pr-1": !!Icon })}>{label}</div> : null}
-      </div>
+      {Icon ? <Icon /> : null}
+      {label ? <span className="px-2">{label}</span> : null}
     </button>
   );
 }

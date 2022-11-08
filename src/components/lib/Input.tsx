@@ -1,55 +1,41 @@
-import React from "react";
+import * as React from "react";
+import * as Icons from "react-bootstrap-icons";
 import cx from "classnames";
+import Button from "./Button";
 
-type Props = {
-  type?: "text" | "number" | "email" | "password";
-  placeholder?: string;
-  required?: boolean;
-  disabled?: boolean;
-  defaultValue?: string;
-  value?: string;
-  className?: string;
-  onChange?: (value: string) => void;
-};
+interface Props {
+  Icon?: Icons.Icon;
+  value: string;
+  onChange: (v: string) => void;
+}
 
 export default function Input(props: Props) {
-  const {
-    type,
-    placeholder,
-    required,
-    disabled,
-    defaultValue,
-    value,
-    className,
-    onChange,
-  } = props;
+  const { Icon, value, onChange } = props;
 
   return (
-    <input
-      type={type || "text"}
-      placeholder={placeholder}
-      required={required}
-      disabled={disabled}
-      defaultValue={defaultValue}
-      value={value}
-      onInput={
-        type === "number"
-          ? (e) => {
-              let v = (e.target as any).value as string;
-              v = v.replace(/[^0-9\.]/g, "");
-              (e.target as any).value = v;
-            }
-          : undefined
-      }
-      onChange={onChange ? (e) => onChange(e.target.value) : undefined}
-      className={cx(
-        "px-3 py-1 w-full rounded-sm drop-shadow-sm",
-        "dark:bg-black",
-        className,
-        {
-          "bg-gray-100": disabled,
-        }
-      )}
-    />
+    <label className="w-full">
+      <div
+        className={cx(
+          "dark:border-black border rounded-sm overflow-hidden",
+          "pl-2 relative flex items-center bg-white dark:bg-black"
+        )}
+      >
+        {Icon && !value ? (
+          <div className="mr-2">
+            <Icon />
+          </div>
+        ) : null}
+        <input
+          className="w-full py-1 flex-grow focus:outline-none dark:bg-black"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        />
+        {value ? (
+          <div>
+            <Button Icon={Icons.BackspaceFill} onClick={() => onChange("")} />
+          </div>
+        ) : null}
+      </div>
+    </label>
   );
 }

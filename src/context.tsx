@@ -1,13 +1,10 @@
 import React from "react";
-import { setApiSessionTokenHeader } from "./queries";
 
 type Props = { children: any };
 
-type ContextState = { session: Types.User | null };
+type ContextState = {};
 
-type ContextMethods = {
-  setSession: (session: Types.User | null) => void;
-};
+type ContextMethods = {};
 
 const internalMethods = [
   "props",
@@ -22,14 +19,7 @@ const internalMethods = [
 const Context = React.createContext({} as ContextState & ContextMethods);
 
 class ContextProvider extends React.Component<Props, ContextState> {
-  state = {
-    session: null,
-  };
-
-  setSession = (session: Types.User | null) => {
-    setApiSessionTokenHeader(session?.session_token || "");
-    this.setState({ session });
-  };
+  state = {};
 
   #getPublicMethods = () => {
     const methodNames: string[] = Object.getOwnPropertyNames(this).filter(
