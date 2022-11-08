@@ -7,7 +7,7 @@
     "distDir": "../build"
   },
   "package": {
-    "productName": "tbd",
+    "productName": "autotool",
     "version": "0.1.0"
   },
   "tauri": {
@@ -58,7 +58,7 @@
         "fullscreen": false,
         "height": 768,
         "resizable": true,
-        "title": "",
+        "title": "Autotool",
         "width": 1366
       }
     ]

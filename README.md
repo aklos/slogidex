@@ -1,4 +1,4 @@
-# TBD
+# Autotool
 
 Gradual automation platform for individuals and businesses. Automating everything is hard, instead write guides and replace steps with scripts gradually.
 
