@@ -1,7 +1,12 @@
 import React, { Dispatch, SetStateAction } from "react";
 import cx from "classnames";
-import { v4 as uuidv4 } from "uuid";
-import { Routes, Route, Outlet, useParams } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Outlet,
+  useParams,
+  useLocation,
+} from "react-router-dom";
 // import TopBar from "./TopBar.old";
 // import DocumentPanel from "./old/DocumentPanel";
 // import FeedbackPanel from "./old/FeedbackPanel";
@@ -9,7 +14,7 @@ import { Routes, Route, Outlet, useParams } from "react-router-dom";
 // import { setApiSessionTokenHeader, useSessionQuery } from "../queries";
 import Context from "../context";
 import _saveState from "../saveState";
-import DocumentNav from "./Inventory";
+import Inventory from "./Inventory";
 
 export default function App() {
   // const context = React.useContext(Context);
@@ -48,11 +53,23 @@ export default function App() {
 
   return (
     <div className={cx({ dark: !saveState.darkMode })}>
-      <div className="w-full h-full font-sans text-gray-900 dark:bg-gray-800 dark:text-gray-300">
+      <div className="relative w-full h-full font-sans text-gray-900 dark:bg-stone-800 dark:text-gray-300">
         <div className="flex min-h-screen max-h-screen">
-          <DocumentNav />
+          <Inventory documents={saveState.documents} />
           <div className="w-full"></div>
         </div>
+        <Breadcrumbs />
+      </div>
+    </div>
+  );
+}
+
+function Breadcrumbs() {
+  const location = useLocation();
+  return (
+    <div className="absolute group right-0 bottom-0 w-10 h-6">
+      <div className="absolute opacity-0 group-hover:opacity-100 bg-black whitespace-nowrap right-0">
+        {location.pathname}
       </div>
     </div>
   );
