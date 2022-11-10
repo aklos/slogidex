@@ -7,16 +7,18 @@ interface Props {
   style?: "normal" | "positive" | "negative";
   label?: string;
   title?: string;
+  border?: boolean;
   onClick?: () => void;
 }
 
 export default function Button(props: Props) {
-  const { Icon, style, title, label, onClick } = props;
+  const { Icon, style, title, label, border, onClick } = props;
 
   return (
     <button
       className={cx("h-[28px] px-2 py-1 flex items-center", {
         "bg-lime-500": style === "positive",
+        border: border,
       })}
       title={title}
       onClick={onClick}
