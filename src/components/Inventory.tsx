@@ -2,49 +2,32 @@ import * as React from "react";
 import * as Icons from "react-bootstrap-icons";
 import cx from "classnames";
 import { format } from "date-fns";
-import { v4 as uuidv4 } from "uuid";
 import Button from "./lib/Button";
 import Input from "./lib/Input";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type DocumentEntryType = Types.Document & { toggled: boolean };
 
-export default function Inventory() {
+export default function Inventory(props: { documents: Types.Document[] }) {
+  const { documents } = props;
   const [search, setSearch] = React.useState("");
-  const [entries, setEntries] = React.useState<DocumentEntryType[]>([]);
+  const [entries, setEntries] = React.useState<DocumentEntryType[]>(
+    documents.map((d) => ({ ...d, toggled: false }))
+  );
 
   React.useEffect(() => {
-    const testData: DocumentEntryType[] = [];
-
-    for (let i = 0; i < 32; i++) {
-      const instances = [];
-
-      for (let j = 0; j < Math.floor(Math.random() * 5); j++) {
-        instances.push({
-          id: uuidv4(),
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          stepValues: [],
-        });
-      }
-
-      testData.push({
-        id: uuidv4(),
-        toggled: false,
-        name: "",
-        steps: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        instances,
-      });
-    }
-
-    setEntries(testData);
-  }, []);
+    setEntries(
+      documents.map((d) => {
+        const entry = entries.find((e) => e.id === d.id) || { toggled: false };
+        return { ...d, toggled: entry.toggled };
+      })
+    );
+  }, [documents]);
 
   const toggleEntry = React.useCallback(
-    (id: string) => {
+    (documentId: string) => {
       const _entries = Array.from(entries);
-      const index = _entries.findIndex((e) => e.id === id);
+      const index = _entries.findIndex((e) => e.id === documentId);
       _entries[index].toggled = !_entries[index].toggled;
       setEntries(_entries);
     },
@@ -55,7 +38,7 @@ export default function Inventory() {
     <div
       className={cx(
         "w-80 flex-grow flex-shrink-0",
-        "dark:bg-gray-900 bg-gray-100 dark:border-black border-r text-sm"
+        "dark:bg-stone-900 bg-stone-100 dark:border-black border-r text-sm"
       )}
     >
       <div className="px-4 pt-2 pb-4 dark:border-black border-b">
@@ -74,7 +57,6 @@ export default function Inventory() {
           title="Create new document"
           label="New"
         />
-        {/* <Button Icon={Icons.Trash2} title="Delete" /> */}
         <Button
           Icon={Icons.ArrowsCollapse}
           title="Collapse all"
@@ -83,12 +65,13 @@ export default function Inventory() {
       </div>
       <ul
         style={{ height: "calc(100vh - 80px - 32px)" }}
-        className="py-1 overflow-y-auto"
+        className="overflow-y-auto"
       >
         {entries.map((e) => (
           <DocumentEntry
             key={e.id}
-            name={e.id}
+            id={e.id}
+            name={e.name}
             toggled={e.toggled}
             toggle={() => toggleEntry(e.id)}
             numSteps={e.steps.length}
@@ -101,13 +84,17 @@ export default function Inventory() {
 }
 
 function DocumentEntry(props: {
+  id: string;
   name: string;
   numSteps: number;
   toggled: boolean;
   toggle: () => void;
   instances: Types.Instance[];
 }) {
-  const { name, numSteps, toggled, toggle, instances } = props;
+  const { id, name, numSteps, toggled, toggle, instances } = props;
+  const navigate = useNavigate();
+  const location = useLocation();
+  const selected = location.pathname.includes(id);
 
   const numFinishedInstances = instances.reduce((accu, curr) => {
     if (curr.stepValues.length === numSteps) {
@@ -123,16 +110,26 @@ function DocumentEntry(props: {
         className={cx(
           "px-4 py-1.5 flex items-center justify-between",
           "whitespace-nowrap overflow-hidden text-ellipsis",
-          "cursor-pointer hover:bg-gray-200 dark:hover:bg-black transition duration-200",
+          "transition duration-200",
           "font-bold",
           {
-            "bg-gray-200 dark:bg-black": toggled,
+            "hover:bg-stone-200 dark:hover:bg-black":
+              instances.length && !toggled,
+            "bg-stone-200 dark:bg-black hover:bg-stone-200/50 dark:hover:bg-black/50":
+              instances.length && toggled,
+            "cursor-pointer": instances.length || !selected,
+            "border border-blue-400/20": selected,
           }
         )}
-        onClick={toggle}
+        onClick={() => navigate(id)}
       >
         <div className="flex items-center">
-          <div className="text-xs mr-1">
+          <div
+            className={cx("text-xs mr-1", {
+              "opacity-0": instances.length === 0,
+            })}
+            onClick={instances.length ? toggle : () => null}
+          >
             {toggled ? <Icons.ChevronDown /> : <Icons.ChevronRight />}
           </div>
           <div className="text-xs">{name}</div>
@@ -146,17 +143,18 @@ function DocumentEntry(props: {
         ></div>
       </li>
       <ul
-        className={cx(
-          "bg-gray-200 dark:bg-black border-b-2 border-gray-100 dark:border-gray-900",
-          {
-            hidden: !toggled,
-          }
-        )}
+        className={cx("border-b-2 border-gray-100 dark:border-gray-900", {
+          hidden: !toggled,
+        })}
       >
+        {/* <li className="text-xs pl-6 pr-4">
+          <Button border Icon={Icons.PlusSquare} label="Start new instance" />
+        </li> */}
         {instances.map((i) => (
           <InstanceEntry
             key={i.id}
             id={i.id}
+            documentId={id}
             progress={0}
             timestamp={i.createdAt}
           />
@@ -168,19 +166,35 @@ function DocumentEntry(props: {
 
 function InstanceEntry(props: {
   id: string;
+  documentId: string;
   progress: number;
   timestamp: Date;
 }) {
-  const { id, progress, timestamp } = props;
+  const { id, documentId, progress, timestamp } = props;
+  const navigate = useNavigate();
+  const location = useLocation();
+  const selected = location.pathname.includes(id);
+
   return (
-    <li className="px-4 py-1.5 text-xs">
-      <div className="flex justify-between">
+    <li
+      className={cx(
+        "px-4 py-1.5 text-xs",
+        "bg-stone-200 dark:bg-black transition duration-200",
+        "hover:bg-stone-200/50 dark:hover:bg-black/50",
+        {
+          "cursor-pointer": !selected,
+          "border border-yellow-400/20": selected,
+        }
+      )}
+      onClick={() => navigate(`${documentId}/${id}`)}
+    >
+      <div className="flex justify-between items-center">
         <span className="pl-4">
           {format(timestamp, "MMM dd yyyy, HH:mm:ss")}
         </span>
         <div
           className={cx("w-2 h-2 rounded-full", {
-            "bg-gray-400 dark:bg-gray-700": progress === 0,
+            "bg-stone-400 dark:bg-stone-700": progress === 0,
             "bg-yellow-400": progress < 1,
             "bg-green-400": progress === 1,
           })}
