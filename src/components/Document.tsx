@@ -73,8 +73,20 @@ export default function Document(props: {
     [data]
   );
 
+  const updateStepContent = React.useCallback(
+    (stepId: string, content: string) => {
+      const _data = Object.assign({}, data);
+      const stepIndex = _data.steps.findIndex((s) => s.id === stepId);
+
+      _data.steps[stepIndex].content = content;
+
+      update(_data);
+    },
+    [data]
+  );
+
   return (
-    <div className="max-w-screen-xl mx-auto my-0">
+    <div className="max-w-screen-xl mx-auto my-0 px-4">
       <section className="px-2 h-16 flex items-center">
         <div className="flex items-center w-full">
           <div
@@ -105,7 +117,10 @@ export default function Document(props: {
           <div key={s.id}>
             <Step
               data={s}
-              toggleStepRequired={() => toggleStepRequired(s.id)}
+              updateContent={(content: string) =>
+                updateStepContent(s.id, content)
+              }
+              toggleRequired={() => toggleStepRequired(s.id)}
               deleteStep={() => deleteStep(s.id)}
             />
             <Divider addStep={(type) => addStep(s.id, type)} />

@@ -17,7 +17,7 @@ const saveState: Types.SaveState = JSON.parse(
       documents: [
         {
           id: uuidv4().toString(),
-          name: "User's manual",
+          name: "User manual",
           steps: [
             {
               id: uuidv4(),

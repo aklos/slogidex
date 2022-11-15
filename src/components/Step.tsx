@@ -7,19 +7,30 @@ import Script from "./editors/Script";
 
 export default function Step(props: {
   data: Types.Step;
-  toggleStepRequired: () => void;
+  updateContent: (content: string) => void;
+  toggleRequired: () => void;
   deleteStep: () => void;
 }) {
-  const { data, toggleStepRequired, deleteStep } = props;
+  const { data, updateContent, toggleRequired, deleteStep } = props;
 
   const editorComponentMap = React.useCallback(() => {
     switch (data.type) {
       case "form":
         return null;
       case "markdown":
-        return <Markdown data={data} />;
+        return (
+          <Markdown
+            data={data}
+            update={(value: string) => updateContent(value)}
+          />
+        );
       case "script":
-        return <Script data={data} />;
+        return (
+          <Script
+            data={data}
+            update={(value: string) => updateContent(value)}
+          />
+        );
     }
   }, [data.type]);
 
@@ -28,7 +39,7 @@ export default function Step(props: {
       <div className="text-xs bg-gray-200/20 flex justify-end opacity-0 group-hover/step:opacity-100 transition duration-200">
         <Button
           Icon={data.required ? Icons.CheckSquareFill : Icons.CheckSquare}
-          onClick={toggleStepRequired}
+          onClick={toggleRequired}
         />
         <Button Icon={Icons.ArrowUp} />
         <Button Icon={Icons.ArrowDown} />

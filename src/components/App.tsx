@@ -27,10 +27,10 @@ export default function App() {
 
   return (
     <div className={cx({ dark: !saveState.darkMode })}>
-      <div className="relative w-full h-full font-sans text-gray-900 dark:bg-stone-800 dark:text-gray-300">
+      <div className="relative w-full h-full font-sans text-neutral dark:bg-stone-800 dark:text-gray-300">
         <div className="flex min-h-screen max-h-screen">
           <Inventory documents={saveState.documents} />
-          <div className="w-full">
+          <div className="w-full max-h-screen overflow-auto">
             <Routes>
               <Route path="/" element={<Overview />} />
               <Route path=":documentId">
