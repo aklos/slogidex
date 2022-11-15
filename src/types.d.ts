@@ -13,41 +13,41 @@ namespace Types {
     createdAt: Date;
     updatedAt: Date;
     instances: Instance[];
+    locked: boolean;
   }
 
   export interface Instance {
     id: string;
     createdAt: Date;
     updatedAt: Date;
-    stepValues: {
+    values: {
       stepId: string;
-      value: string;
+      completed: boolean;
+      output?: string;
+      status?: ScriptStatus;
+      args?: string[];
     }[];
   }
 
   export type StepType = "script" | "markdown" | "form";
-  export type StepStatus = "initial" | "running" | "completed" | "failed";
+  export type ScriptStatus = "initial" | "running" | "completed" | "failed";
 
-  export type FieldType = "text" | "number" | "check" | "select" | "file";
-  export type Option = { label: string; value: string };
+  // export type FieldType = "text" | "number" | "check" | "select" | "file";
+  // export type Option = { label: string; value: string };
 
-  export interface Field {
-    id: string;
-    type: FieldType;
-    value: string;
-    label: string;
-    name: string;
-    options?: Option[];
-  }
+  // export interface Field {
+  //   id: string;
+  //   type: FieldType;
+  //   value: string;
+  //   label: string;
+  //   name: string;
+  //   options?: Option[];
+  // }
 
   export interface Step {
     id: string;
-    value: string;
-    name: string;
     type: StepType;
-    status: StepStatus;
     required: boolean;
-    output?: string;
-    args?: Field[];
+    content: string;
   }
 }

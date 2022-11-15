@@ -4,20 +4,22 @@ import cx from "classnames";
 import Button from "./Button";
 
 interface Props {
-  Icon?: Icons.Icon;
   value: string;
   onChange: (v: string) => void;
+  Icon?: Icons.Icon;
+  placeholder?: string;
 }
 
 export default function Input(props: Props) {
-  const { Icon, value, onChange } = props;
+  const { value, onChange, Icon, placeholder } = props;
 
   return (
     <label className="w-full">
       <div
         className={cx(
-          "dark:border-black border rounded-sm overflow-hidden",
-          "pl-2 relative flex items-center bg-white dark:bg-black"
+          "border rounded-sm",
+          "pl-2 relative flex items-center",
+          "bg-white dark:bg-black dark:border-black overflow-hidden"
         )}
       >
         {Icon && !value ? (
@@ -26,9 +28,10 @@ export default function Input(props: Props) {
           </div>
         ) : null}
         <input
-          className="w-full py-1 flex-grow focus:outline-none dark:bg-black"
+          className="w-full py-1 flex-grow focus:outline-none bg-inherit"
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
         />
         {value ? (
           <div>

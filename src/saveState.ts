@@ -17,11 +17,19 @@ const saveState: Types.SaveState = JSON.parse(
       documents: [
         {
           id: uuidv4().toString(),
-          name: "Example document",
-          steps: [],
+          name: "User's manual",
+          steps: [
+            {
+              id: uuidv4(),
+              type: "markdown",
+              required: false,
+              content: "",
+            },
+          ],
           createdAt: new Date(),
           updatedAt: new Date(),
           instances: [],
+          locked: false,
         },
       ],
     }),

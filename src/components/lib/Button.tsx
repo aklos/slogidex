@@ -4,22 +4,28 @@ import cx from "classnames";
 
 interface Props {
   Icon?: Icons.Icon;
+  onClick?: () => void;
   style?: "normal" | "positive" | "negative";
   label?: string;
   title?: string;
   border?: boolean;
-  onClick?: () => void;
+  underline?: boolean;
 }
 
 export default function Button(props: Props) {
-  const { Icon, style, title, label, border, onClick } = props;
+  const { Icon, onClick, style, title, label, border, underline } = props;
 
   return (
     <button
-      className={cx("h-[28px] px-2 py-1 flex items-center", {
-        "bg-lime-500": style === "positive",
-        border: border,
-      })}
+      className={cx(
+        "h-[28px] px-2 py-1 flex items-center hover:bg-black/10 hover:dark:bg-white/10",
+        {
+          "text-lime-400": style === "positive",
+          "text-rose-400": style === "negative",
+          border: border,
+          "underline underline-offset-1": underline,
+        }
+      )}
       title={title}
       onClick={onClick}
     >

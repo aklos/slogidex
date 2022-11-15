@@ -15,6 +15,7 @@ export default function Inventory(props: { documents: Types.Document[] }) {
     documents.map((d) => ({ ...d, toggled: false }))
   );
 
+  // FIXME: JSON string dependency is a bad solution?
   React.useEffect(() => {
     setEntries(
       documents.map((d) => {
@@ -22,7 +23,7 @@ export default function Inventory(props: { documents: Types.Document[] }) {
         return { ...d, toggled: entry.toggled };
       })
     );
-  }, [documents]);
+  }, [JSON.stringify(documents)]);
 
   const toggleEntry = React.useCallback(
     (documentId: string) => {
@@ -41,13 +42,11 @@ export default function Inventory(props: { documents: Types.Document[] }) {
         "dark:bg-stone-900 bg-stone-100 dark:border-black border-r text-sm"
       )}
     >
-      <div className="px-4 pt-2 pb-4 dark:border-black border-b">
-        <div className="flex items-center justify-between mb-2">
-          <div className="font-bold">Inventory</div>
-        </div>
+      <div className="px-4 h-16 dark:border-black border-b flex items-center">
         <Input
           Icon={Icons.Search}
           value={search}
+          placeholder="Search inventory"
           onChange={(v) => setSearch(v)}
         />
       </div>
@@ -97,7 +96,7 @@ function DocumentEntry(props: {
   const selected = location.pathname.includes(id);
 
   const numFinishedInstances = instances.reduce((accu, curr) => {
-    if (curr.stepValues.length === numSteps) {
+    if (curr.values.length === numSteps) {
       return accu + 1;
     }
 
@@ -109,7 +108,7 @@ function DocumentEntry(props: {
       <li
         className={cx(
           "px-4 py-1.5 flex items-center justify-between",
-          "whitespace-nowrap overflow-hidden text-ellipsis",
+          "whitespace-nowrap",
           "transition duration-200",
           "font-bold",
           {
@@ -121,21 +120,21 @@ function DocumentEntry(props: {
             "border border-blue-400/20": selected,
           }
         )}
-        onClick={() => navigate(id)}
+        onClick={() => navigate(`${id}`)}
       >
-        <div className="flex items-center">
+        <div className="flex items-center overflow-hidden">
           <div
             className={cx("text-xs mr-1", {
-              "opacity-0": instances.length === 0,
+              hidden: instances.length === 0,
             })}
             onClick={instances.length ? toggle : () => null}
           >
             {toggled ? <Icons.ChevronDown /> : <Icons.ChevronRight />}
           </div>
-          <div className="text-xs">{name}</div>
+          <div className="text-xs overflow-hidden text-ellipsis">{name}</div>
         </div>
         <div
-          className={cx("w-2 h-2 rounded-full", {
+          className={cx("w-2 h-2 rounded-full flex-shrink-0", {
             "bg-blue-400": instances.length === 0,
             "bg-yellow-400":
               instances.length > 0 && numFinishedInstances < instances.length,
@@ -147,9 +146,6 @@ function DocumentEntry(props: {
           hidden: !toggled,
         })}
       >
-        {/* <li className="text-xs pl-6 pr-4">
-          <Button border Icon={Icons.PlusSquare} label="Start new instance" />
-        </li> */}
         {instances.map((i) => (
           <InstanceEntry
             key={i.id}
