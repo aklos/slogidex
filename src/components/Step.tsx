@@ -7,11 +7,20 @@ import Script from "./editors/Script";
 
 export default function Step(props: {
   data: Types.Step;
+  stepValue: Types.StepInstanceValue | null;
   updateContent: (content: string) => void;
   toggleRequired: () => void;
   deleteStep: () => void;
+  runScript?: () => void;
 }) {
-  const { data, updateContent, toggleRequired, deleteStep } = props;
+  const {
+    data,
+    stepValue,
+    updateContent,
+    toggleRequired,
+    deleteStep,
+    runScript,
+  } = props;
 
   const editorComponentMap = React.useCallback(() => {
     switch (data.type) {
@@ -28,11 +37,13 @@ export default function Step(props: {
         return (
           <Script
             data={data}
+            stepValue={stepValue}
             update={(value: string) => updateContent(value)}
+            run={runScript}
           />
         );
     }
-  }, [data.type]);
+  }, [data, stepValue, updateContent, runScript]);
 
   return (
     <div className={cx("group/step relative")}>

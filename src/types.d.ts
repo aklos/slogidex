@@ -18,15 +18,18 @@ namespace Types {
 
   export interface Instance {
     id: string;
+    documentId?: string;
     createdAt: Date;
     updatedAt: Date;
-    values: {
-      stepId: string;
-      completed: boolean;
-      output?: string;
-      status?: ScriptStatus;
-      args?: string[];
-    }[];
+    values: StepInstanceValue[];
+  }
+
+  export interface StepInstanceValue {
+    stepId: string;
+    completed: boolean;
+    output?: string;
+    status?: ScriptStatus;
+    args?: string[];
   }
 
   export type StepType = "script" | "markdown" | "form";

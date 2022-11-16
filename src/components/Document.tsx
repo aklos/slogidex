@@ -1,23 +1,24 @@
 import * as React from "react";
 import * as Icons from "react-bootstrap-icons";
-import { v4 as uuidv4 } from "uuid";
 import cx from "classnames";
+import { v4 as uuidv4 } from "uuid";
 import Editable from "./lib/Editable";
 import Button from "./lib/Button";
 import Step from "./Step";
 
 export default function Document(props: {
   data: Types.Document;
-  instanceId: string;
-  update: (value: Types.Document) => void;
+  instance: Types.Instance | null;
+  updateDocument: (value: Types.Document) => void;
+  runScript: (stepId: string) => void;
 }) {
-  const { data, instanceId, update } = props;
+  const { data, instance, updateDocument, runScript } = props;
 
   const changeName = React.useCallback(
     (value: string) => {
       const _data = Object.assign({}, data);
       _data.name = value;
-      update(_data);
+      updateDocument(_data);
     },
     [data]
   );
@@ -25,7 +26,7 @@ export default function Document(props: {
   const toggleStepLocked = React.useCallback(() => {
     const _data = Object.assign({}, data);
     _data.locked = !_data.locked;
-    update(_data);
+    updateDocument(_data);
   }, [data]);
 
   const toggleStepRequired = React.useCallback(
@@ -33,7 +34,7 @@ export default function Document(props: {
       const _data = Object.assign({}, data);
       const stepIndex = _data.steps.findIndex((s) => s.id === stepId);
       _data.steps[stepIndex].required = !_data.steps[stepIndex].required;
-      update(_data);
+      updateDocument(_data);
     },
     [data]
   );
@@ -56,7 +57,7 @@ export default function Document(props: {
         _data.steps.push(step);
       }
 
-      update(_data);
+      updateDocument(_data);
     },
     [data]
   );
@@ -68,7 +69,7 @@ export default function Document(props: {
 
       _data.steps.splice(stepIndex, 1);
 
-      update(_data);
+      updateDocument(_data);
     },
     [data]
   );
@@ -80,7 +81,7 @@ export default function Document(props: {
 
       _data.steps[stepIndex].content = content;
 
-      update(_data);
+      updateDocument(_data);
     },
     [data]
   );
@@ -91,7 +92,7 @@ export default function Document(props: {
         <div className="flex items-center w-full">
           <div
             className={cx("text-2xl mr-2", {
-              "text-blue-400": !instanceId,
+              "text-blue-400": true,
             })}
           >
             <Icons.FileEarmarkFill />
@@ -113,19 +114,29 @@ export default function Document(props: {
         </div>
       </section>
       {data.steps.length ? (
-        data.steps.map((s) => (
-          <div key={s.id}>
-            <Step
-              data={s}
-              updateContent={(content: string) =>
-                updateStepContent(s.id, content)
-              }
-              toggleRequired={() => toggleStepRequired(s.id)}
-              deleteStep={() => deleteStep(s.id)}
-            />
-            <Divider addStep={(type) => addStep(s.id, type)} />
-          </div>
-        ))
+        data.steps.map((s) => {
+          const stepValue = instance?.values.find((v) => v.stepId === s.id);
+          return (
+            <div key={s.id}>
+              <Step
+                data={s}
+                stepValue={stepValue || null}
+                updateContent={(content: string) =>
+                  updateStepContent(s.id, content)
+                }
+                toggleRequired={() => toggleStepRequired(s.id)}
+                deleteStep={() => deleteStep(s.id)}
+                runScript={() => runScript(s.id)}
+              />
+              {/* {s.type === "script" && stepValue?.output ? (
+                <pre className="p-2 text-sm dark:bg-black">
+                  {stepValue.output}
+                </pre>
+              ) : null} */}
+              <Divider addStep={(type) => addStep(s.id, type)} />
+            </div>
+          );
+        })
       ) : (
         <Divider addStep={(type) => addStep("", type)} />
       )}
