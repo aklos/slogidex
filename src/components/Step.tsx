@@ -36,7 +36,7 @@ export default function Step(props: {
 
   return (
     <div className={cx("group/step relative")}>
-      <div className="text-xs bg-gray-200/20 flex justify-end opacity-0 group-hover/step:opacity-100 transition duration-200">
+      <div className="absolute z-10 right-0 text-xs bg-gray-400/20 flex opacity-0 group-hover/step:opacity-100 transition duration-200">
         <Button
           Icon={data.required ? Icons.CheckSquareFill : Icons.CheckSquare}
           onClick={toggleRequired}
@@ -47,15 +47,19 @@ export default function Step(props: {
       </div>
       <div
         className={cx(
-          "w-full border border-transparent group-hover/step:border-gray-200/20 transition duration-200",
+          "w-full border border-transparent group-hover/step:border-gray-400/20 transition duration-200",
           {
             flex: data.required,
           }
         )}
       >
         {data.required ? (
-          <div className="flex-shrink-0 border-r-2 border-gray-200/20">
-            <Button Icon={Icons.Square} />
+          <div className="flex-shrink-0 border-r-2 border-gray-400/20">
+            <Button
+              Icon={
+                data.type === "script" ? Icons.CaretRightSquare : Icons.Square
+              }
+            />
           </div>
         ) : null}
         <div

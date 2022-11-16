@@ -18,8 +18,10 @@ export default function Button(props: Props) {
   return (
     <button
       className={cx(
-        "h-[28px] px-2 py-1 flex items-center hover:bg-black/10 hover:dark:bg-white/10",
+        "h-[28px] py-1 flex items-center hover:bg-black/10 hover:dark:bg-white/10",
         {
+          "px-2": label,
+          "px-1.5": !label,
           "text-lime-400": style === "positive",
           "text-rose-400": style === "negative",
           border: border,

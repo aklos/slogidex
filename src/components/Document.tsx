@@ -87,7 +87,7 @@ export default function Document(props: {
 
   return (
     <div className="max-w-screen-xl mx-auto my-0 px-4">
-      <section className="px-2 h-16 flex items-center">
+      <section className="px-2 h-16 border-b border-gray-400/20 mb-4 flex items-center">
         <div className="flex items-center w-full">
           <div
             className={cx("text-2xl mr-2", {
@@ -96,7 +96,7 @@ export default function Document(props: {
           >
             <Icons.FileEarmarkFill />
           </div>
-          <h2 className="font-bold text-xl">
+          <h2 className="font-bold text-xl dark:text-white">
             <Editable onChange={(value) => changeName(value)}>
               {data.name}
             </Editable>
@@ -139,7 +139,7 @@ function Divider(props: { addStep: (type: Types.StepType) => void }) {
   return (
     <div className="py-4 opacity-0 hover:opacity-100 transition duration-200">
       <div className="relative border-b flex items-center justify-center">
-        <div className="absolute dark:bg-stone-800 grid grid-cols-3">
+        <div className="absolute bg-white dark:bg-stone-800 grid grid-cols-3">
           <Button Icon={Icons.Markdown} onClick={() => addStep("markdown")} />
           <Button Icon={Icons.UiChecks} onClick={() => addStep("form")} />
           <Button Icon={Icons.CodeSquare} onClick={() => addStep("script")} />
