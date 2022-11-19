@@ -37,3 +37,19 @@
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #55555555;
 }
+[contenteditable=true]:empty:before {
+  content: attr(placeholder);
+  display: block;
+  pointer-events: none;
+  color: #aaa;
+  font-style: italic;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #aaa;
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}

@@ -16,7 +16,7 @@ export default function Script(props: {
   const { data, stepValue, update, run } = props;
 
   return (
-    <div>
+    <div className="">
       <div className="flex bg-gray-100 dark:bg-stone-900">
         {data.required ? null : (
           <div className="border-r-2 border-transparent">
@@ -26,7 +26,9 @@ export default function Script(props: {
                   <Icons.DashCircleDotted />
                 </div>
               ) : (
-                <div>F</div>
+                <div className="px-1.5 py-1">
+                  <Icons.XCircle />
+                </div>
               )
             ) : (
               <Button Icon={Icons.CaretRightFill} onClick={run} />

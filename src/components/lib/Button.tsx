@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import * as Icons from "react-bootstrap-icons";
 import cx from "classnames";
 
@@ -32,7 +32,11 @@ export default function Button(props: Props) {
       onClick={onClick}
     >
       {Icon ? <Icon /> : null}
-      {label ? <span className="px-2">{label}</span> : null}
+      {label ? (
+        <span className={cx("pl-2", { "pr-2": !Icon, "pr-1": Icon })}>
+          {label}
+        </span>
+      ) : null}
     </button>
   );
 }

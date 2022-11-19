@@ -1,18 +1,22 @@
-import * as React from "react";
+import React from "react";
 import * as Icons from "react-bootstrap-icons";
 import cx from "classnames";
 import { v4 as uuidv4 } from "uuid";
 import Editable from "./lib/Editable";
 import Button from "./lib/Button";
 import Step from "./Step";
+import Context from "../context";
+import { useNavigate } from "react-router-dom";
 
 export default function Document(props: {
   data: Types.Document;
   instance: Types.Instance | null;
   updateDocument: (value: Types.Document) => void;
+  updateInstance: (instanceId: string, value: Types.Instance) => void;
   runScript: (stepId: string) => void;
 }) {
-  const { data, instance, updateDocument, runScript } = props;
+  const { data, instance, updateDocument, updateInstance, runScript } = props;
+  const navigate = useNavigate();
 
   const changeName = React.useCallback(
     (value: string) => {
@@ -86,12 +90,61 @@ export default function Document(props: {
     [data]
   );
 
+  const updateStepFieldValue = React.useCallback(
+    (stepId: string, value: Types.FieldValue) => {
+      const _instance = Object.assign(
+        {
+          id: uuidv4(),
+          documentId: data.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          values: [],
+        } as Types.Instance,
+        instance
+      );
+
+      const newInstance = !instance;
+
+      const stepIndex = _instance.values.findIndex((s) => s.stepId === stepId);
+
+      if (stepIndex === -1) {
+        _instance.values.push({
+          stepId,
+          completed: false,
+          fieldValues: [value],
+        });
+      } else {
+        const fieldIndex = _instance.values[stepIndex].fieldValues?.findIndex(
+          (f) => f.id === value.id
+        );
+
+        if (fieldIndex === undefined) {
+          console.log("fuckle");
+          return;
+        }
+
+        if (fieldIndex === -1) {
+          (_instance.values[stepIndex].fieldValues as any).push(value);
+        } else {
+          (_instance.values[stepIndex].fieldValues as any)[fieldIndex] = value;
+        }
+      }
+
+      updateInstance(_instance.id, _instance);
+
+      if (newInstance) {
+        navigate(`/${data.id}/${_instance.id}`);
+      }
+    },
+    [instance]
+  );
+
   return (
-    <div className="max-w-screen-xl mx-auto my-0 px-4">
-      <section className="px-2 h-16 border-b border-gray-400/20 mb-4 flex items-center">
+    <div className="max-w-screen-xl mx-auto my-0 px-4 mb-32">
+      <section className="h-16 border-b border-gray-400/20 mb-4 flex items-center">
         <div className="flex items-center w-full">
           <div
-            className={cx("text-2xl mr-2", {
+            className={cx("text-2xl mx-2", {
               "text-blue-400": true,
             })}
           >
@@ -103,8 +156,7 @@ export default function Document(props: {
             </Editable>
           </h2>
         </div>
-        <div className="grid grid-cols-4 gap-0 flex-shrink-0">
-          <Button Icon={Icons.ArrowClockwise} />
+        <div className="grid grid-cols-3 gap-0 flex-shrink-0 text-sm">
           <Button Icon={Icons.Clipboard2PlusFill} />
           <Button
             Icon={data.locked ? Icons.LockFill : Icons.UnlockFill}
@@ -124,6 +176,7 @@ export default function Document(props: {
                 updateContent={(content: string) =>
                   updateStepContent(s.id, content)
                 }
+                updateStepValue={(v) => updateStepFieldValue(s.id, v)}
                 toggleRequired={() => toggleStepRequired(s.id)}
                 deleteStep={() => deleteStep(s.id)}
                 runScript={() => runScript(s.id)}
@@ -148,7 +201,7 @@ function Divider(props: { addStep: (type: Types.StepType) => void }) {
   const { addStep } = props;
 
   return (
-    <div className="py-4 opacity-0 hover:opacity-100 transition duration-200">
+    <div className="py-3 opacity-0 hover:opacity-100 transition duration-200">
       <div className="relative border-b flex items-center justify-center">
         <div className="absolute bg-white dark:bg-stone-800 grid grid-cols-3">
           <Button Icon={Icons.Markdown} onClick={() => addStep("markdown")} />

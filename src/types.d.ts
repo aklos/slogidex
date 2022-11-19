@@ -27,6 +27,7 @@ namespace Types {
   export interface StepInstanceValue {
     stepId: string;
     completed: boolean;
+    fieldValues?: FieldValue[];
     output?: string;
     status?: ScriptStatus;
     args?: string[];
@@ -34,18 +35,23 @@ namespace Types {
 
   export type StepType = "script" | "markdown" | "form";
   export type ScriptStatus = "initial" | "running" | "completed" | "failed";
+  export type FieldValue = { id: string; value: string | boolean };
 
-  // export type FieldType = "text" | "number" | "check" | "select" | "file";
-  // export type Option = { label: string; value: string };
+  export type FieldType = "text" | "number" | "check" | "select" | "file";
+  export type Option = { label: string; value: string };
 
-  // export interface Field {
-  //   id: string;
-  //   type: FieldType;
-  //   value: string;
-  //   label: string;
-  //   name: string;
-  //   options?: Option[];
-  // }
+  export interface FieldInterface {
+    id: string;
+    type: Types.FieldType;
+    name: string;
+    label: string;
+    inline?: boolean;
+    required?: boolean;
+    defaultValue?: string | boolean;
+    placeholder?: string;
+    options?: Types.Option[];
+    directory?: boolean;
+  }
 
   export interface Step {
     id: string;

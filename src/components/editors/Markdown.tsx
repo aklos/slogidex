@@ -2,6 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Placeholder from "@tiptap/extension-placeholder";
 
 const Container = styled.div`
   *:first-child {
@@ -31,7 +32,12 @@ export default function Markdown(props: {
   );
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder: "Write some markdown...",
+      }),
+    ],
     content: data.content,
     onUpdate: onChange,
   });

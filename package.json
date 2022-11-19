@@ -9,6 +9,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
+    "@tiptap/extension-placeholder": "^2.0.0-beta.202",
     "@tiptap/react": "^2.0.0-beta.202",
     "@tiptap/starter-kit": "^2.0.0-beta.202",
     "axios": "^0.27.2",

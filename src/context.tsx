@@ -2,9 +2,17 @@ import React from "react";
 
 type Props = { children: any };
 
-type ContextState = {};
+type ContextState = {
+  selectedStep: Types.Step | null;
+  selectedStepUpdate: ((content: string) => void) | null;
+};
 
-type ContextMethods = {};
+type ContextMethods = {
+  selectStep: (
+    step: Types.Step | null,
+    update: ((content: string) => void) | null
+  ) => void;
+};
 
 const internalMethods = [
   "props",
@@ -19,7 +27,14 @@ const internalMethods = [
 const Context = React.createContext({} as ContextState & ContextMethods);
 
 class ContextProvider extends React.Component<Props, ContextState> {
-  state = {};
+  state = { selectedStep: null, selectedStepUpdate: null };
+
+  selectStep = (
+    step: Types.Step | null,
+    update: ((content: string) => void) | null = null
+  ) => {
+    this.setState({ selectedStep: step, selectedStepUpdate: update });
+  };
 
   #getPublicMethods = () => {
     const methodNames: string[] = Object.getOwnPropertyNames(this).filter(

@@ -14,12 +14,15 @@ import _saveState from "../saveState";
 import Inventory from "./Inventory";
 import Overview from "./Overview";
 import Document from "./Document";
+import ContextMenu from "./ContextMenu";
 
 let unlisten: UnlistenFn;
 
 export default function App() {
   const [saveState, setSaveState] = React.useState<Types.SaveState>(_saveState);
-  const [instances, setInstances] = React.useState<Types.Instance[]>([]);
+  const [activeInstances, setActiveInstances] = React.useState<
+    Types.Instance[]
+  >([]);
   const [newInstance, setNewInstance] = React.useState<
     | (Types.Instance & {
         action: "runScript";
@@ -71,13 +74,12 @@ export default function App() {
 
       setNewInstance(null);
     }
-  }, [instances]);
+  }, [activeInstances]);
 
   const handleScriptOutputEvent = React.useCallback(
     (e: any) => {
       const message = JSON.parse(e.payload.message);
-      console.log(message, instances);
-      const instance = instances.find((i) => i.id === message.instanceId);
+      const instance = activeInstances.find((i) => i.id === message.instanceId);
 
       if (!instance) {
         console.log("handleScriptOutputEvent", "No instance found!");
@@ -109,8 +111,6 @@ export default function App() {
         step.status = "completed";
       }
 
-      console.log(step);
-
       const _instance = Object.assign({}, instance);
       const stepIndex = _instance.values.findIndex(
         (v) => v.stepId === step.stepId
@@ -123,12 +123,12 @@ export default function App() {
       }
 
       // updateInstance(instance.id, _instance);
-      const _instances = Array.from(instances);
+      const _instances = Array.from(activeInstances);
       const instanceIndex = _instances.findIndex((i) => i.id === _instance.id);
       _instances[instanceIndex] = _instance;
-      setInstances(_instances);
+      setActiveInstances(_instances);
     },
-    [instances]
+    [activeInstances]
   );
 
   const runScript = React.useCallback(
@@ -139,23 +139,23 @@ export default function App() {
         throw new Error("No document found!");
       }
 
-      const instance = instances.find((i) => i.id === instanceId);
+      const instance = activeInstances.find((i) => i.id === instanceId);
       let isNew = false;
 
       if (!instance) {
-        const _instances = Array.from(instances);
+        const _instances = Array.from(activeInstances);
         const _instance = {
           id: instanceId,
+          documentId,
           createdAt: new Date(),
           updatedAt: new Date(),
           values: [],
         };
         _instances.push(_instance);
-        setInstances(_instances);
+        setActiveInstances(_instances);
         setNewInstance({
           ..._instance,
           action: "runScript",
-          documentId,
           stepId,
           values: [
             {
@@ -170,14 +170,12 @@ export default function App() {
 
       const step = document?.steps.find((s) => s.id === stepId);
 
-      // const _data = Object.assign({}, data);
-      // const step = _data.steps.find((s) => s.id === stepId);
       if (step) {
         if (isNew) {
           navigate(`/${document.id}/${instanceId}`);
         } else {
           // Reset step
-          const _instances = Array.from(instances);
+          const _instances = Array.from(activeInstances);
           const instanceIndex = _instances.findIndex(
             (i) => i.id === instanceId
           );
@@ -189,7 +187,7 @@ export default function App() {
           _instances[instanceIndex].values[stepIndex].output = "";
           _instances[instanceIndex].values[stepIndex].status = "running";
 
-          setInstances(_instances);
+          setActiveInstances(_instances);
 
           invoke("run_script", {
             invokeMessage: JSON.stringify({
@@ -202,7 +200,7 @@ export default function App() {
         }
       }
     },
-    [saveState, instances]
+    [saveState, activeInstances]
   );
 
   const updateDocument = React.useCallback(
@@ -217,32 +215,35 @@ export default function App() {
     [saveState]
   );
 
-  // const updateInstance = React.useCallback(
-  //   (instanceId: string, value: Types.Instance) => {
-  //     const _instances = Array.from(context.instances);
-  //     const instanceIndex = _instances.findIndex((i) => i.id === instanceId);
+  const updateInstance = React.useCallback(
+    (instanceId: string, value: Types.Instance) => {
+      const _instances = Array.from(activeInstances);
+      const instanceIndex = _instances.findIndex((i) => i.id === instanceId);
 
-  //     if (instanceIndex === -1) {
-  //       _instances.push(value);
-  //     } else {
-  //       _instances[instanceIndex] = value;
-  //     }
-  //     console.log("updating instances", _instances);
-  //     context.setInstances(_instances);
-  //   },
-  //   [context.instances]
-  // );
+      if (instanceIndex === -1) {
+        _instances.push(value);
+      } else {
+        _instances[instanceIndex] = value;
+      }
+      setActiveInstances(_instances);
+    },
+    [activeInstances]
+  );
 
   // const invokeScript = React.useCallback(
   //   (instanceId: string) => {},
   //   [instances]
   // );
+  //
 
   return (
     <div className={cx({ dark: !saveState.darkMode })}>
       <div className="relative w-full h-full font-sans text-neutral dark:bg-stone-800 dark:text-gray-300">
         <div className="flex min-h-screen max-h-screen">
-          <Inventory documents={saveState.documents} />
+          <Inventory
+            documents={saveState.documents}
+            activeInstances={activeInstances}
+          />
           <div className="w-full max-h-screen overflow-auto">
             <Routes>
               <Route path="/" element={<Overview />} />
@@ -252,8 +253,9 @@ export default function App() {
                   element={
                     <DocumentWrapper
                       documents={saveState.documents}
-                      instances={instances}
+                      instances={activeInstances}
                       updateDocument={updateDocument}
+                      updateInstance={updateInstance}
                       runScript={runScript}
                     />
                   }
@@ -263,8 +265,9 @@ export default function App() {
                   element={
                     <DocumentWrapper
                       documents={saveState.documents}
-                      instances={instances}
+                      instances={activeInstances}
                       updateDocument={updateDocument}
+                      updateInstance={updateInstance}
                       runScript={runScript}
                     />
                   }
@@ -272,6 +275,7 @@ export default function App() {
               </Route>
             </Routes>
           </div>
+          <ContextMenu />
         </div>
         <DebugBreadcrumbs />
       </div>
@@ -283,9 +287,11 @@ function DocumentWrapper(props: {
   documents: Types.Document[];
   instances: Types.Instance[];
   updateDocument: (documentId: string, value: Types.Document) => void;
+  updateInstance: (instanceId: string, value: Types.Instance) => void;
   runScript: (documentId: string, instanceId: string, stepId: string) => void;
 }) {
-  const { documents, instances, updateDocument, runScript } = props;
+  const { documents, instances, updateDocument, updateInstance, runScript } =
+    props;
   const params = useParams();
   const document = documents.find((d) => d.id === params.documentId);
 
@@ -335,6 +341,7 @@ function DocumentWrapper(props: {
       updateDocument={(value: Types.Document) =>
         updateDocument(document.id, value)
       }
+      updateInstance={updateInstance}
       runScript={(stepId: string) =>
         runScript(
           document.id,

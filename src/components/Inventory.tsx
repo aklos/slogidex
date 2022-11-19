@@ -8,8 +8,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 type DocumentEntryType = Types.Document & { toggled: boolean };
 
-export default function Inventory(props: { documents: Types.Document[] }) {
-  const { documents } = props;
+export default function Inventory(props: {
+  documents: Types.Document[];
+  activeInstances: Types.Instance[];
+}) {
+  const { documents, activeInstances } = props;
   const [search, setSearch] = React.useState("");
   const [entries, setEntries] = React.useState<DocumentEntryType[]>(
     documents.map((d) => ({ ...d, toggled: false }))
@@ -26,10 +29,10 @@ export default function Inventory(props: { documents: Types.Document[] }) {
   }, [JSON.stringify(documents)]);
 
   const toggleEntry = React.useCallback(
-    (documentId: string) => {
+    (documentId: string, forceOpen: boolean = false) => {
       const _entries = Array.from(entries);
       const index = _entries.findIndex((e) => e.id === documentId);
-      _entries[index].toggled = !_entries[index].toggled;
+      _entries[index].toggled = forceOpen ? true : !_entries[index].toggled;
       setEntries(_entries);
     },
     [entries]
@@ -72,9 +75,11 @@ export default function Inventory(props: { documents: Types.Document[] }) {
             id={e.id}
             name={e.name}
             toggled={e.toggled}
-            toggle={() => toggleEntry(e.id)}
+            toggle={(force: boolean) => toggleEntry(e.id, force)}
             numSteps={e.steps.length}
-            instances={e.instances}
+            instances={e.instances.concat(
+              activeInstances.filter((i) => i.documentId === e.id)
+            )}
           />
         ))}
       </ul>
@@ -87,7 +92,7 @@ function DocumentEntry(props: {
   name: string;
   numSteps: number;
   toggled: boolean;
-  toggle: () => void;
+  toggle: (force: boolean) => void;
   instances: Types.Instance[];
 }) {
   const { id, name, numSteps, toggled, toggle, instances } = props;
@@ -127,7 +132,7 @@ function DocumentEntry(props: {
             className={cx("text-xs mr-1", {
               hidden: instances.length === 0,
             })}
-            onClick={instances.length ? toggle : () => null}
+            onClick={instances.length ? () => toggle(false) : () => null}
           >
             {toggled ? <Icons.ChevronDown /> : <Icons.ChevronRight />}
           </div>
@@ -146,15 +151,18 @@ function DocumentEntry(props: {
           hidden: !toggled,
         })}
       >
-        {instances.map((i) => (
-          <InstanceEntry
-            key={i.id}
-            id={i.id}
-            documentId={id}
-            progress={0}
-            timestamp={i.createdAt}
-          />
-        ))}
+        {instances
+          .sort((a, b) => b.createdAt.valueOf() - a.createdAt.valueOf())
+          .map((i) => (
+            <InstanceEntry
+              key={i.id}
+              id={i.id}
+              documentId={id}
+              progress={0}
+              timestamp={i.createdAt}
+              toggleDocument={() => toggle(true)}
+            />
+          ))}
       </ul>
     </>
   );
@@ -165,11 +173,18 @@ function InstanceEntry(props: {
   documentId: string;
   progress: number;
   timestamp: Date;
+  toggleDocument: () => void;
 }) {
-  const { id, documentId, progress, timestamp } = props;
+  const { id, documentId, progress, timestamp, toggleDocument } = props;
   const navigate = useNavigate();
   const location = useLocation();
   const selected = location.pathname.includes(id);
+
+  React.useEffect(() => {
+    if (selected) {
+      toggleDocument();
+    }
+  }, [selected]);
 
   return (
     <li

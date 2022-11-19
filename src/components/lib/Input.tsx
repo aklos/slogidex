@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import * as Icons from "react-bootstrap-icons";
 import cx from "classnames";
 import Button from "./Button";
@@ -6,15 +6,18 @@ import Button from "./Button";
 interface Props {
   value: string;
   onChange: (v: string) => void;
+  type?: "text" | "number";
   Icon?: Icons.Icon;
+  label?: any;
   placeholder?: string;
 }
 
 export default function Input(props: Props) {
-  const { value, onChange, Icon, placeholder } = props;
+  const { value, onChange, Icon, type, label, placeholder } = props;
 
   return (
     <label className="w-full">
+      {label ? <div className="mb-0.5 font-bold">{label}</div> : null}
       <div
         className={cx(
           "border rounded-sm",
@@ -29,6 +32,7 @@ export default function Input(props: Props) {
         ) : null}
         <input
           className="w-full py-1 flex-grow focus:outline-none bg-inherit"
+          type={type || "text"}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}

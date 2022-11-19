@@ -6,6 +6,10 @@ module.exports = {
   darkMode: "class",
   theme: {
     extend: {
+      transitionProperty: {
+        width: "width",
+        height: "height",
+      },
       translate: {
         "2x": "200%",
       },
