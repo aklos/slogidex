@@ -183,9 +183,11 @@ export default function App() {
             (v) => v.stepId === stepId
           );
 
-          _instances[instanceIndex].values[stepIndex].completed = false;
-          _instances[instanceIndex].values[stepIndex].output = "";
-          _instances[instanceIndex].values[stepIndex].status = "running";
+          if (stepIndex !== -1) {
+            _instances[instanceIndex].values[stepIndex].completed = false;
+            _instances[instanceIndex].values[stepIndex].output = "";
+            _instances[instanceIndex].values[stepIndex].status = "running";
+          }
 
           setActiveInstances(_instances);
 
