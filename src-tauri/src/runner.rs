@@ -11,8 +11,18 @@ fn create_command_builder(
     command_string: &str,
     args: &Vec<String>,
     options: &ScriptOptions,
+    need_permissions: bool
 ) -> Command {
-    let mut command = Command::new(&command_string);
+    let mut command = match need_permissions {
+        true => Command::new("pkexec"),
+        false => Command::new(&command_string),
+    };
+    
+    if need_permissions == true {
+        command.arg(&command_string);
+    }
+    
+    // let mut command = Command::new(&command_string);
     // let mut command = Command::new(file);
 
     if options.env_vars.is_some() {
@@ -160,7 +170,7 @@ fn spawn_script(
                 
                 // all_args.extend(args.iter().cloned());
                 
-                let mut command = create_command_builder(&command, &args, &options);
+                let mut command = create_command_builder(&command, &args, &options, updated_script.contains("sudo"));
                 println!("{:?}", command);
 
                 let result = command.spawn();
