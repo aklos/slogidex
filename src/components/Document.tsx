@@ -126,6 +126,20 @@ export default function Document(props: {
     [data]
   );
 
+  const moveStep = React.useCallback(
+    (stepId: string, dir: -1 | 1) => {
+      const _data = Object.assign({}, data);
+      const stepIndex = _data.steps.findIndex((s) => s.id === stepId);
+      const step = _data.steps[stepIndex];
+
+      _data.steps.splice(stepIndex, 1);
+      _data.steps.splice(stepIndex + dir, 0, step);
+
+      updateDocument(_data);
+    },
+    [data]
+  );
+
   const updateStepFieldValue = React.useCallback(
     (stepId: string, value: Types.FieldValue) => {
       const _instance = Object.assign(
@@ -280,6 +294,7 @@ export default function Document(props: {
                 mappedArgs={mapArgs(data, instance, s)}
                 runScript={() => (allowRunScript ? runScript(s.id) : null)}
                 locked={data.locked}
+                moveStep={(dir: -1 | 1) => moveStep(s.id, dir)}
               />
               {/* {s.type === "script" && stepValue?.output ? (
                 <pre className="p-2 text-sm dark:bg-black">

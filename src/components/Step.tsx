@@ -19,6 +19,7 @@ export default function Step(props: {
   deleteStep: () => void;
   runScript?: () => void;
   locked: boolean;
+  moveStep: (dir: -1 | 1) => void;
 }) {
   const {
     data,
@@ -32,6 +33,7 @@ export default function Step(props: {
     mappedArgs,
     runScript,
     locked,
+    moveStep,
   } = props;
   const context = React.useContext(Context);
   const ref = React.useRef(null);
@@ -115,8 +117,8 @@ export default function Step(props: {
             Icon={data.required ? Icons.CheckSquareFill : Icons.CheckSquare}
             onClick={toggleRequired}
           />
-          <Button Icon={Icons.ArrowUp} />
-          <Button Icon={Icons.ArrowDown} />
+          <Button Icon={Icons.ArrowUp} onClick={() => moveStep(-1)} />
+          <Button Icon={Icons.ArrowDown} onClick={() => moveStep(1)} />
           <Button
             style="negative"
             Icon={Icons.Trash3Fill}

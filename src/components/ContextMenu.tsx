@@ -296,10 +296,14 @@ function FormStepContext(props: {
                   {f.label}
                 </Editable>
               </div>
-              <div className="grid grid-cols-3 text-xs">
-                <Button Icon={Icons.ArrowUp} />
-                <Button Icon={Icons.ArrowDown} />
-                <Button Icon={Icons.Trash3} onClick={() => deleteField(f.id)} />
+              <div className="grid grid-cols-1 text-xs">
+                {/* <Button Icon={Icons.ArrowUp} />
+                <Button Icon={Icons.ArrowDown} /> */}
+                <Button
+                  style="negative"
+                  Icon={Icons.Trash3}
+                  onClick={() => deleteField(f.id)}
+                />
               </div>
             </div>
             <div
