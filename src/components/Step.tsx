@@ -13,6 +13,7 @@ export default function Step(props: {
   updateContent: (content: string) => void;
   updateArgs: (args: string[]) => void;
   updateStepValue: (value: Types.FieldValue) => void;
+  updateCompleted: (completed: boolean) => void;
   toggleRequired: () => void;
   deleteStep: () => void;
   runScript?: () => void;
@@ -23,6 +24,7 @@ export default function Step(props: {
     updateContent,
     updateArgs,
     updateStepValue,
+    updateCompleted,
     toggleRequired,
     deleteStep,
     runScript,
@@ -30,20 +32,20 @@ export default function Step(props: {
   const context = React.useContext(Context);
   const ref = React.useRef(null);
 
-  const handleWindowClick = (e: any) => {
-    if (ref.current && !(ref.current as any).contains(e.target)) {
-      if (context.selectedStep?.id === data.id) {
-        context.selectStep(null, null);
-      }
-    }
-  };
+  // const handleWindowClick = (e: any) => {
+  //   if (ref.current && !(ref.current as any).contains(e.target)) {
+  //     if (context.selectedStep?.id === data.id) {
+  //       context.selectStep(null, null);
+  //     }
+  //   }
+  // };
 
-  React.useEffect(() => {
-    document.addEventListener("mousedown", handleWindowClick);
-    return () => {
-      document.removeEventListener("mousedown", handleWindowClick);
-    };
-  }, []);
+  // React.useEffect(() => {
+  //   document.addEventListener("mousedown", handleWindowClick);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleWindowClick);
+  //   };
+  // }, []);
 
   const editorComponentMap = React.useCallback(() => {
     switch (data.type) {
@@ -121,8 +123,15 @@ export default function Step(props: {
           <div className="flex-shrink-0 border-r-2 border-gray-400/20">
             <Button
               Icon={
-                data.type === "script" ? Icons.CaretRightSquare : Icons.Square
+                data.type === "script"
+                  ? stepValue?.completed
+                    ? Icons.CheckSquareFill
+                    : Icons.CaretRightSquare
+                  : stepValue?.completed
+                  ? Icons.CheckSquareFill
+                  : Icons.Square
               }
+              onClick={() => updateCompleted(!stepValue?.completed)}
             />
           </div>
         ) : null}

@@ -161,6 +161,41 @@ export default function Document(props: {
     [instance]
   );
 
+  const updateStepCompletion = React.useCallback(
+    (stepId: string, completed: boolean) => {
+      const _instance = Object.assign(
+        {
+          id: uuidv4(),
+          documentId: data.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          values: [],
+        } as Types.Instance,
+        instance
+      );
+
+      const newInstance = !instance;
+
+      const stepIndex = _instance.values.findIndex((s) => s.stepId === stepId);
+
+      if (stepIndex === -1) {
+        _instance.values.push({
+          stepId,
+          completed,
+        });
+      } else {
+        _instance.values[stepIndex].completed = completed;
+      }
+
+      updateInstance(_instance.id, _instance);
+
+      if (newInstance) {
+        navigate(`/${data.id}/${_instance.id}`);
+      }
+    },
+    [instance]
+  );
+
   return (
     <div className="max-w-screen-xl mx-auto my-0 px-4 mb-32">
       <section className="h-16 border-b border-gray-400/20 mb-4 flex items-center">
@@ -188,8 +223,26 @@ export default function Document(props: {
         </div>
       </section>
       {data.steps.length ? (
-        data.steps.map((s) => {
+        data.steps.map((s, index) => {
           const stepValue = instance?.values.find((v) => v.stepId === s.id);
+          const requiredSteps = data.steps
+            .slice(0, index)
+            .filter((_s) => _s.required);
+          const allCompleted = requiredSteps.reduce((accu, curr) => {
+            if (!accu) {
+              return accu;
+            }
+
+            const instanceValue = instance?.values.find(
+              (v) => v.stepId === curr.id
+            );
+            if (instanceValue?.completed) {
+              return true;
+            }
+
+            return false;
+          }, true);
+          const allowRunScript = allCompleted;
           return (
             <div key={s.id}>
               <Step
@@ -200,9 +253,12 @@ export default function Document(props: {
                 }
                 updateArgs={(args: string[]) => updateStepArgs(s.id, args)}
                 updateStepValue={(v) => updateStepFieldValue(s.id, v)}
+                updateCompleted={(completed: boolean) =>
+                  updateStepCompletion(s.id, completed)
+                }
                 toggleRequired={() => toggleStepRequired(s.id)}
                 deleteStep={() => deleteStep(s.id)}
-                runScript={() => runScript(s.id)}
+                runScript={() => (allowRunScript ? runScript(s.id) : null)}
               />
               {/* {s.type === "script" && stepValue?.output ? (
                 <pre className="p-2 text-sm dark:bg-black">
