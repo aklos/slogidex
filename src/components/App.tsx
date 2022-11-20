@@ -19,9 +19,9 @@ import Context from "../context";
 
 let unlisten: UnlistenFn;
 
-function mapArgs(
+export function mapArgs(
   document: Types.Document,
-  instance: Types.Instance,
+  instance: Types.Instance | null,
   step: Types.Step
 ) {
   let result = "";
@@ -36,20 +36,18 @@ function mapArgs(
         const fields: Types.FieldInterface[] = JSON.parse(curr.content || "[]");
         const field = fields.find((f) => f.name === arg);
         if (field) {
-          const instanceValue = instance.values.find(
+          const instanceValue = instance?.values.find(
             (v) => v.stepId === curr.id
           );
           const instanceField = instanceValue?.fieldValues?.find(
             (fv) => fv.id === field.id
           );
-          return instanceField?.value || field.defaultValue;
+          return instanceField?.value || field.defaultValue || "";
         }
         return accu;
       }, "");
 
-    if (value) {
-      result += `--${arg}=${value}!`;
-    }
+    result += `--${arg}=${value}!`;
   }
   return result.trim().slice(0, -1);
 }
@@ -78,8 +76,6 @@ export default function App() {
       }
     };
   }, []);
-
-  console.log(activeInstances);
 
   // React.useEffect(() => {
   //   if (

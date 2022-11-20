@@ -1,5 +1,6 @@
 import React from "react";
 import * as Icons from "react-bootstrap-icons";
+import cx from "classnames";
 import Editor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs/components/prism-core";
 import "prismjs/components/prism-bash";
@@ -12,8 +13,10 @@ export default function Script(props: {
   stepValue: Types.StepInstanceValue | null;
   update: (value: string) => void;
   run?: () => void;
+  mappedArgs: string;
+  selected: boolean;
 }) {
-  const { data, stepValue, update, run } = props;
+  const { data, stepValue, update, run, mappedArgs, selected } = props;
 
   return (
     <div className="">
@@ -36,9 +39,21 @@ export default function Script(props: {
           </div>
         )}
         <div
-          className="w-full p-2 bg-gray-100 dark:bg-stone-900 overflow-auto"
+          className={cx("w-full p-2 bg-gray-100 dark:bg-stone-900", {
+            "overflow-auto": selected,
+            "overflow-hidden": !selected,
+          })}
           style={{ maxHeight: "240px" }}
         >
+          {mappedArgs ? (
+            <div className="flex items-center text-mono text-sm mb-2 opacity-50">
+              {mappedArgs.split("!").map((arg) => (
+                <div key={`${data.id}_arg_${arg}`} className="mr-2">
+                  {arg}
+                </div>
+              ))}
+            </div>
+          ) : null}
           <Editor
             value={data.content}
             onValueChange={(code) => update(code)}
@@ -57,7 +72,10 @@ export default function Script(props: {
       </div>
       {stepValue?.output ? (
         <pre
-          className="w-full p-2 text-xs bg-gray-200 dark:bg-black/50 overflow-auto"
+          className={cx("w-full p-2 text-xs bg-gray-200 dark:bg-black/50", {
+            "overflow-auto": selected,
+            "overflow-hidden": !selected,
+          })}
           style={{ maxHeight: "240px" }}
         >
           {stepValue.output}

@@ -15,6 +15,7 @@ export default function Step(props: {
   updateStepValue: (value: Types.FieldValue) => void;
   updateCompleted: (completed: boolean) => void;
   toggleRequired: () => void;
+  mappedArgs: string;
   deleteStep: () => void;
   runScript?: () => void;
 }) {
@@ -27,6 +28,7 @@ export default function Step(props: {
     updateCompleted,
     toggleRequired,
     deleteStep,
+    mappedArgs,
     runScript,
   } = props;
   const context = React.useContext(Context);
@@ -72,6 +74,8 @@ export default function Step(props: {
             stepValue={stepValue}
             update={(value: string) => updateContent(value)}
             run={runScript}
+            mappedArgs={mappedArgs}
+            selected={context.selectedStep?.id === data.id}
           />
         );
     }

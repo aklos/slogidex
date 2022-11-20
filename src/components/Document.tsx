@@ -7,6 +7,7 @@ import Button from "./lib/Button";
 import Step from "./Step";
 import Context from "../context";
 import { useNavigate } from "react-router-dom";
+import { mapArgs } from "./App";
 
 export default function Document(props: {
   data: Types.Document;
@@ -258,6 +259,7 @@ export default function Document(props: {
                 }
                 toggleRequired={() => toggleStepRequired(s.id)}
                 deleteStep={() => deleteStep(s.id)}
+                mappedArgs={mapArgs(data, instance, s)}
                 runScript={() => (allowRunScript ? runScript(s.id) : null)}
               />
               {/* {s.type === "script" && stepValue?.output ? (
