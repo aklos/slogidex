@@ -40,6 +40,14 @@ export default function Inventory(props: {
     [entries]
   );
 
+  const collapseAll = React.useCallback(() => {
+    const _entries = Array.from(entries);
+    for (const entry of entries) {
+      entry.toggled = false;
+    }
+    setEntries(_entries);
+  }, [entries]);
+
   return (
     <div
       className={cx(
@@ -66,6 +74,7 @@ export default function Inventory(props: {
           Icon={Icons.ArrowsCollapse}
           title="Collapse all"
           label="Collapse"
+          onClick={collapseAll}
         />
       </div>
       <ul
