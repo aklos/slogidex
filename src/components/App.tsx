@@ -324,7 +324,7 @@ export default function App() {
         _instances[instanceIndex] = value;
       }
 
-      const document = saveState.documents.find((d) => {
+      const document = Object.assign({}, saveState).documents.find((d) => {
         if (d.instances.map((i) => i.id).includes(instanceId)) {
           return true;
         }
@@ -343,7 +343,9 @@ export default function App() {
 
   const toggleInstancePin = React.useCallback(
     (documentId: string, instanceId: string) => {
-      const document = saveState.documents.find((d) => d.id === documentId);
+      const document = Object.assign({}, saveState).documents.find(
+        (d) => d.id === documentId
+      );
       if (!document) {
         return;
       }

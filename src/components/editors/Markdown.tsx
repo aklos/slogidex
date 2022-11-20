@@ -27,7 +27,10 @@ export default function Markdown(props: {
 
   const onChange = React.useCallback(
     (e: any) => {
-      update(e.editor.getHTML());
+      const value = e.editor.getHTML();
+      if (value !== data.content) {
+        update(value);
+      }
     },
     [data]
   );

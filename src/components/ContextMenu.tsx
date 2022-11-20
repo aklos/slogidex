@@ -106,7 +106,7 @@ function ScriptStepContext(props: {
     return null;
   }
 
-  const args = Array.from(context.currentDocument.steps[stepIndex].args || []);
+  const args = Array.from(context.currentDocument.steps[stepIndex]?.args || []);
 
   return (
     <div>
