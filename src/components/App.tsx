@@ -15,6 +15,7 @@ import Inventory from "./Inventory";
 import Overview from "./Overview";
 import Document from "./Document";
 import ContextMenu from "./ContextMenu";
+import Context from "../context";
 
 let unlisten: UnlistenFn;
 
@@ -58,6 +59,7 @@ export default function App() {
   const [activeInstances, setActiveInstances] = React.useState<
     Types.Instance[]
   >([]);
+
   const [newInstance, setNewInstance] = React.useState<
     | (Types.Instance & {
         action: "runScript";
@@ -67,6 +69,7 @@ export default function App() {
     | null
   >(null);
   const navigate = useNavigate();
+  const context = React.useContext(Context);
 
   React.useEffect(() => {
     return () => {
@@ -75,6 +78,17 @@ export default function App() {
       }
     };
   }, []);
+
+  console.log(activeInstances);
+
+  // React.useEffect(() => {
+  //   if (
+  //     context.currentInstance &&
+  //     !activeInstances.map((i) => i.id).includes(context.currentInstance.id)
+  //   ) {
+  //     updateInstance(context.currentInstance.id, context.currentInstance);
+  //   }
+  // }, [context.currentInstance]);
 
   React.useEffect(() => {
     localStorage.setItem("autotool", JSON.stringify(saveState));
@@ -258,13 +272,74 @@ export default function App() {
       const instanceIndex = _instances.findIndex((i) => i.id === instanceId);
 
       if (instanceIndex === -1) {
-        _instances.push(value);
+        const parentDoc = saveState.documents.find(
+          (d) => d.id === value.documentId
+        );
+        const activeInstanceCount = _instances.filter(
+          (i) => i.documentId === parentDoc?.id
+        ).length;
+        if (parentDoc && activeInstanceCount > 0) {
+          // Find existing active instance
+          const oldIndex = _instances
+            .filter((i) => i.documentId === parentDoc.id)
+            .findIndex((i) => {
+              if (parentDoc.instances.map((_i) => _i.id).includes(i.id)) {
+                return false;
+              }
+              return true;
+            });
+          if (oldIndex !== -1) {
+            _instances[oldIndex] = value;
+          } else {
+            _instances.push(value);
+          }
+        } else {
+          _instances.push(value);
+        }
       } else {
         _instances[instanceIndex] = value;
       }
+
+      const document = saveState.documents.find((d) => {
+        if (d.instances.map((i) => i.id).includes(instanceId)) {
+          return true;
+        }
+      });
+
+      if (document) {
+        const index = document.instances.findIndex((i) => i.id === instanceId);
+        document.instances[index] = value;
+        updateDocument(document.id, document);
+      }
+
       setActiveInstances(_instances);
     },
-    [activeInstances]
+    [activeInstances, saveState]
+  );
+
+  const toggleInstancePin = React.useCallback(
+    (documentId: string, instanceId: string) => {
+      const document = saveState.documents.find((d) => d.id === documentId);
+      if (!document) {
+        return;
+      }
+
+      const instanceIndex = document?.instances.findIndex(
+        (i) => i.id === instanceId
+      );
+
+      if (instanceIndex === -1) {
+        const instance = activeInstances.find((i) => i.id === instanceId);
+        if (instance) {
+          document.instances.push(instance);
+        }
+      } else {
+        document.instances.splice(instanceIndex, 1);
+      }
+
+      updateDocument(documentId, document);
+    },
+    [activeInstances, saveState]
   );
 
   // const invokeScript = React.useCallback(
@@ -280,6 +355,7 @@ export default function App() {
           <Inventory
             documents={saveState.documents}
             activeInstances={activeInstances}
+            toggleInstancePin={toggleInstancePin}
           />
           <div className="w-full max-h-screen overflow-auto">
             <Routes>
@@ -330,7 +406,30 @@ function DocumentWrapper(props: {
   const { documents, instances, updateDocument, updateInstance, runScript } =
     props;
   const params = useParams();
+  const navigate = useNavigate();
   const document = documents.find((d) => d.id === params.documentId);
+
+  React.useEffect(() => {
+    if (document && document?.instances.length && params.instanceId) {
+      const docInstance = document.instances.find(
+        (i) => i.id === params.instanceId
+      );
+      if (!instances.find((i) => i.id === params.instanceId) && docInstance) {
+        updateInstance(params.instanceId, docInstance);
+      }
+    }
+
+    // console.log(document, params.instanceId, instances.length);
+    // if (document && params.instanceId && !instances.length) {
+    //   updateInstance(params.instanceId, {
+    //     id: uuidv4(),
+    //     documentId: document.id,
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //     values: [],
+    //   });
+    // }
+  }, [document, params.instanceId]);
 
   // React.useEffect(() => {
   //   if (params.instanceId) {

@@ -22,6 +22,7 @@ namespace Types {
     createdAt: Date;
     updatedAt: Date;
     values: StepInstanceValue[];
+    pinned?: boolean;
   }
 
   export interface StepInstanceValue {

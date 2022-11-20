@@ -11,8 +11,9 @@ type DocumentEntryType = Types.Document & { toggled: boolean };
 export default function Inventory(props: {
   documents: Types.Document[];
   activeInstances: Types.Instance[];
+  toggleInstancePin: (documentId: string, instanceId: string) => void;
 }) {
-  const { documents, activeInstances } = props;
+  const { documents, activeInstances, toggleInstancePin } = props;
   const [search, setSearch] = React.useState("");
   const [entries, setEntries] = React.useState<DocumentEntryType[]>(
     documents.map((d) => ({ ...d, toggled: false }))
@@ -77,9 +78,12 @@ export default function Inventory(props: {
             toggled={e.toggled}
             toggle={(force: boolean) => toggleEntry(e.id, force)}
             numSteps={e.steps.length}
-            instances={e.instances.concat(
-              activeInstances.filter((i) => i.documentId === e.id)
-            )}
+            instances={e.instances
+              .map((i) => Object.assign({ pinned: true }, i) as Types.Instance)
+              .concat(activeInstances.filter((i) => i.documentId === e.id))}
+            toggleInstancePin={(instanceId: string) =>
+              toggleInstancePin(e.id, instanceId)
+            }
           />
         ))}
       </ul>
@@ -94,8 +98,10 @@ function DocumentEntry(props: {
   toggled: boolean;
   toggle: (force: boolean) => void;
   instances: Types.Instance[];
+  toggleInstancePin: (instanceId: string) => void;
 }) {
-  const { id, name, numSteps, toggled, toggle, instances } = props;
+  const { id, name, numSteps, toggled, toggle, instances, toggleInstancePin } =
+    props;
   const navigate = useNavigate();
   const location = useLocation();
   const selected = location.pathname.includes(id);
@@ -153,14 +159,30 @@ function DocumentEntry(props: {
       >
         {instances
           .sort((a, b) => b.createdAt.valueOf() - a.createdAt.valueOf())
+          .filter((i) => {
+            if (i.pinned) {
+              return true;
+            }
+
+            const pinnedInstances = instances
+              .filter((_i) => _i.pinned)
+              .map((_i) => _i.id);
+            if (pinnedInstances.includes(i.id)) {
+              return false;
+            }
+
+            return true;
+          })
           .map((i) => (
             <InstanceEntry
               key={i.id}
               id={i.id}
               documentId={id}
               progress={0}
+              pinned={!!i.pinned}
               timestamp={i.createdAt}
               toggleDocument={() => toggle(true)}
+              toggleInstancePin={() => toggleInstancePin(i.id)}
             />
           ))}
       </ul>
@@ -173,9 +195,19 @@ function InstanceEntry(props: {
   documentId: string;
   progress: number;
   timestamp: Date;
+  pinned: boolean;
   toggleDocument: () => void;
+  toggleInstancePin: () => void;
 }) {
-  const { id, documentId, progress, timestamp, toggleDocument } = props;
+  const {
+    id,
+    documentId,
+    progress,
+    timestamp,
+    pinned,
+    toggleDocument,
+    toggleInstancePin,
+  } = props;
   const navigate = useNavigate();
   const location = useLocation();
   const selected = location.pathname.includes(id);
@@ -203,13 +235,12 @@ function InstanceEntry(props: {
         <span className="pl-4">
           {format(timestamp, "MMM dd yyyy, HH:mm:ss")}
         </span>
-        <div
-          className={cx("w-2 h-2 rounded-full", {
-            "bg-stone-400 dark:bg-stone-700": progress === 0,
-            "bg-yellow-400": progress < 1,
-            "bg-green-400": progress === 1,
-          })}
-        ></div>
+        <div>
+          <Button
+            Icon={pinned ? Icons.PinFill : Icons.Pin}
+            onClick={toggleInstancePin}
+          />
+        </div>
       </div>
     </li>
   );
