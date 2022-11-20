@@ -18,6 +18,7 @@ export default function Step(props: {
   mappedArgs: string;
   deleteStep: () => void;
   runScript?: () => void;
+  locked: boolean;
 }) {
   const {
     data,
@@ -30,6 +31,7 @@ export default function Step(props: {
     deleteStep,
     mappedArgs,
     runScript,
+    locked,
   } = props;
   const context = React.useContext(Context);
   const ref = React.useRef(null);
@@ -56,7 +58,9 @@ export default function Step(props: {
           <Form
             data={data}
             stepValue={stepValue}
-            update={(value: string) => updateContent(value)}
+            update={
+              locked ? () => null : (value: string) => updateContent(value)
+            }
             updateValue={(v) => updateStepValue(v)}
           />
         );
@@ -64,7 +68,10 @@ export default function Step(props: {
         return (
           <Markdown
             data={data}
-            update={(value: string) => updateContent(value)}
+            update={
+              locked ? () => null : (value: string) => updateContent(value)
+            }
+            locked={locked}
           />
         );
       case "script":
@@ -72,10 +79,13 @@ export default function Step(props: {
           <Script
             data={data}
             stepValue={stepValue}
-            update={(value: string) => updateContent(value)}
+            update={
+              locked ? () => null : (value: string) => updateContent(value)
+            }
             run={runScript}
             mappedArgs={mappedArgs}
             selected={context.selectedStep?.id === data.id}
+            locked={locked}
           />
         );
     }
@@ -99,19 +109,21 @@ export default function Step(props: {
       }
       // onBlur={() => context.selectStep(null, null)}
     >
-      <div className="absolute z-10 right-0 text-xs bg-gray-400/20 flex opacity-0 group-hover/step:opacity-100 transition duration-200">
-        <Button
-          Icon={data.required ? Icons.CheckSquareFill : Icons.CheckSquare}
-          onClick={toggleRequired}
-        />
-        <Button Icon={Icons.ArrowUp} />
-        <Button Icon={Icons.ArrowDown} />
-        <Button
-          style="negative"
-          Icon={Icons.Trash3Fill}
-          onClick={() => deleteStep()}
-        />
-      </div>
+      {!locked ? (
+        <div className="absolute z-10 right-0 text-xs bg-gray-400/20 flex opacity-0 group-hover/step:opacity-100 transition duration-200">
+          <Button
+            Icon={data.required ? Icons.CheckSquareFill : Icons.CheckSquare}
+            onClick={toggleRequired}
+          />
+          <Button Icon={Icons.ArrowUp} />
+          <Button Icon={Icons.ArrowDown} />
+          <Button
+            style="negative"
+            Icon={Icons.Trash3Fill}
+            onClick={() => deleteStep()}
+          />
+        </div>
+      ) : null}
       <div
         className={cx(
           "w-full transition duration-200 border border-transparent",

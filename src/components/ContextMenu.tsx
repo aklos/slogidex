@@ -61,14 +61,35 @@ export default function ContextMenu() {
         }
       )}
     >
-      {context.selectedStep?.type === "form" && context.selectedStepUpdate ? (
-        <FormStepContext data={context.selectedStep} update={updateStep} />
-      ) : null}
-      {context.selectedStep?.type === "script" && context.selectedStepUpdate ? (
-        <ScriptStepContext data={context.selectedStep} update={updateArgs} />
+      {context.currentDocument?.locked ? null : (
+        <>
+          {context.selectedStep?.type === "form" &&
+          context.selectedStepUpdate ? (
+            <FormStepContext data={context.selectedStep} update={updateStep} />
+          ) : null}
+          {context.selectedStep?.type === "script" &&
+          context.selectedStepUpdate ? (
+            <ScriptStepContext
+              data={context.selectedStep}
+              update={updateArgs}
+            />
+          ) : null}
+        </>
+      )}
+      {context.currentInstance || context.selectedStep?.type === "markdown" ? (
+        <div>
+          {context.currentDocument ? (
+            <HeaderLinks steps={context.currentDocument?.steps} />
+          ) : null}
+        </div>
       ) : null}
     </div>
   );
+}
+
+function HeaderLinks(props: { steps: Types.Step[] }) {
+  const { steps } = props;
+  return <ul></ul>;
 }
 
 function ScriptStepContext(props: {

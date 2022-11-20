@@ -30,6 +30,10 @@ export default function Document(props: {
     context.selectDocument(data);
   }, [data]);
 
+  React.useEffect(() => {
+    context.selectInstance(instance);
+  }, [instance]);
+
   const changeName = React.useCallback(
     (value: string) => {
       const _data = Object.assign({}, data);
@@ -214,13 +218,14 @@ export default function Document(props: {
             </Editable>
           </h2>
         </div>
-        <div className="grid grid-cols-3 gap-0 flex-shrink-0 text-sm">
-          <Button Icon={Icons.Clipboard2PlusFill} />
+        <div className="flex items-center flex-shrink-0 text-sm">
+          {/* <Button Icon={Icons.Clipboard2PlusFill} /> */}
           <Button
             Icon={data.locked ? Icons.LockFill : Icons.UnlockFill}
             onClick={toggleStepLocked}
+            label={data.locked ? "Locked" : "Unlocked"}
           />
-          <Button style="negative" Icon={Icons.Trash3Fill} />
+          <Button style="negative" Icon={Icons.Trash3Fill} label="Delete" />
         </div>
       </section>
       {data.steps.length ? (
@@ -261,28 +266,40 @@ export default function Document(props: {
                 deleteStep={() => deleteStep(s.id)}
                 mappedArgs={mapArgs(data, instance, s)}
                 runScript={() => (allowRunScript ? runScript(s.id) : null)}
+                locked={data.locked}
               />
               {/* {s.type === "script" && stepValue?.output ? (
                 <pre className="p-2 text-sm dark:bg-black">
                   {stepValue.output}
                 </pre>
               ) : null} */}
-              <Divider addStep={(type) => addStep(s.id, type)} />
+              <Divider
+                addStep={(type) => addStep(s.id, type)}
+                locked={data.locked}
+              />
             </div>
           );
         })
       ) : (
-        <Divider addStep={(type) => addStep("", type)} />
+        <Divider addStep={(type) => addStep("", type)} locked={data.locked} />
       )}
     </div>
   );
 }
 
-function Divider(props: { addStep: (type: Types.StepType) => void }) {
-  const { addStep } = props;
+function Divider(props: {
+  addStep: (type: Types.StepType) => void;
+  locked: boolean;
+}) {
+  const { addStep, locked } = props;
 
   return (
-    <div className="py-3 opacity-0 hover:opacity-100 transition duration-200">
+    <div
+      className={cx(
+        "py-3 opacity-0 hover:opacity-100 transition duration-200",
+        { "opacity-0 pointer-events-none": locked }
+      )}
+    >
       <div className="relative border-b flex items-center justify-center">
         <div className="absolute bg-white dark:bg-stone-800 grid grid-cols-3">
           <Button Icon={Icons.Markdown} onClick={() => addStep("markdown")} />

@@ -15,8 +15,9 @@ export default function Script(props: {
   run?: () => void;
   mappedArgs: string;
   selected: boolean;
+  locked: boolean;
 }) {
-  const { data, stepValue, update, run, mappedArgs, selected } = props;
+  const { data, stepValue, update, run, mappedArgs, selected, locked } = props;
 
   return (
     <div className="">
@@ -64,6 +65,7 @@ export default function Script(props: {
                 return highlight(code, languages.python, "python");
               }
             }}
+            readOnly={locked}
             tabSize={4}
             className="w-full font-mono text-sm"
             textareaClassName="focus:outline-none"
@@ -72,10 +74,13 @@ export default function Script(props: {
       </div>
       {stepValue?.output ? (
         <pre
-          className={cx("w-full p-2 text-xs bg-gray-200 dark:bg-black/50", {
-            "overflow-auto": selected,
-            "overflow-hidden": !selected,
-          })}
+          className={cx(
+            "relative w-full p-2 text-xs bg-gray-200 dark:bg-black/50",
+            {
+              "overflow-auto": selected,
+              "overflow-hidden": !selected,
+            }
+          )}
           style={{ maxHeight: "240px" }}
         >
           {stepValue.output}

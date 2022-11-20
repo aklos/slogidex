@@ -415,6 +415,11 @@ function DocumentWrapper(props: {
       }
     }
 
+    // FIXME: Triggered on reload. Create new instance instead.
+    if (document && params.instanceId && !instances.length) {
+      navigate("/");
+    }
+
     // console.log(document, params.instanceId, instances.length);
     // if (document && params.instanceId && !instances.length) {
     //   updateInstance(params.instanceId, {

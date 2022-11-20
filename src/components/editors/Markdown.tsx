@@ -21,8 +21,9 @@ const Container = styled.div`
 export default function Markdown(props: {
   data: Types.Step;
   update: (value: string) => void;
+  locked: boolean;
 }) {
-  const { data, update } = props;
+  const { data, update, locked } = props;
 
   const onChange = React.useCallback(
     (e: any) => {
@@ -40,7 +41,12 @@ export default function Markdown(props: {
     ],
     content: data.content,
     onUpdate: onChange,
+    editable: !locked,
   });
+
+  React.useEffect(() => {
+    editor?.setEditable(!locked);
+  }, [locked]);
 
   return (
     <Container className="px-2 py-1 prose dark:prose-invert max-w-none">
