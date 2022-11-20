@@ -72,22 +72,37 @@ export default function Inventory(props: {
         style={{ height: "calc(100vh - 80px - 32px)" }}
         className="overflow-y-auto"
       >
-        {entries.map((e) => (
-          <DocumentEntry
-            key={e.id}
-            id={e.id}
-            name={e.name}
-            toggled={e.toggled}
-            toggle={(force: boolean) => toggleEntry(e.id, force)}
-            numSteps={e.steps.length}
-            instances={e.instances
-              .map((i) => Object.assign({ pinned: true }, i) as Types.Instance)
-              .concat(activeInstances.filter((i) => i.documentId === e.id))}
-            toggleInstancePin={(instanceId: string) =>
-              toggleInstancePin(e.id, instanceId)
-            }
-          />
-        ))}
+        {entries
+          .filter((d) => d.name.toLowerCase().includes(search.toLowerCase()))
+          .map((e) => (
+            <DocumentEntry
+              key={e.id}
+              id={e.id}
+              name={e.name}
+              toggled={e.toggled}
+              toggle={(force: boolean) => toggleEntry(e.id, force)}
+              numSteps={e.steps.length}
+              instances={e.instances
+                .map(
+                  (i) => Object.assign({ pinned: true }, i) as Types.Instance
+                )
+                .concat(activeInstances.filter((i) => i.documentId === e.id))}
+              toggleInstancePin={(instanceId: string) =>
+                toggleInstancePin(e.id, instanceId)
+              }
+            />
+          ))}
+        {search ? (
+          <li className="italic text-center opacity-50 text-xs mt-2">
+            Filtered{" "}
+            {
+              entries.filter(
+                (d) => !d.name.toLowerCase().includes(search.toLowerCase())
+              ).length
+            }{" "}
+            documents
+          </li>
+        ) : null}
       </ul>
     </div>
   );
