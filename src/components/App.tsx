@@ -250,6 +250,34 @@ export default function App() {
     [saveState, activeInstances]
   );
 
+  const addDocument = React.useCallback(() => {
+    const _saveState = Object.assign({}, saveState);
+    const document = {
+      id: uuidv4(),
+      name: "New document",
+      steps: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      instances: [],
+      locked: false,
+    };
+    _saveState.documents.push(document);
+    setSaveState(_saveState);
+    navigate(`/${document.id}`);
+  }, [saveState]);
+
+  const deleteDocument = React.useCallback(
+    (documentId: string) => {
+      const _saveState = Object.assign({}, saveState);
+      const documentIndex = _saveState.documents.findIndex(
+        (d) => d.id === documentId
+      );
+      _saveState.documents.splice(documentIndex, 1);
+      setSaveState(_saveState);
+    },
+    [saveState]
+  );
+
   const updateDocument = React.useCallback(
     (documentId: string, value: Types.Document) => {
       const _saveState = Object.assign({}, saveState);
@@ -349,6 +377,7 @@ export default function App() {
       <div className="relative w-full h-full font-sans text-neutral dark:bg-stone-800 dark:text-gray-300">
         <div className="flex min-h-screen max-h-screen">
           <Inventory
+            addDocument={addDocument}
             documents={saveState.documents}
             activeInstances={activeInstances}
             toggleInstancePin={toggleInstancePin}
@@ -366,6 +395,7 @@ export default function App() {
                       updateDocument={updateDocument}
                       updateInstance={updateInstance}
                       runScript={runScript}
+                      deleteDocument={deleteDocument}
                     />
                   }
                 />
@@ -378,6 +408,7 @@ export default function App() {
                       updateDocument={updateDocument}
                       updateInstance={updateInstance}
                       runScript={runScript}
+                      deleteDocument={deleteDocument}
                     />
                   }
                 />
@@ -395,12 +426,19 @@ export default function App() {
 function DocumentWrapper(props: {
   documents: Types.Document[];
   instances: Types.Instance[];
+  deleteDocument: (documentId: string) => void;
   updateDocument: (documentId: string, value: Types.Document) => void;
   updateInstance: (instanceId: string, value: Types.Instance) => void;
   runScript: (documentId: string, instanceId: string, stepId: string) => void;
 }) {
-  const { documents, instances, updateDocument, updateInstance, runScript } =
-    props;
+  const {
+    documents,
+    instances,
+    deleteDocument,
+    updateDocument,
+    updateInstance,
+    runScript,
+  } = props;
   const params = useParams();
   const navigate = useNavigate();
   const document = documents.find((d) => d.id === params.documentId);
@@ -475,6 +513,7 @@ function DocumentWrapper(props: {
     <Document
       data={document}
       instance={instance}
+      deleteDocument={() => deleteDocument(document.id)}
       updateDocument={(value: Types.Document) =>
         updateDocument(document.id, value)
       }

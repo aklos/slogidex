@@ -9,11 +9,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 type DocumentEntryType = Types.Document & { toggled: boolean };
 
 export default function Inventory(props: {
+  addDocument: () => void;
   documents: Types.Document[];
   activeInstances: Types.Instance[];
   toggleInstancePin: (documentId: string, instanceId: string) => void;
 }) {
-  const { documents, activeInstances, toggleInstancePin } = props;
+  const { addDocument, documents, activeInstances, toggleInstancePin } = props;
   const [search, setSearch] = React.useState("");
   const [entries, setEntries] = React.useState<DocumentEntryType[]>(
     documents.map((d) => ({ ...d, toggled: false }))
@@ -59,6 +60,7 @@ export default function Inventory(props: {
           Icon={Icons.PlusSquare}
           title="Create new document"
           label="New"
+          onClick={addDocument}
         />
         <Button
           Icon={Icons.ArrowsCollapse}

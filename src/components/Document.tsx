@@ -14,9 +14,17 @@ export default function Document(props: {
   instance: Types.Instance | null;
   updateDocument: (value: Types.Document) => void;
   updateInstance: (instanceId: string, value: Types.Instance) => void;
+  deleteDocument: () => void;
   runScript: (stepId: string) => void;
 }) {
-  const { data, instance, updateDocument, updateInstance, runScript } = props;
+  const {
+    data,
+    instance,
+    updateDocument,
+    updateInstance,
+    deleteDocument,
+    runScript,
+  } = props;
   const navigate = useNavigate();
   const context = React.useContext(Context);
 
@@ -225,7 +233,12 @@ export default function Document(props: {
             onClick={toggleStepLocked}
             label={data.locked ? "Locked" : "Unlocked"}
           />
-          <Button style="negative" Icon={Icons.Trash3Fill} label="Delete" />
+          <Button
+            style="negative"
+            Icon={Icons.Trash3Fill}
+            label="Delete"
+            onClick={deleteDocument}
+          />
         </div>
       </section>
       {data.steps.length ? (
