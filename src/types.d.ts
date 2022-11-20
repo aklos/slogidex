@@ -30,7 +30,6 @@ namespace Types {
     fieldValues?: FieldValue[];
     output?: string;
     status?: ScriptStatus;
-    args?: string[];
   }
 
   export type StepType = "script" | "markdown" | "form";
@@ -58,5 +57,6 @@ namespace Types {
     type: StepType;
     required: boolean;
     content: string;
+    args?: string[];
   }
 }

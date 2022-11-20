@@ -11,6 +11,7 @@ export default function Step(props: {
   data: Types.Step;
   stepValue: Types.StepInstanceValue | null;
   updateContent: (content: string) => void;
+  updateArgs: (args: string[]) => void;
   updateStepValue: (value: Types.FieldValue) => void;
   toggleRequired: () => void;
   deleteStep: () => void;
@@ -20,6 +21,7 @@ export default function Step(props: {
     data,
     stepValue,
     updateContent,
+    updateArgs,
     updateStepValue,
     toggleRequired,
     deleteStep,
@@ -77,9 +79,19 @@ export default function Step(props: {
     <div
       ref={ref}
       className={cx("group/step relative")}
-      onClick={() => context.selectStep(data, updateContent)}
-      onFocus={() => context.selectStep(data, updateContent)}
-      onBlur={() => context.selectStep(null, null)}
+      onClick={() =>
+        context.selectStep(
+          data,
+          data.type === "script" ? updateArgs : updateContent
+        )
+      }
+      onFocus={() =>
+        context.selectStep(
+          data,
+          data.type === "script" ? updateArgs : updateContent
+        )
+      }
+      // onBlur={() => context.selectStep(null, null)}
     >
       <div className="absolute z-10 right-0 text-xs bg-gray-400/20 flex opacity-0 group-hover/step:opacity-100 transition duration-200">
         <Button

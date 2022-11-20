@@ -3,14 +3,18 @@ import React from "react";
 type Props = { children: any };
 
 type ContextState = {
+  currentDocument: Types.Document | null;
+  currentInstance: Types.Instance | null;
   selectedStep: Types.Step | null;
-  selectedStepUpdate: ((content: string) => void) | null;
+  selectedStepUpdate: ((value: any) => void) | null;
 };
 
 type ContextMethods = {
+  selectDocument: (document: Types.Document | null) => void;
+  selectInstance: (instance: Types.Instance | null) => void;
   selectStep: (
     step: Types.Step | null,
-    update: ((content: string) => void) | null
+    update: ((value: any) => void) | null
   ) => void;
 };
 
@@ -27,11 +31,24 @@ const internalMethods = [
 const Context = React.createContext({} as ContextState & ContextMethods);
 
 class ContextProvider extends React.Component<Props, ContextState> {
-  state = { selectedStep: null, selectedStepUpdate: null };
+  state = {
+    currentDocument: null,
+    currentInstance: null,
+    selectedStep: null,
+    selectedStepUpdate: null,
+  };
+
+  selectDocument = (document: Types.Document | null) => {
+    this.setState({ currentDocument: document });
+  };
+
+  selectInstance = (instance: Types.Instance | null) => {
+    this.setState({ currentInstance: instance });
+  };
 
   selectStep = (
     step: Types.Step | null,
-    update: ((content: string) => void) | null = null
+    update: ((value: any) => void) | null = null
   ) => {
     this.setState({ selectedStep: step, selectedStepUpdate: update });
   };

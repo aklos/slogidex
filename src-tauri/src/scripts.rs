@@ -28,11 +28,11 @@ pub async fn run(data: RunScriptJSON, window: Window) {
     let mut options = ScriptOptions::new();
     options.input_redirection = IoOptions::Pipe;
 
-    let mut args: Vec<String> = data.args.split("!").map(|s| s.to_string()).collect();
+    let args: Vec<String> = data.args.split("!").map(|s| s.to_string()).collect();
     
-    if (args.len() > 1) {
-        args.remove(0);
-    }
+    // if (args.len() > 1) {
+    //     args.remove(0);
+    // }
 
     let mut child = spawn(&data.script, &args, &options).unwrap();
 

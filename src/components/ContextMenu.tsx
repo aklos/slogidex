@@ -37,6 +37,18 @@ export default function ContextMenu() {
     [context.selectedStep]
   );
 
+  const updateArgs = React.useCallback(
+    (args: string[]) => {
+      const step = Object.assign({}, context.selectedStep);
+      step.args = args;
+      context.selectStep(step, context.selectedStepUpdate);
+      if (context.selectedStepUpdate) {
+        context.selectedStepUpdate(args);
+      }
+    },
+    [context.selectedStep]
+  );
+
   return (
     <div
       className={cx(
@@ -52,6 +64,60 @@ export default function ContextMenu() {
       {context.selectedStep?.type === "form" && context.selectedStepUpdate ? (
         <FormStepContext data={context.selectedStep} update={updateStep} />
       ) : null}
+      {context.selectedStep?.type === "script" && context.selectedStepUpdate ? (
+        <ScriptStepContext data={context.selectedStep} update={updateArgs} />
+      ) : null}
+    </div>
+  );
+}
+
+function ScriptStepContext(props: {
+  data: Types.Step;
+  update: (args: string[]) => void;
+}) {
+  const { data, update } = props;
+  const context = React.useContext(Context);
+  const stepIndex = context.currentDocument?.steps.findIndex(
+    (s) => s.id === data.id
+  );
+
+  if (!context.currentDocument || stepIndex === undefined) {
+    return null;
+  }
+
+  const args = Array.from(context.currentDocument.steps[stepIndex].args || []);
+
+  return (
+    <div>
+      {context.currentDocument.steps
+        .slice(0, stepIndex)
+        .filter((s) => s.type === "form")
+        .map((s) => {
+          const fields: Types.FieldInterface[] = JSON.parse(s.content || "[]");
+          return (
+            <div key={`fields_${s.id}`}>
+              {fields
+                .filter((f) => f.name)
+                .map((f) => (
+                  <Toggle
+                    key={`field_${f.name}`}
+                    value={args.includes(f.name)}
+                    label={f.label || f.name}
+                    onChange={(v) => {
+                      if (v) {
+                        args.push(f.name);
+                      } else {
+                        const index = args.findIndex((a) => a === f.name);
+                        args.splice(index, 1);
+                      }
+
+                      update(args);
+                    }}
+                  />
+                ))}
+            </div>
+          );
+        })}
     </div>
   );
 }

@@ -18,6 +18,41 @@ import ContextMenu from "./ContextMenu";
 
 let unlisten: UnlistenFn;
 
+function mapArgs(
+  document: Types.Document,
+  instance: Types.Instance,
+  step: Types.Step
+) {
+  let result = "";
+  const args = step.args || [];
+  const stepIndex = document.steps.findIndex((s) => s.id === step.id);
+  for (const arg of args) {
+    // Find *latest* field matching arg name
+    const value: string | boolean = document.steps
+      .slice(0, stepIndex)
+      .filter((s) => s.type === "form")
+      .reduce((accu: any, curr: any) => {
+        const fields: Types.FieldInterface[] = JSON.parse(curr.content || "[]");
+        const field = fields.find((f) => f.name === arg);
+        if (field) {
+          const instanceValue = instance.values.find(
+            (v) => v.stepId === curr.id
+          );
+          const instanceField = instanceValue?.fieldValues?.find(
+            (fv) => fv.id === field.id
+          );
+          return instanceField?.value || field.defaultValue;
+        }
+        return accu;
+      }, "");
+
+    if (value) {
+      result += `--${arg}=${value}!`;
+    }
+  }
+  return result.trim().slice(0, -1);
+}
+
 export default function App() {
   const [saveState, setSaveState] = React.useState<Types.SaveState>(_saveState);
   const [activeInstances, setActiveInstances] = React.useState<
@@ -60,12 +95,12 @@ export default function App() {
         );
         const step = document?.steps.find((s) => s.id === newInstance.stepId);
 
-        if (step) {
+        if (document && step) {
           invoke("run_script", {
             invokeMessage: JSON.stringify({
               id: step.id,
               instanceId: newInstance.id,
-              args: "",
+              args: mapArgs(document, newInstance, step),
               script: step.content,
             }),
           });
@@ -195,7 +230,7 @@ export default function App() {
             invokeMessage: JSON.stringify({
               id: stepId,
               instanceId: instanceId,
-              args: "",
+              args: mapArgs(document, _instances[instanceIndex], step),
               script: step.content,
             }),
           });

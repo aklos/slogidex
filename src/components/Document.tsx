@@ -17,6 +17,17 @@ export default function Document(props: {
 }) {
   const { data, instance, updateDocument, updateInstance, runScript } = props;
   const navigate = useNavigate();
+  const context = React.useContext(Context);
+
+  React.useEffect(() => {
+    return () => {
+      context.selectDocument(null);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    context.selectDocument(data);
+  }, [data]);
 
   const changeName = React.useCallback(
     (value: string) => {
@@ -90,6 +101,18 @@ export default function Document(props: {
     [data]
   );
 
+  const updateStepArgs = React.useCallback(
+    (stepId: string, args: string[]) => {
+      const _data = Object.assign({}, data);
+      const stepIndex = _data.steps.findIndex((s) => s.id === stepId);
+
+      _data.steps[stepIndex].args = args;
+
+      updateDocument(_data);
+    },
+    [data]
+  );
+
   const updateStepFieldValue = React.useCallback(
     (stepId: string, value: Types.FieldValue) => {
       const _instance = Object.assign(
@@ -119,7 +142,6 @@ export default function Document(props: {
         );
 
         if (fieldIndex === undefined) {
-          console.log("fuckle");
           return;
         }
 
@@ -176,6 +198,7 @@ export default function Document(props: {
                 updateContent={(content: string) =>
                   updateStepContent(s.id, content)
                 }
+                updateArgs={(args: string[]) => updateStepArgs(s.id, args)}
                 updateStepValue={(v) => updateStepFieldValue(s.id, v)}
                 toggleRequired={() => toggleStepRequired(s.id)}
                 deleteStep={() => deleteStep(s.id)}
