@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import user_manual from "./user_manual.json";
 
 function dateTimeReviver(key: string, value: string) {
   if (typeof value === "string") {
@@ -14,24 +15,7 @@ function dateTimeReviver(key: string, value: string) {
 const saveState: Types.SaveState = JSON.parse(
   localStorage.getItem("autotool") ||
     JSON.stringify({
-      documents: [
-        {
-          id: uuidv4().toString(),
-          name: "User manual",
-          steps: [
-            {
-              id: uuidv4(),
-              type: "markdown",
-              required: false,
-              content: "",
-            },
-          ],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          instances: [],
-          locked: false,
-        },
-      ],
+      documents: [user_manual],
     }),
   dateTimeReviver
 );

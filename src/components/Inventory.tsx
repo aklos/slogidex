@@ -28,6 +28,7 @@ export default function Inventory(props: {
   const [entries, setEntries] = React.useState<DocumentEntryType[]>(
     documents.map((d) => ({ ...d, toggled: false }))
   );
+  const navigate = useNavigate();
 
   // FIXME: JSON string dependency is a bad solution?
   React.useEffect(() => {
@@ -129,7 +130,10 @@ export default function Inventory(props: {
           </li>
         ) : null}
       </ul>
-      <div className="h-[40px] px-4 border-t border-gray-300 dark:border-black flex items-center">
+      <div className="h-[40px] text-base px-4 border-t border-gray-300 dark:border-black flex items-center">
+        <div className="text-lg mr-4">
+          <Button Icon={Icons.House} onClick={() => navigate("/")} />
+        </div>
         <Button
           Icon={darkMode ? Icons.MoonStarsFill : Icons.MoonStars}
           onClick={toggleDarkMode}

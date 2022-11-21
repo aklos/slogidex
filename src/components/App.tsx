@@ -397,7 +397,10 @@ export default function App() {
           />
           <div className="w-full max-h-screen overflow-auto">
             <Routes>
-              <Route path="/" element={<Overview />} />
+              <Route
+                path="/"
+                element={<Overview dark={saveState.darkMode} />}
+              />
               <Route path=":documentId">
                 <Route
                   path=""
