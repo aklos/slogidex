@@ -87,7 +87,7 @@ export default function Script(props: {
       {stepValue?.output ? (
         <pre
           className={cx(
-            "relative w-full p-2 text-xs bg-gray-200 dark:bg-black/50",
+            "relative w-full p-2 text-xs bg-stone-300 dark:bg-black/50",
             {
               "overflow-auto": selected,
               "overflow-hidden": !selected,
