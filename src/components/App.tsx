@@ -168,7 +168,6 @@ export default function App() {
         _instance.values[stepIndex] = step;
       }
 
-      // updateInstance(instance.id, _instance);
       const _instances = Array.from(activeInstances);
       const instanceIndex = _instances.findIndex((i) => i.id === _instance.id);
       _instances[instanceIndex] = _instance;
@@ -189,7 +188,6 @@ export default function App() {
       let isNew = false;
 
       if (!instance) {
-        const _instances = Array.from(activeInstances);
         const _instance = {
           id: instanceId,
           documentId,
@@ -197,8 +195,7 @@ export default function App() {
           updatedAt: new Date(),
           values: [],
         };
-        _instances.push(_instance);
-        setActiveInstances(_instances);
+        updateInstance(instanceId, _instance);
         setNewInstance({
           ..._instance,
           action: "runScript",
@@ -303,6 +300,8 @@ export default function App() {
       const _instances = Array.from(activeInstances);
       const instanceIndex = _instances.findIndex((i) => i.id === instanceId);
 
+      console.log("updateInstance", instanceIndex);
+
       if (instanceIndex === -1) {
         const parentDoc = saveState.documents.find(
           (d) => d.id === value.documentId
@@ -320,6 +319,7 @@ export default function App() {
               }
               return true;
             });
+          console.log(oldIndex);
           if (oldIndex !== -1) {
             _instances[oldIndex] = value;
           } else {

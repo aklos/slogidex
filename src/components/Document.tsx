@@ -108,6 +108,38 @@ export default function Document(props: {
       const _data = Object.assign({}, data);
       const stepIndex = _data.steps.findIndex((s) => s.id === stepId);
 
+      if (_data.steps[stepIndex].type === "form") {
+        const uniqueFieldNames = _data.steps
+          .slice(0, stepIndex)
+          .concat([Object.assign({}, _data.steps[stepIndex], { content })])
+          .filter((s) => s.type === "form")
+          .reduce((accu, curr) => {
+            for (const field of JSON.parse(
+              curr.content || "[]"
+            ) as Types.FieldInterface[]) {
+              if (!accu.includes(field.name)) {
+                accu.push(field.name);
+              }
+            }
+
+            return accu;
+          }, [] as string[]);
+        for (const scriptStep of _data.steps
+          .slice(stepIndex)
+          .filter((s) => s.type === "script" && s.args?.length)) {
+          const args = [];
+          for (const arg of scriptStep.args || []) {
+            if (uniqueFieldNames.includes(arg)) {
+              args.push(arg);
+            }
+          }
+
+          if (args.length !== scriptStep.args?.length) {
+            updateStepArgs(scriptStep.id, args);
+          }
+        }
+      }
+
       _data.steps[stepIndex].content = content;
 
       updateDocument(_data);
