@@ -1,23 +1,31 @@
-# Codebook
+<p align="center"> <img alt="Autotool" width="700" height="300" src="https://github.com/aklos/autotool/blob/refactor/src/banner.svg"> </p>
 
-Gradual automation platform for individuals and businesses. Automating everything is hard, instead write guides and replace steps with scripts gradually.
+Autotool, or "Automation tool", is an evironment for writing and executing processes inspired by the concept of gradual automation. It's pretty simple: formalize a process into discrete steps, then try to replace some of the steps with automated scripts.
 
-## Overview
+The point of Autotool is to make *that* process easier with
 
-Codebook is a similar tool to Jupyter notebooks for Python, except that it is able to connect to remote servers and run on your local computer.
+- A unified environment for managing processes
+- Components for defining processes; like rich text blocks, code blocks, and forms
+- Embedded script execution
 
-### Security
+Whether you're doing **devops**, **business operations**, **system administration**, or just **tinkering**, there's probably something you'd like to automate or simplify.
 
-Since this is primarily a web app, there is a Rust client that subscribes to a protocol for running scripts locally. Each script is encrypted with the user's signature (PGP, SHA256?) and stored in the database. The Rust client creates a local HTTP server for receiving script code and executing it.
+## Requirements
 
-For remote execution, users may provide a custom URL for the Rust client HTTP server.
+- [Install Rust](https://www.rust-lang.org/tools/install)
+- [Install yarn](https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable)
 
-## Setup
+## Development
 
-1. Install dependencies: `yarn`.
-2. Create `.env` file, using `example.env` as a template.
-3. Start the app with `yarn dev`.
+Start the development build with: `yarn tauri dev`
 
-## Notes
+It will install all required packages and launch the application for testing.
 
-- Use react-hook-form: https://react-hook-form.com/
+## Contributing
+
+We're happy to accept community contributions. If you're interested in adding a feature, please create an issue for it first.
+
+## License
+
+Autotool is an open source project (MIT license) with separate proprietary modules targeted for enterprise users. See the LICENSE file for licensing information as it pertains to
+files in this repository.

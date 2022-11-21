@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  /* border-left: 1px; */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cccccc99;
+  /* border-radius: 10px; */
+  /* border: 2px solid transparent; */
+  background-clip: padding-box;
+  transition: all 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #cccccccc;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #55555544;
+  /* border-radius: 10px; */
+  /* border: 2px solid transparent; */
+  /* background-clip: padding-box; */
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #55555555;
+}
+[contenteditable=true]:empty:before {
+  content: attr(placeholder);
+  display: block;
+  pointer-events: none;
+  color: #aaa;
+  font-style: italic;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #aaa;
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+@layer base {
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}

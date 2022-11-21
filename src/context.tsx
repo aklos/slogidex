@@ -1,14 +1,21 @@
-import * as React from "react";
+import React from "react";
 
 type Props = { children: any };
 
 type ContextState = {
-  socket: null | WebSocket;
-  connected: boolean;
+  currentDocument: Types.Document | null;
+  currentInstance: Types.Instance | null;
+  selectedStep: Types.Step | null;
+  selectedStepUpdate: ((value: any) => void) | null;
 };
 
 type ContextMethods = {
-  connectWebSocket: () => void;
+  selectDocument: (document: Types.Document | null) => void;
+  selectInstance: (instance: Types.Instance | null) => void;
+  selectStep: (
+    step: Types.Step | null,
+    update: ((value: any) => void) | null
+  ) => void;
 };
 
 const internalMethods = [
@@ -25,40 +32,25 @@ const Context = React.createContext({} as ContextState & ContextMethods);
 
 class ContextProvider extends React.Component<Props, ContextState> {
   state = {
-    socket: null,
-    connected: false,
+    currentDocument: null,
+    currentInstance: null,
+    selectedStep: null,
+    selectedStepUpdate: null,
   };
 
-  connectWebSocket = () => {
-    const _socket = new WebSocket(
-      process.env.LOCAL_WS_URL || "ws://localhost:8000/ws"
-    );
-
-    _socket.addEventListener("open", this.#handleSocketOpen);
-    _socket.addEventListener("message", this.#handleSocketMessage);
-    _socket.addEventListener("close", this.#handleSocketClose);
-
-    this.setState({
-      socket: _socket,
-    });
+  selectDocument = (document: Types.Document | null) => {
+    this.setState({ currentDocument: document });
   };
 
-  #handleSocketOpen = (e) => {
-    console.log("open", e);
-    this.setState({ connected: true });
+  selectInstance = (instance: Types.Instance | null) => {
+    this.setState({ currentInstance: instance });
   };
 
-  #handleSocketMessage = (e) => {
-    console.log("message", e);
-
-    document.dispatchEvent(
-      new CustomEvent("output-message", { detail: JSON.parse(e.data) })
-    );
-  };
-
-  #handleSocketClose = (e) => {
-    console.log("close", e);
-    this.setState({ connected: false });
+  selectStep = (
+    step: Types.Step | null,
+    update: ((value: any) => void) | null = null
+  ) => {
+    this.setState({ selectedStep: step, selectedStepUpdate: update });
   };
 
   #getPublicMethods = () => {
@@ -67,7 +59,7 @@ class ContextProvider extends React.Component<Props, ContextState> {
     );
 
     return methodNames.reduce((accu, x) => {
-      accu[x] = this[x];
+      (accu as any)[x] = (this as any)[x];
       return accu;
     }, {});
   };

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="logo_design.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.72693603"
+     inkscape:cx="396.87124"
+     inkscape:cy="561.25984"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="font-variation-settings:'wght' 700;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.765;stroke-linecap:round;stroke-linejoin:round"
+       id="rect3378"
+       width="83.699036"
+       height="40.507839"
+       x="52.336849"
+       y="112.3886" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="69.294792"
+       y="101.94984"
+       id="text236-7-4"><tspan
+         sodipodi:role="line"
+         id="tspan234-4-7"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Figtree;-inkscape-font-specification:'Figtree, @wght=700';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;font-variation-settings:'wght' 700;stroke-width:0.264583"
+         x="69.294792"
+         y="101.94984">Autotool</tspan></text>
+    <path
+       id="path3217-4"
+       style="font-variation-settings:'wght' 700;fill:#ff6600;stroke-width:0.578977;stroke-linecap:round;stroke-linejoin:round"
+       inkscape:transform-center-x="1.2385442e-06"
+       inkscape:transform-center-y="-1.0703702e-06"
+       d="m 116.25422,82.271477 -3.71656,6.43785 3.71656,6.43785 h 7.43418 l 3.71708,-6.43785 -3.71708,-6.43785 z m 1.62006,2.80603 h 4.19406 l 0.0713,0.12351 -3.38635,1.95389 1.95543,3.38635 3.38533,-1.95543 0.0713,0.1235 -2.09703,3.63182 h -4.19406 l -2.09651,-3.63182 z" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="68.384933"
+       y="138.17099"
+       id="text236-7-4-3"><tspan
+         sodipodi:role="line"
+         id="tspan234-4-7-0"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Figtree;-inkscape-font-specification:'Figtree, @wght=700';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;font-variation-settings:'wght' 700;fill:#f9f9f9;stroke-width:0.264583"
+         x="68.384933"
+         y="138.17099">Autotool</tspan></text>
+    <path
+       id="path3217-4-7"
+       style="font-variation-settings:'wght' 700;fill:#ff6600;stroke-width:0.578977;stroke-linecap:round;stroke-linejoin:round"
+       inkscape:transform-center-x="1.2385442e-06"
+       inkscape:transform-center-y="-1.0703702e-06"
+       d="m 115.34472,118.49253 -3.71657,6.43785 3.71657,6.43836 h 7.43365 l 3.71709,-6.43836 -3.71709,-6.43785 z m 1.62005,2.80603 h 4.19355 l 0.0713,0.1235 -3.38584,1.95441 1.95492,3.38635 3.38532,-1.95543 0.0713,0.12299 -2.09703,3.63182 h -4.19355 l -2.09702,-3.63182 z" />
+  </g>
+</svg>

@@ -1,33 +1,57 @@
-import * as React from "react";
+import React from "react";
+import * as Icons from "react-bootstrap-icons";
 import cx from "classnames";
 
-export default function Button(props) {
-  const { className, type, small, icon, label, hint, onClick } = props;
+interface Props {
+  Icon?: Icons.Icon;
+  onClick?: () => void;
+  style?: "normal" | "positive" | "negative";
+  label?: string;
+  title?: string;
+  border?: boolean;
+  underline?: boolean;
+  disabled?: boolean;
+  large?: boolean;
+}
+
+export default function Button(props: Props) {
+  const {
+    Icon,
+    onClick,
+    style,
+    title,
+    label,
+    border,
+    underline,
+    disabled,
+    large,
+  } = props;
 
   return (
     <button
-      type={type || "button"}
-      className={cx(className, "flex items-center")}
-      title={hint}
+      className={cx(
+        "flex items-center hover:bg-black/10 hover:dark:bg-white/10 rounded-sm",
+        {
+          "py-1 h-[28px]": !large,
+          "py-1.5 h-[36px]": large,
+          "px-2": label,
+          "px-1.5": !label,
+          "text-lime-400": style === "positive",
+          "text-rose-400": style === "negative",
+          "border border-gray-400": border,
+          "underline underline-offset-1": underline,
+          "opacity-50 pointer-events-none": disabled,
+        }
+      )}
+      title={title}
       onClick={onClick}
+      disabled={disabled}
     >
-      {!!icon ? (
-        <div
-          className={cx("flex-shrink-0", {
-            "mr-2": !!label,
-            "w-5 h-5": !small,
-            "w-4 h-4": small,
-          })}
-        >
-          {icon}
-        </div>
-      ) : null}
-      {!!label ? (
-        <div
-          className={cx("w-full text-center", { "text-sm mt-1 mr-1": small })}
-        >
+      {Icon ? <Icon /> : null}
+      {label ? (
+        <span className={cx("pl-2", { "pr-2": !Icon, "pr-1": Icon })}>
           {label}
-        </div>
+        </span>
       ) : null}
     </button>
   );
