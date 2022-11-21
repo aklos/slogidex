@@ -39,21 +39,25 @@ export default function Form(props: {
   );
 
   return (
-    <div className="p-2 max-w-prose">
-      {fields.length ? (
-        fields.map((f: Types.FieldInterface) => (
-          <Field
-            key={f.id}
-            data={f}
-            update={(v) => setFieldValue(f.id, v)}
-            value={stepValue?.fieldValues?.find((_f) => _f.id === f.id) || null}
-          />
-        ))
-      ) : (
-        <div className={cx("text-[#aaa]")}>
-          <div className="italic">Add form fields...</div>
-        </div>
-      )}
+    <div className="p-4 bg-stone-100 dark:bg-stone-700/40 rounded-sm">
+      <div className="max-w-prose">
+        {fields.length ? (
+          fields.map((f: Types.FieldInterface) => (
+            <Field
+              key={f.id}
+              data={f}
+              update={(v) => setFieldValue(f.id, v)}
+              value={
+                stepValue?.fieldValues?.find((_f) => _f.id === f.id) || null
+              }
+            />
+          ))
+        ) : (
+          <div className={cx("text-[#aaa]")}>
+            <div className="italic">Add form fields...</div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -70,11 +74,13 @@ function Field(props: {
       {data.type === "number" || data.type === "text" ? (
         <Input
           label={data.label || <em>Field label</em>}
+          type={data.type}
           value={
             (value?.value as string) || (data.defaultValue as string) || ""
           }
           onChange={update}
           placeholder={data.placeholder}
+          large
         />
       ) : null}
       {data.type === "check" ? (
@@ -84,6 +90,7 @@ function Field(props: {
             (value?.value as boolean) || (data.defaultValue as boolean) || false
           }
           onChange={update}
+          large
         />
       ) : null}
       {data.type === "file" ? (
@@ -95,6 +102,7 @@ function Field(props: {
           onChange={update}
           directory={data.directory}
           placeholder={data.placeholder}
+          large
         />
       ) : null}
       {data.type === "select" ? (
@@ -106,6 +114,7 @@ function Field(props: {
           onChange={update}
           placeholder={data.placeholder}
           options={data.options || []}
+          large
         />
       ) : null}
     </div>

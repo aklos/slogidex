@@ -148,12 +148,13 @@ export default function App() {
         step.output = step.output
           ? step.output + "\n" + message.output
           : message.output;
-
+      } else {
         if (message.error) {
           step.status = "failed";
+        } else {
+          step.completed = true;
+          step.status = "completed";
         }
-      } else if (step.status !== "failed") {
-        step.status = "completed";
       }
 
       const _instance = Object.assign({}, instance);
@@ -255,10 +256,17 @@ export default function App() {
     const document = {
       id: uuidv4(),
       name: "New document",
-      steps: [],
+      steps: [
+        {
+          id: uuidv4(),
+          type: "markdown",
+          content: "",
+          required: false,
+        },
+      ] as Types.Step[],
       createdAt: new Date(),
       updatedAt: new Date(),
-      instances: [],
+      instances: [] as Types.Instance[],
       locked: false,
     };
     _saveState.documents.push(document);
@@ -368,21 +376,24 @@ export default function App() {
     [activeInstances, saveState]
   );
 
-  // const invokeScript = React.useCallback(
-  //   (instanceId: string) => {},
-  //   [instances]
-  // );
-  //
+  const toggleDarkMode = React.useCallback(() => {
+    const _saveState = Object.assign({}, saveState, {
+      darkMode: !saveState.darkMode,
+    });
+    setSaveState(_saveState);
+  }, [saveState]);
 
   return (
-    <div className={cx({ dark: !saveState.darkMode })}>
-      <div className="relative w-full h-full font-sans text-neutral dark:bg-stone-800 dark:text-gray-300">
+    <div className={cx({ dark: saveState.darkMode })}>
+      <div className="relative w-full h-full font-sans text-neutral bg-stone-50 dark:bg-stone-800 dark:text-gray-300">
         <div className="flex min-h-screen max-h-screen">
           <Inventory
             addDocument={addDocument}
             documents={saveState.documents}
             activeInstances={activeInstances}
             toggleInstancePin={toggleInstancePin}
+            darkMode={saveState.darkMode}
+            toggleDarkMode={toggleDarkMode}
           />
           <div className="w-full max-h-screen overflow-auto">
             <Routes>

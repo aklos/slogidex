@@ -8,6 +8,7 @@ import Step from "./Step";
 import Context from "../context";
 import { useNavigate } from "react-router-dom";
 import { mapArgs } from "./App";
+import { format } from "date-fns";
 
 export default function Document(props: {
   data: Types.Document;
@@ -224,20 +225,34 @@ export default function Document(props: {
   );
 
   return (
-    <div className="max-w-screen-xl mx-auto my-0 px-4 mb-32">
+    <div className="max-w-screen-xl mx-auto my-0 px-8 pb-16">
       <section className="h-16 border-b border-gray-400/20 mb-4 flex items-center">
         <div className="flex items-center w-full">
           <div
             className={cx("text-2xl mx-2", {
-              "text-blue-400": true,
+              "text-blue-400": !instance,
+              "text-yellow-400": instance,
             })}
           >
-            <Icons.FileEarmarkFill />
+            {instance ? (
+              <Icons.LightningChargeFill />
+            ) : (
+              <Icons.FileEarmarkFill />
+            )}
           </div>
-          <h2 className="font-bold text-xl dark:text-white">
-            <Editable onChange={(value) => changeName(value)}>
-              {data.name}
-            </Editable>
+          <h2 className="font-bold text-2xl dark:text-white flex items-center">
+            {data.locked ? (
+              <div className="p-2">{data.name}</div>
+            ) : (
+              <Editable onChange={(value) => changeName(value)}>
+                {data.name}
+              </Editable>
+            )}
+            {instance ? (
+              <div className="ml-2">
+                {format(instance.createdAt, "MMM dd yyyy, HH:mm:ss")}
+              </div>
+            ) : null}
           </h2>
         </div>
         <div className="flex items-center flex-shrink-0 text-sm">
@@ -246,13 +261,18 @@ export default function Document(props: {
             Icon={data.locked ? Icons.LockFill : Icons.UnlockFill}
             onClick={toggleStepLocked}
             label={data.locked ? "Locked" : "Unlocked"}
+            disabled={data.locked && !!instance}
+            title="Toggle content editing"
           />
-          <Button
-            style="negative"
-            Icon={Icons.Trash3Fill}
-            label="Delete"
-            onClick={deleteDocument}
-          />
+          {!instance ? (
+            <Button
+              style="negative"
+              Icon={Icons.Trash3Fill}
+              label="Delete"
+              onClick={deleteDocument}
+              title="Delete the process"
+            />
+          ) : null}
         </div>
       </section>
       {data.steps.length ? (
@@ -293,6 +313,7 @@ export default function Document(props: {
                 deleteStep={() => deleteStep(s.id)}
                 mappedArgs={mapArgs(data, instance, s)}
                 runScript={() => (allowRunScript ? runScript(s.id) : null)}
+                frozen={!allowRunScript}
                 locked={data.locked}
                 moveStep={(dir: -1 | 1) => moveStep(s.id, dir)}
               />
@@ -324,15 +345,27 @@ function Divider(props: {
   return (
     <div
       className={cx(
-        "py-3 opacity-0 hover:opacity-100 transition duration-200",
+        "py-2 opacity-0 hover:opacity-100 transition duration-200",
         { "opacity-0 pointer-events-none": locked }
       )}
     >
       <div className="relative border-b flex items-center justify-center">
-        <div className="absolute bg-white dark:bg-stone-800 grid grid-cols-3">
-          <Button Icon={Icons.Markdown} onClick={() => addStep("markdown")} />
-          <Button Icon={Icons.UiChecks} onClick={() => addStep("form")} />
-          <Button Icon={Icons.CodeSquare} onClick={() => addStep("script")} />
+        <div className="absolute bg-white dark:bg-stone-800 grid grid-cols-3 z-10">
+          <Button
+            Icon={Icons.Plus}
+            label="Text"
+            onClick={() => addStep("markdown")}
+          />
+          <Button
+            Icon={Icons.Plus}
+            label="Form"
+            onClick={() => addStep("form")}
+          />
+          <Button
+            Icon={Icons.Plus}
+            label="Script"
+            onClick={() => addStep("script")}
+          />
         </div>
       </div>
     </div>

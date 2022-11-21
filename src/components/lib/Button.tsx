@@ -10,26 +10,42 @@ interface Props {
   title?: string;
   border?: boolean;
   underline?: boolean;
+  disabled?: boolean;
+  large?: boolean;
 }
 
 export default function Button(props: Props) {
-  const { Icon, onClick, style, title, label, border, underline } = props;
+  const {
+    Icon,
+    onClick,
+    style,
+    title,
+    label,
+    border,
+    underline,
+    disabled,
+    large,
+  } = props;
 
   return (
     <button
       className={cx(
-        "h-[28px] py-1 flex items-center hover:bg-black/10 hover:dark:bg-white/10",
+        "flex items-center hover:bg-black/10 hover:dark:bg-white/10 rounded-sm",
         {
+          "py-1 h-[28px]": !large,
+          "py-1.5 h-[36px]": large,
           "px-2": label,
           "px-1.5": !label,
           "text-lime-400": style === "positive",
           "text-rose-400": style === "negative",
-          border: border,
+          "border border-gray-400": border,
           "underline underline-offset-1": underline,
+          "opacity-50 pointer-events-none": disabled,
         }
       )}
       title={title}
       onClick={onClick}
+      disabled={disabled}
     >
       {Icon ? <Icon /> : null}
       {label ? (

@@ -53,7 +53,7 @@ export default function ContextMenu() {
     <div
       className={cx(
         "flex-grow flex-shrink-0",
-        "dark:bg-stone-900 bg-stone-100 dark:border-black border-l text-sm",
+        "dark:bg-stone-900 bg-stone-200 dark:border-black border-gray-300 border-l text-sm",
         "transition-width duration-200",
         {
           "w-80": context.selectedStep || width >= 1366 + 320,
@@ -108,37 +108,45 @@ function ScriptStepContext(props: {
 
   const args = Array.from(context.currentDocument.steps[stepIndex]?.args || []);
 
-  return (
-    <div>
-      {context.currentDocument.steps
-        .slice(0, stepIndex)
-        .filter((s) => s.type === "form")
-        .map((s) => {
-          const fields: Types.FieldInterface[] = JSON.parse(s.content || "[]");
-          return (
-            <div key={`fields_${s.id}`}>
-              {fields
-                .filter((f) => f.name)
-                .map((f) => (
-                  <Toggle
-                    key={`field_${f.name}`}
-                    value={args.includes(f.name)}
-                    label={f.label || f.name}
-                    onChange={(v) => {
-                      if (v) {
-                        args.push(f.name);
-                      } else {
-                        const index = args.findIndex((a) => a === f.name);
-                        args.splice(index, 1);
-                      }
+  const fields = context.currentDocument.steps
+    .slice(0, stepIndex)
+    .filter((s) => s.type === "form")
+    .map((s) => {
+      const fields: Types.FieldInterface[] = JSON.parse(s.content || "[]");
+      return (
+        <div key={`fields_${s.id}`}>
+          {fields
+            .filter((f) => f.name)
+            .map((f) => (
+              <div key={`field_${f.name}`} className="mb-2">
+                <Toggle
+                  value={args.includes(f.name)}
+                  label={f.label || f.name}
+                  onChange={(v) => {
+                    if (v) {
+                      args.push(f.name);
+                    } else {
+                      const index = args.findIndex((a) => a === f.name);
+                      args.splice(index, 1);
+                    }
 
-                      update(args);
-                    }}
-                  />
-                ))}
-            </div>
-          );
-        })}
+                    update(args);
+                  }}
+                />
+              </div>
+            ))}
+        </div>
+      );
+    });
+
+  return (
+    <div className="p-4">
+      <div className="font-bold mb-2">Script argument fields</div>
+      {fields.length ? (
+        fields
+      ) : (
+        <div className="italic opacity-50">No fields available.</div>
+      )}
     </div>
   );
 }
@@ -249,7 +257,7 @@ function FormStepContext(props: {
 
   return (
     <div className="max-h-screen flex flex-col">
-      <div className="p-4 border-b dark:border-gray-300/20 flex items-center">
+      <div className="p-4 border-b border-gray-300 dark:border-black flex items-center">
         <div className="w-full">
           <Select
             value={fieldType}
@@ -269,18 +277,19 @@ function FormStepContext(props: {
             label="Add"
             border
             onClick={() => addField(fieldType)}
+            title="Add new field"
           />
         </div>
       </div>
-      <ul className="p-2 h-full overflow-auto">
+      <ul className="h-full overflow-auto">
         {fields.map((f: Types.FieldInterface) => (
           <li
             key={f.id}
-            className="dark:odd:bg-stone-800 dark:even:bg-stone-800/50 mb-2"
+            className="odd:bg-stone-300 even:bg-stone-300/50 dark:odd:bg-stone-800 dark:even:bg-stone-800/50 border-b dark:border-stone-900"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="pl-2">
+                <div className="pl-4">
                   {f.type === "text" ? <Icons.Fonts /> : null}
                   {f.type === "number" ? <Icons.Hash /> : null}
                   {f.type === "file" ? <Icons.Folder /> : null}
@@ -296,25 +305,31 @@ function FormStepContext(props: {
                   {f.label}
                 </Editable>
               </div>
-              <div className="grid grid-cols-1 text-xs">
+              <div className="grid grid-cols-1 text-xs pr-2">
                 {/* <Button Icon={Icons.ArrowUp} />
                 <Button Icon={Icons.ArrowDown} /> */}
                 <Button
                   style="negative"
-                  Icon={Icons.Trash3}
+                  Icon={Icons.Trash3Fill}
                   onClick={() => deleteField(f.id)}
+                  title="Delete field"
                 />
               </div>
             </div>
             <div
-              className="mb-1 flex justify-center cursor-pointer"
-              onClick={() => toggleField(f.id)}
+              className="mb-1 flex justify-center"
+              // onClick={() => toggleField(f.id)}
             >
-              <Icons.GripHorizontal />
+              <Button
+                Icon={Icons.GripHorizontal}
+                onClick={() => toggleField(f.id)}
+                title="Toggle field panel"
+              />
+              {/* <Icons.GripHorizontal /> */}
             </div>
             <div
               className={cx("overflow-hidden transition-height duration-200", {
-                "h-auto p-2": toggledFields.includes(f.id),
+                "h-auto px-4 py-2": toggledFields.includes(f.id),
                 "h-0 p-0": !toggledFields.includes(f.id),
               })}
             >

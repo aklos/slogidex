@@ -10,8 +10,9 @@ export default function PathInput(props: {
   label?: any;
   directory?: boolean;
   placeholder?: string;
+  large?: boolean;
 }) {
-  const { value, onChange, label, placeholder, directory } = props;
+  const { value, onChange, label, placeholder, directory, large } = props;
 
   return (
     <div className="flex items-end">
@@ -21,12 +22,14 @@ export default function PathInput(props: {
           onChange={onChange}
           label={label}
           placeholder={placeholder}
+          large={large}
         />
       </div>
-      <div className="flex-shrink-0">
+      <div className="flex-shrink-0 mb-[1px]">
         <Button
           Icon={Icons.Folder}
           label="Browse"
+          large={large}
           border
           onClick={async () => {
             const filepath = await open({ directory });

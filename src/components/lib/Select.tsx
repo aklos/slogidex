@@ -8,9 +8,11 @@ export default function Select(props: {
   options: Types.Option[];
   placeholder?: string;
   label?: any;
+  large?: boolean;
 }) {
-  const { value, onChange, label, placeholder, options } = props;
+  const { value, onChange, label, placeholder, options, large } = props;
   const [toggled, setToggled] = React.useState(false);
+  const [focused, setFocused] = React.useState(false);
   const ref = React.useRef(null);
 
   const handleWindowClick = (e: any) => {
@@ -47,19 +49,42 @@ export default function Select(props: {
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
-      {label ? <div className="mb-0.5 font-bold">{label}</div> : null}
+      {label ? (
+        <div
+          className={cx("font-bold", {
+            "mb-0.5": !large,
+            "mb-1 text-base": large,
+          })}
+        >
+          {label}
+        </div>
+      ) : null}
       <div
         style={{ minHeight: "30px" }}
         className={cx(
-          "w-full px-2 py-1",
+          "w-full pl-2 pr-1",
           "flex items-center justify-between",
-          "border rounded-sm dark:bg-black dark:border-black"
+          "border rounded-sm bg-white dark:bg-black/40",
+          {
+            "py-1": !large,
+            "py-1.5 text-base": large,
+            "border-gray-300 dark:border-black/20": !focused,
+            "border-gray-400 dark:border-gray-400/30": focused,
+          }
         )}
         onMouseDown={() => {
           setToggled(!toggled);
         }}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
       >
-        <div>{selectedOption.label}</div>
+        <div
+          className={cx({
+            "opacity-20 dark:opacity-50 italic": !value,
+          })}
+        >
+          {selectedOption.label}
+        </div>
         <div>
           <Icons.CaretDown />
         </div>
@@ -67,8 +92,7 @@ export default function Select(props: {
       <div className="relative w-full">
         <div
           className={cx(
-            "overflow-hidden absolute dark:bg-black w-full z-10",
-            "border-t",
+            "overflow-hidden absolute bg-gray-200 dark:bg-black w-full z-10",
             "bottom-0 left-0 transform translate-y-full",
             {
               hidden: !toggled,
@@ -80,6 +104,8 @@ export default function Select(props: {
               value=""
               label={placeholder}
               onClick={() => selectOption("")}
+              placeholder
+              large={large}
             />
           ) : null}
           {options.map((o) => (
@@ -88,6 +114,7 @@ export default function Select(props: {
               value={o.value}
               label={o.label}
               onClick={() => selectOption(o.value)}
+              large={large}
             />
           ))}
         </div>
@@ -101,11 +128,19 @@ function Option(props: {
   label: string;
   onClick: () => void;
   selected?: boolean;
+  large?: boolean;
+  placeholder?: boolean;
 }) {
-  const { value, label, onClick, selected } = props;
+  const { value, label, onClick, selected, placeholder, large } = props;
   return (
-    <div className="px-2 py-1" onClick={onClick}>
-      {label}
+    <div
+      className={cx("px-2 hover:bg-white/10", {
+        "py-1": !large,
+        "py-1.5 text-base": large,
+      })}
+      onClick={onClick}
+    >
+      <span className={cx({ "opacity-60 italic": placeholder })}>{label}</span>
     </div>
   );
 }

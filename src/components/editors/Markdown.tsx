@@ -3,8 +3,13 @@ import styled from "styled-components";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
+import Link from "@tiptap/extension-link";
 
 const Container = styled.div`
+  *:focus {
+    outline: none;
+  }
+
   *:first-child {
     margin-top: 0;
   }
@@ -25,6 +30,16 @@ export default function Markdown(props: {
 }) {
   const { data, update, locked } = props;
 
+  // const replaceMarkdownUrls = (str: string) => {
+  //   const urlRegex = /\[([\w\s\d]+)\]\(((?:\/|https?:\/\/)[\w\d./?=#]+)\)/g;
+
+  //   return str.replace(urlRegex, (match, label, url) => {
+  //     console.log(label, url);
+  //     // return `<a href="${url}">${label}</a>`;
+  //     return "fuck";
+  //   });
+  // };
+
   const onChange = React.useCallback(
     (e: any) => {
       const value = e.editor.getHTML();
@@ -38,6 +53,7 @@ export default function Markdown(props: {
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Link,
       Placeholder.configure({
         placeholder: "Write some markdown...",
       }),

@@ -76,7 +76,7 @@ pub async fn run(data: RunScriptJSON, window: Window) {
                 id: data.id.clone(),
                 instanceId: data.instanceId.clone(),
                 output: line_str,
-                error: true,
+                error: false,
             };
 
             let output_str = serde_json::to_string(&output).unwrap();
@@ -92,24 +92,62 @@ pub async fn run(data: RunScriptJSON, window: Window) {
         }
     }
 
-    let final_output = ScriptOutput {
-        id: data.id.clone(),
-        instanceId: data.instanceId.clone(),
-        output: "__finished__".to_string(),
-        error: false,
-    };
+    // let final_output = ScriptOutput {
+    //     id: data.id.clone(),
+    //     instanceId: data.instanceId.clone(),
+    //     output: "__finished__".to_string(),
+    //     error: false,
+    // };
 
-    let final_output_str = serde_json::to_string(&final_output).unwrap();
+    // let final_output_str = serde_json::to_string(&final_output).unwrap();
 
-    window
-        .emit(
-            "script-output",
-            Payload {
-                message: final_output_str,
-            },
-        )
-        .unwrap();
+    // window
+    //     .emit(
+    //         "script-output",
+    //         Payload {
+    //             message: final_output_str,
+    //         },
+    //     )
+    //     .unwrap();
 
-    child.wait().unwrap();
+    let ecode = child.wait().unwrap();
+
+    if ecode.success() {
+        let final_output = ScriptOutput {
+            id: data.id.clone(),
+            instanceId: data.instanceId.clone(),
+            output: "__finished__".to_string(),
+            error: false,
+        };
+
+        let final_output_str = serde_json::to_string(&final_output).unwrap();
+
+        window
+            .emit(
+                "script-output",
+                Payload {
+                    message: final_output_str,
+                },
+            )
+            .unwrap();
+    } else {
+        let final_output = ScriptOutput {
+            id: data.id.clone(),
+            instanceId: data.instanceId.clone(),
+            output: "__finished__".to_string(),
+            error: true,
+        };
+
+        let final_output_str = serde_json::to_string(&final_output).unwrap();
+
+        window
+            .emit(
+                "script-output",
+                Payload {
+                    message: final_output_str,
+                },
+            )
+            .unwrap();
+    }
 }
 

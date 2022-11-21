@@ -20,6 +20,7 @@ export default function Step(props: {
   runScript?: () => void;
   locked: boolean;
   moveStep: (dir: -1 | 1) => void;
+  frozen: boolean;
 }) {
   const {
     data,
@@ -34,6 +35,7 @@ export default function Step(props: {
     runScript,
     locked,
     moveStep,
+    frozen,
   } = props;
   const context = React.useContext(Context);
   const ref = React.useRef(null);
@@ -88,6 +90,7 @@ export default function Step(props: {
             mappedArgs={mappedArgs}
             selected={context.selectedStep?.id === data.id}
             locked={locked}
+            frozen={frozen}
           />
         );
     }
@@ -116,13 +119,23 @@ export default function Step(props: {
           <Button
             Icon={data.required ? Icons.CheckSquareFill : Icons.CheckSquare}
             onClick={toggleRequired}
+            title="Toggle checked requirement"
           />
-          <Button Icon={Icons.ArrowUp} onClick={() => moveStep(-1)} />
-          <Button Icon={Icons.ArrowDown} onClick={() => moveStep(1)} />
+          <Button
+            Icon={Icons.ArrowUp}
+            onClick={() => moveStep(-1)}
+            title="Move up"
+          />
+          <Button
+            Icon={Icons.ArrowDown}
+            onClick={() => moveStep(1)}
+            title="Move down"
+          />
           <Button
             style="negative"
             Icon={Icons.Trash3Fill}
             onClick={() => deleteStep()}
+            title="Delete block"
           />
         </div>
       ) : null}
@@ -139,18 +152,47 @@ export default function Step(props: {
       >
         {data.required ? (
           <div className="flex-shrink-0 border-r-2 border-gray-400/20">
-            <Button
-              Icon={
-                data.type === "script"
-                  ? stepValue?.completed
+            {data.type === "script" &&
+            stepValue &&
+            stepValue.status === "running" ? (
+              <div className="px-1.5 py-1 animate-spin">
+                <Icons.DashCircleDotted />
+              </div>
+            ) : frozen ? (
+              <div
+                className="px-1.5 py-1 opacity-20"
+                title="Required steps not completed"
+              >
+                {data.type === "script" ? (
+                  <Icons.CaretRightSquare />
+                ) : (
+                  <Icons.Square />
+                )}
+              </div>
+            ) : (
+              <Button
+                Icon={
+                  data.type === "script"
+                    ? stepValue?.completed
+                      ? Icons.CheckSquareFill
+                      : Icons.CaretRightSquare
+                    : stepValue?.completed
                     ? Icons.CheckSquareFill
-                    : Icons.CaretRightSquare
-                  : stepValue?.completed
-                  ? Icons.CheckSquareFill
-                  : Icons.Square
-              }
-              onClick={() => updateCompleted(!stepValue?.completed)}
-            />
+                    : Icons.Square
+                }
+                onClick={() => {
+                  if (data.type === "script" && runScript) {
+                    if (stepValue?.completed) {
+                      updateCompleted(!stepValue?.completed);
+                    } else {
+                      runScript();
+                    }
+                  } else {
+                    updateCompleted(!stepValue?.completed);
+                  }
+                }}
+              />
+            )}
           </div>
         ) : null}
         <div

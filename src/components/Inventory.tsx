@@ -13,8 +13,17 @@ export default function Inventory(props: {
   documents: Types.Document[];
   activeInstances: Types.Instance[];
   toggleInstancePin: (documentId: string, instanceId: string) => void;
+  darkMode: boolean;
+  toggleDarkMode: () => void;
 }) {
-  const { addDocument, documents, activeInstances, toggleInstancePin } = props;
+  const {
+    addDocument,
+    documents,
+    activeInstances,
+    toggleInstancePin,
+    darkMode,
+    toggleDarkMode,
+  } = props;
   const [search, setSearch] = React.useState("");
   const [entries, setEntries] = React.useState<DocumentEntryType[]>(
     documents.map((d) => ({ ...d, toggled: false }))
@@ -52,10 +61,10 @@ export default function Inventory(props: {
     <div
       className={cx(
         "w-80 flex-grow flex-shrink-0",
-        "dark:bg-stone-900 bg-stone-100 dark:border-black border-r text-sm"
+        "dark:bg-stone-900 bg-stone-200 dark:border-black border-gray-300 border-r text-sm"
       )}
     >
-      <div className="px-4 h-16 dark:border-black border-b flex items-center">
+      <div className="px-4 h-16 dark:border-black border-gray-300 border-b flex items-center">
         <Input
           Icon={Icons.Search}
           value={search}
@@ -63,7 +72,7 @@ export default function Inventory(props: {
           onChange={(v) => setSearch(v)}
         />
       </div>
-      <div className="px-4 flex justify-end dark:border-black border-b">
+      <div className="px-4 flex justify-end dark:border-black border-gray-300 border-b">
         <Button
           Icon={Icons.PlusSquare}
           title="Create new document"
@@ -75,10 +84,17 @@ export default function Inventory(props: {
           title="Collapse all"
           label="Collapse"
           onClick={collapseAll}
+          disabled={entries.reduce((accu, curr) => {
+            if (!accu || curr.toggled) {
+              return false;
+            }
+
+            return accu;
+          }, true)}
         />
       </div>
       <ul
-        style={{ height: "calc(100vh - 80px - 32px)" }}
+        style={{ height: "calc(100vh - 80px - 40px - 14px)" }}
         className="overflow-y-auto"
       >
         {entries
@@ -113,6 +129,12 @@ export default function Inventory(props: {
           </li>
         ) : null}
       </ul>
+      <div className="h-[40px] px-4 border-t border-gray-300 dark:border-black flex items-center">
+        <Button
+          Icon={darkMode ? Icons.MoonStarsFill : Icons.MoonStars}
+          onClick={toggleDarkMode}
+        />
+      </div>
     </div>
   );
 }
@@ -144,42 +166,40 @@ function DocumentEntry(props: {
     <>
       <li
         className={cx(
-          "px-4 py-1.5 flex items-center justify-between",
+          "pr-4 py-1.5 flex items-center justify-between",
           "whitespace-nowrap",
           "transition duration-200",
           "font-bold",
           {
-            "hover:bg-stone-200 dark:hover:bg-black":
-              instances.length && !toggled,
-            "bg-stone-200 dark:bg-black hover:bg-stone-200/50 dark:hover:bg-black/50":
-              instances.length && toggled,
+            "pl-2": instances.length,
+            "pl-6": !instances.length,
             "cursor-pointer": instances.length || !selected,
-            "border border-blue-400/20": selected,
+            "bg-blue-400/20": selected,
           }
         )}
         onClick={() => navigate(`${id}`)}
       >
         <div className="flex items-center overflow-hidden">
           <div
-            className={cx("text-xs mr-1", {
+            className={cx("text-sm mr-1", {
               hidden: instances.length === 0,
             })}
             onClick={instances.length ? () => toggle(false) : () => null}
           >
             {toggled ? <Icons.ChevronDown /> : <Icons.ChevronRight />}
           </div>
-          <div className="text-xs overflow-hidden text-ellipsis">{name}</div>
+          <div className="text-sm overflow-hidden text-ellipsis">{name}</div>
         </div>
         <div
-          className={cx("w-2 h-2 rounded-full flex-shrink-0", {
+          className={cx("w-2 h-2 rounded-full flex-shrink-0 mr-0.5", {
             "bg-blue-400": instances.length === 0,
-            "bg-yellow-400":
+            "bg-transparent":
               instances.length > 0 && numFinishedInstances < instances.length,
           })}
         ></div>
       </li>
       <ul
-        className={cx("border-b-2 border-gray-100 dark:border-gray-900", {
+        className={cx("", {
           hidden: !toggled,
         })}
       >
@@ -246,26 +266,18 @@ function InstanceEntry(props: {
 
   return (
     <li
-      className={cx(
-        "px-4 py-1.5 text-xs",
-        "bg-stone-200 dark:bg-black transition duration-200",
-        "hover:bg-stone-200/50 dark:hover:bg-black/50",
-        {
-          "cursor-pointer": !selected,
-          "border border-yellow-400/20": selected,
-        }
-      )}
+      className={cx("px-4 py-1.5 text-sm", "transition duration-200", {
+        "cursor-pointer": !selected,
+        "bg-yellow-400/20": selected,
+      })}
       onClick={() => navigate(`${documentId}/${id}`)}
     >
       <div className="flex justify-between items-center">
-        <span className="pl-4">
+        <span className="pl-8">
           {format(timestamp, "MMM dd yyyy, HH:mm:ss")}
         </span>
-        <div>
-          <Button
-            Icon={pinned ? Icons.PinFill : Icons.Pin}
-            onClick={toggleInstancePin}
-          />
+        <div className="cursor-pointer" onClick={toggleInstancePin}>
+          {pinned ? <Icons.PinFill /> : <Icons.PinAngle />}
         </div>
       </div>
     </li>
