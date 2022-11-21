@@ -27,5 +27,5 @@ We're happy to accept community contributions. If you're interested in adding a 
 
 ## License
 
-Autotool is an open source project (MIT license) with separate proprietary modules targeted for enterprise users. See the LICENSE file for licensing information as it pertains to
+Autotool is an open source project (MIT license) with separate proprietary modules targeted for enterprise users. See the [LICENSE](https://github.com/aklos/autotool/blob/main/LICENSE.md) file for licensing information as it pertains to
 files in this repository.
