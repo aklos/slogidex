@@ -17,9 +17,10 @@ Whether you're doing **devops**, **business operations**, **system administratio
 
 ## Development
 
-Start the development build with: `yarn tauri dev`
+1. Install tauri dependencies with: `yarn install`
+2. Then start the development build with: `yarn tauri dev`
 
-It will install all required packages and launch the application for testing.
+This will install and compile all required packages then launch the application for testing.
 
 ## Contributing
 
