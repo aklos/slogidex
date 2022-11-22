@@ -61,7 +61,7 @@ export default function ContextMenu() {
         }
       )}
     >
-      {context.currentDocument?.locked ? null : (
+      {context.currentDocument?.locked || context.currentInstance ? null : (
         <>
           {context.selectedStep?.type === "form" &&
           context.selectedStepUpdate ? (
@@ -76,7 +76,9 @@ export default function ContextMenu() {
           ) : null}
         </>
       )}
-      {context.currentInstance || context.selectedStep?.type === "markdown" ? (
+      {context.currentInstance ||
+      !context.selectedStep ||
+      context.selectedStep.type === "markdown" ? (
         <div>
           {context.currentDocument ? (
             <HeaderLinks steps={context.currentDocument?.steps} />
@@ -89,7 +91,83 @@ export default function ContextMenu() {
 
 function HeaderLinks(props: { steps: Types.Step[] }) {
   const { steps } = props;
-  return <ul></ul>;
+  const context = React.useContext(Context);
+
+  const headings = steps
+    .filter((s) => s.type === "markdown")
+    .reduce((accu, curr) => {
+      const match = curr.content.match(/^<h([1-4])>[^<]*<\/h[1-4]>/);
+
+      if (match) {
+        accu.push({
+          indent: +match[1],
+          label: match[0].split(">")[1].split("<")[0],
+          stepId: curr.id,
+          index: steps.findIndex((s) => s.id === curr.id),
+        });
+      }
+
+      return accu;
+    }, [] as { indent: number; label: string; stepId: string; index: number }[]);
+
+  const minIndent = Math.min(...headings.map((h) => h.indent));
+  const selectedIndex = steps.findIndex(
+    (s) => s.id === context.selectedStep?.id
+  );
+
+  return (
+    <ul className="p-4">
+      {headings.map((h, index) => (
+        <li
+          key={`heading_${h.label}`}
+          className={cx(
+            "pb-1 flex items-center cursor-pointer hover:text-yellow-400 transition duration-200",
+            {
+              "text-yellow-400":
+                selectedIndex >= h.index &&
+                (index === headings.length - 1 ||
+                  selectedIndex < headings[index + 1].index),
+              "ml-0": h.indent === minIndent,
+              "ml-4": h.indent === minIndent + 1,
+              "ml-8": h.indent === minIndent + 2,
+              "ml-12": h.indent === minIndent + 3,
+              "ml-16": h.indent === minIndent + 4,
+            }
+          )}
+        >
+          <div className="mr-2">
+            <Icons.Dot />
+          </div>
+          <div
+            onClick={() => {
+              const xpath = `//h${h.indent}[text()='${h.label}']`;
+              const elem = document.evaluate(
+                xpath,
+                document,
+                null,
+                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                null
+              ).singleNodeValue;
+
+              if (elem) {
+                (elem as any).scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+
+                context.selectStep(
+                  steps.find((s) => s.id === h.stepId) || null,
+                  null
+                );
+              }
+            }}
+          >
+            {h.label}
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 function ScriptStepContext(props: {
