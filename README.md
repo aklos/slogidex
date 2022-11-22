@@ -10,12 +10,20 @@ The point of Autotool is to make *that* process easier with
 
 Whether you're doing **devops**, **business operations**, **system administration**, or just **tinkering**, there's probably something you'd like to automate or simplify.
 
-## Requirements
+## Supported platforms
+
+Currently Autotool has builds for MacOS and Ubuntu 20.04 (and other debian-based linux distros). **The MacOS build is unsigned, since we don't have access to signing credentials.**
+
+Windows support is coming soon (likely in the earlier Beta releases).
+
+## Development
+
+### Requirements
 
 - [Install Rust](https://www.rust-lang.org/tools/install)
 - [Install yarn](https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable)
 
-## Development
+### Setup
 
 1. Install tauri dependencies with: `yarn install`
 2. Then start the development build with: `yarn tauri dev`
