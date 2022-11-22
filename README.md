@@ -23,7 +23,7 @@ It will install all required packages and launch the application for testing.
 
 ## Contributing
 
-We're happy to accept community contributions. If you're interested in adding a feature, please create an issue for it first.
+We're happy to accept community contributions. If you're interested in adding a feature, please create an issue for it.
 
 ## License
 
