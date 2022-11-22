@@ -141,9 +141,9 @@ function HeaderLinks(props: { steps: Types.Step[] }) {
         <li
           key={`heading_${h.label}`}
           className={cx(
-            "pb-1 flex items-center cursor-pointer hover:text-yellow-400 transition duration-200 text-base",
+            "pb-1 flex items-center cursor-pointer opacity-80 hover:opacity-100 transition duration-200 text-base",
             {
-              "text-yellow-400":
+              "font-bold opacity-100":
                 selectedIndex >= h.index &&
                 (index === headings.length - 1 ||
                   selectedIndex < headings[index + 1].index),
