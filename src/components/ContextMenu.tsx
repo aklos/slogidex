@@ -13,6 +13,7 @@ import PathInput from "./lib/PathInput";
 export default function ContextMenu() {
   const context = React.useContext(Context);
   const [width, setWidth] = React.useState(window.innerWidth);
+  // const [toggled, setToggled] = React.useState(false);
 
   const handleResize = () => {
     setWidth(window.innerWidth);
@@ -52,39 +53,58 @@ export default function ContextMenu() {
   return (
     <div
       className={cx(
-        "flex-grow flex-shrink-0",
+        "relative flex-grow flex-shrink-0",
         "dark:bg-stone-900 bg-stone-200 dark:border-black border-gray-300 border-l text-sm",
         "transition-width duration-200",
+        "w-10",
         {
-          "w-80": context.selectedStep || width >= 1366 + 320,
-          "w-10": !context.selectedStep && width < 1366 + 320,
+          "w-80":
+            context.selectedStep ||
+            width >= 1366 + 320 ||
+            context.currentInstance,
+          // "w-10 overflow-hidden":
+          //   !context.selectedStep &&
+          //   width < 1366 + 320 &&
+          //   !context.currentInstance,
         }
       )}
     >
-      {context.currentDocument?.locked || context.currentInstance ? null : (
-        <>
-          {context.selectedStep?.type === "form" &&
-          context.selectedStepUpdate ? (
-            <FormStepContext data={context.selectedStep} update={updateStep} />
-          ) : null}
-          {context.selectedStep?.type === "script" &&
-          context.selectedStepUpdate ? (
-            <ScriptStepContext
-              data={context.selectedStep}
-              update={updateArgs}
-            />
-          ) : null}
-        </>
-      )}
-      {context.currentInstance ||
-      !context.selectedStep ||
-      context.selectedStep.type === "markdown" ? (
-        <div>
-          {context.currentDocument ? (
-            <HeaderLinks steps={context.currentDocument?.steps} />
-          ) : null}
-        </div>
-      ) : null}
+      <div
+        className={cx({
+          hidden:
+            !context.selectedStep &&
+            width < 1366 + 320 &&
+            !context.currentInstance,
+        })}
+      >
+        {context.currentDocument?.locked || context.currentInstance ? null : (
+          <>
+            {context.selectedStep?.type === "form" &&
+            context.selectedStepUpdate ? (
+              <FormStepContext
+                data={context.selectedStep}
+                update={updateStep}
+              />
+            ) : null}
+            {context.selectedStep?.type === "script" &&
+            context.selectedStepUpdate ? (
+              <ScriptStepContext
+                data={context.selectedStep}
+                update={updateArgs}
+              />
+            ) : null}
+          </>
+        )}
+        {context.currentInstance ||
+        !context.selectedStep ||
+        context.selectedStep.type === "markdown" ? (
+          <div>
+            {context.currentDocument ? (
+              <HeaderLinks steps={context.currentDocument?.steps} />
+            ) : null}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
