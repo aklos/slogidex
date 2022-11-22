@@ -455,6 +455,7 @@ function DocumentWrapper(props: {
     updateInstance,
     runScript,
   } = props;
+  const context = React.useContext(Context);
   const params = useParams();
   const navigate = useNavigate();
   const document = documents.find((d) => d.id === params.documentId);
@@ -485,6 +486,10 @@ function DocumentWrapper(props: {
     //   });
     // }
   }, [document, params.instanceId]);
+  
+  React.useEffect(() => {
+    context.selectStep(null, null);
+  }, [params.documentId, params.instanceId]);
 
   // React.useEffect(() => {
   //   if (params.instanceId) {

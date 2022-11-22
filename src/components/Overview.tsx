@@ -3,9 +3,16 @@ import { Link } from "react-router-dom";
 import { ReactComponent as LogoLight } from "./../logo_light.svg";
 import { ReactComponent as LogoDark } from "./../logo_dark.svg";
 import Button from "./lib/Button";
+import Context from "../context";
 
 export default function Overview(props: { dark: boolean }) {
   const { dark } = props;
+  const context = React.useContext(Context);
+
+  React.useEffect(() => {
+    context.selectStep(null, null);
+  }, []);
+  
   return (
     <div className="flex flex-col items-center justify-center p-32">
       <div className="ml-12">{dark ? <LogoDark /> : <LogoLight />}</div>
