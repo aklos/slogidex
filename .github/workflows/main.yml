@@ -30,6 +30,7 @@ jobs:
     - name: install app dependencies and build web
       env:
         GENERATE_SOURCEMAP: false
+        CI: false
       run: yarn && yarn build
     - name: build the app
       uses: tauri-apps/tauri-action@v0
