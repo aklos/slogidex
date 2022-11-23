@@ -10,7 +10,7 @@ The point of Autotool is to make *that* process easier with
 
 Whether you're doing **devops**, **business operations**, **system administration**, or just **tinkering**, there's probably something you'd like to automate or simplify and Autotool can help with that.
 
-https://user-images.githubusercontent.com/8189043/203546241-8102997f-3275-40c2-a77a-bae91351dd08.mp4
+https://user-images.githubusercontent.com/8189043/203548526-7c0e9f06-ef8f-446d-8f64-ff4b8e8a9e5c.mp4
 
 ## Supported platforms
 
