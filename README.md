@@ -1,5 +1,5 @@
 <p align="center"> <img alt="Autotool" width="880" height="240" src="https://github.com/aklos/autotool/blob/main/src/banner.svg"> </p>
-[https://img.shields.io/badge/Download-latest%20release-brightgreen](https://github.com/aklos/autotool/releases)
+<a href="https://github.com/aklos/autotool/releases"><img alt="Download latest release" src="https://img.shields.io/badge/Download-latest%20release-brightgreen"></a>
 
 Autotool, or "Automation tool", is a desktop application for writing and executing processes inspired by the concept of gradual automation. It's pretty simple: formalize a process into discrete steps, then try to replace some of the steps with automated scripts.
 
