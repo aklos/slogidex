@@ -1,4 +1,4 @@
-<p align="center"> <img alt="Autotool" width="880" height="350" src="https://github.com/aklos/autotool/blob/main/src/banner.svg"> </p>
+<p align="center"> <img alt="Autotool" width="880" height="240" src="https://github.com/aklos/autotool/blob/main/src/banner.svg"> </p>
 
 Autotool, or "Automation tool", is a desktop application for writing and executing processes inspired by the concept of gradual automation. It's pretty simple: formalize a process into discrete steps, then try to replace some of the steps with automated scripts.
 
@@ -8,11 +8,9 @@ The point of Autotool is to make *that* process easier with
 - Components for defining processes; like rich text blocks, code blocks, and forms
 - Embedded script execution
 
-Whether you're doing **devops**, **business operations**, **system administration**, or just **tinkering**, there's probably something you'd like to automate or simplify.
+Whether you're doing **devops**, **business operations**, **system administration**, or just **tinkering**, there's probably something you'd like to automate or simplify and Autotool can help with that.
 
-
-https://user-images.githubusercontent.com/8189043/203539025-27cc33f3-9aac-4589-afa9-c57f87f4a8d5.mp4
-
+https://user-images.githubusercontent.com/8189043/203546241-8102997f-3275-40c2-a77a-bae91351dd08.mp4
 
 ## Supported platforms
 
