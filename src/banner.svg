@@ -3,8 +3,8 @@
 
 <svg
    width="830"
-   height="320"
-   viewBox="0 0 219.60416 84.666671"
+   height="220"
+   viewBox="0 0 219.60416 58.20837"
    version="1.1"
    id="svg921"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
@@ -28,9 +28,9 @@
      showgrid="false"
      inkscape:zoom="1"
      inkscape:cx="308.5"
-     inkscape:cy="133.5"
-     inkscape:window-width="1920"
-     inkscape:window-height="1007"
+     inkscape:cy="133"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -45,22 +45,43 @@
      showguides="true"
      inkscape:guide-bbox="true" />
   <defs
-     id="defs918" />
+     id="defs918">
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect839"
+       is_visible="true"
+       lpeversion="1"
+       satellites_param="F,0,0,1,0,2.1166667,0,1 @ F,0,0,1,0,2.1166667,0,1 @ F,0,0,1,0,2.1166667,0,1 @ F,0,0,1,0,2.1166667,0,1"
+       unit="px"
+       method="auto"
+       mode="F"
+       radius="8"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+  </defs>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-69.986987,-60.707614)">
-    <rect
-       style="fill:#f9f9f9;fill-opacity:1;stroke-width:1.01583;stroke-linecap:round;stroke-linejoin:round"
+    <path
+       style="fill:#f9f9f9;fill-opacity:1;stroke-width:0.842282;stroke-linecap:round;stroke-linejoin:round"
        id="rect1191"
        width="219.60417"
-       height="84.666664"
-       x="69.986984"
-       y="60.707615" />
+       height="58.208332"
+       x="70.251488"
+       y="60.707615"
+       inkscape:path-effect="#path-effect839"
+       d="M 72.368154,60.707615 H 287.73899 a 2.1166667,2.1166667 45 0 1 2.11667,2.116667 v 53.974998 a 2.1166667,2.1166667 135 0 1 -2.11667,2.11667 H 72.368154 a 2.1166667,2.1166667 45 0 1 -2.116666,-2.11667 V 62.824282 a 2.1166667,2.1166667 135 0 1 2.116666,-2.116667 z"
+       sodipodi:type="rect" />
     <g
        id="g1053"
-       transform="matrix(1.3879115,0,0,1.3879115,52.073398,-4.5604237)">
+       transform="matrix(1.3879115,0,0,1.3879115,50.881453,-17.541447)">
       <g
          aria-label="Autotool"
          id="text236-7-4"
