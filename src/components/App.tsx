@@ -395,7 +395,7 @@ export default function App() {
             darkMode={saveState.darkMode}
             toggleDarkMode={toggleDarkMode}
           />
-          <div className="w-full max-h-screen overflow-auto">
+          <div id="container" className="w-full max-h-screen overflow-auto">
             <Routes>
               <Route
                 path="/"

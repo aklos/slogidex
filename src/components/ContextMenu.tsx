@@ -170,10 +170,14 @@ function HeaderLinks(props: { steps: Types.Step[] }) {
               ).singleNodeValue;
 
               if (elem) {
-                (elem as any).scrollIntoView({
-                  behavior: "smooth",
-                  block: "start",
-                });
+                const docElem = document.getElementById("container");
+                const yOffset = -32;
+                const y =
+                  (elem as any).getBoundingClientRect().top +
+                  (docElem as any).scrollTop +
+                  yOffset;
+
+                docElem?.scrollTo({ top: y, behavior: "smooth" });
 
                 context.selectStep(
                   steps.find((s) => s.id === h.stepId) || null,
