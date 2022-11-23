@@ -10,6 +10,10 @@ The point of Autotool is to make *that* process easier with
 
 Whether you're doing **devops**, **business operations**, **system administration**, or just **tinkering**, there's probably something you'd like to automate or simplify.
 
+
+https://user-images.githubusercontent.com/8189043/203539025-27cc33f3-9aac-4589-afa9-c57f87f4a8d5.mp4
+
+
 ## Supported platforms
 
 Currently Autotool has builds for MacOS and Ubuntu 20.04 (and other debian-based linux distros). **The MacOS build is unsigned, since we don't have access to signing credentials.**
