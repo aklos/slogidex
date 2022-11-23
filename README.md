@@ -8,7 +8,7 @@ The point of Autotool is to make *that* process easier with
 - Components for defining processes; like rich text blocks, code blocks, and forms
 - Embedded script execution
 
-Whether you're doing **devops**, **business operations**, **system administration**, or just **tinkering**, there's probably something you'd like to automate or simplify and Autotool can help with that.
+Whether you're doing **devops**, **business operations**, **system administration**, or just **tinkering**, there's probably something you'd like to automate or simplify, and Autotool can help with that.
 
 https://user-images.githubusercontent.com/8189043/203548526-7c0e9f06-ef8f-446d-8f64-ff4b8e8a9e5c.mp4
 
