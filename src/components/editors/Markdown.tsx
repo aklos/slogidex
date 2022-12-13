@@ -10,6 +10,15 @@ const Container = styled.div`
     outline: none;
   }
 
+  * {
+    color: #333;
+  }
+
+  pre {
+    margin: 0;
+    background: #eee;
+  }
+
   *:first-child {
     margin-top: 0;
   }
