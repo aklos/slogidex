@@ -14,9 +14,10 @@ export default function Editable(props: {
     <ContentEditable
       className={cx(
         className,
+        "focus:outline-none",
         "border border-transparent px-2 py-1",
         "focus:border-gray-200/30",
-        "hover:border-gray-200/30"
+        "hover:border-gray-200/10"
       )}
       html={children}
       placeholder={placeholder}

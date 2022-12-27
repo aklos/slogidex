@@ -4,13 +4,13 @@
    "steps":[
      {
        "id":"e6dcb0a8-62b4-4476-ade8-b306043d6c32",
-       "type":"markdown",
+       "type":"text",
        "required":false,
-       "content":"<h2>Welcome to Autotool!</h2><p>This is a short guide to explain what the app is and how to use it. If you've ever used Jupyter Notebooks or Google Colab then most of the concepts will be familiar to you with some (major) differences.</p><h3>What is Autotool?</h3><p>Autotool, or \"Automation tool\", is an evironment for writing and executing processes inspired by the concept of gradual automation. It's pretty simple: formalize a process into discrete steps, then try to replace some of the steps with automated scripts.</p><p>The point of Autotool is to make <em>that</em> process easier with</p><ul><li><p>A unified environment for managing processes</p></li><li><p>Components for defining processes; like rich text blocks, code blocks, and forms</p></li><li><p>Embedded script execution</p></li></ul><p>Whether you're doing <strong>devops</strong>, <strong>business operations</strong>, <strong>system administration</strong>, or just <strong>tinkering</strong>, there's probably something you'd like to automate or simplify.</p>"
+       "content":"<h2>Welcome to your Slogidex!</h2><p>This is a short guide to explain what the app is and how to use it. If you've ever used Jupyter Notebooks or Google Colab then most of the concepts will be familiar to you with some (major) differences.</p><h3>What is Autotool?</h3><p>Autotool, or \"Automation tool\", is an evironment for writing and executing processes inspired by the concept of gradual automation. It's pretty simple: formalize a process into discrete steps, then try to replace some of the steps with automated scripts.</p><p>The point of Autotool is to make <em>that</em> process easier with</p><ul><li><p>A unified environment for managing processes</p></li><li><p>Components for defining processes; like rich text blocks, code blocks, and forms</p></li><li><p>Embedded script execution</p></li></ul><p>Whether you're doing <strong>devops</strong>, <strong>business operations</strong>, <strong>system administration</strong>, or just <strong>tinkering</strong>, there's probably something you'd like to automate or simplify.</p>"
      },
      {
        "id":"7a900446-f7bc-4c8b-b251-c06325bc22d4",
-       "type":"markdown",
+       "type":"text",
        "required":false,
        "content":"<h3>Getting started</h3><p>This document is a lot like a Jupyter Notebook. Everything here is made up of editable and interactive blocks.</p><p>For example, below is a code block which you can execute by clicking on the arrow on the left-hand side:</p>"
      },
@@ -18,11 +18,13 @@
        "id":"d8b0b0d8-4fc0-4031-b7b7-1c774dd24ca3",
        "type":"script",
        "required":false,
-       "content":"#!/bin/bash\necho \"Hello, World!\""
+       "content": {
+        "code": "#!/bin/bash\necho \"Hello, World!\""
+       }
      },
      {
        "id":"be816846-5769-4a59-b762-c133ddf8ec1f",
-       "type":"markdown",
+       "type":"text",
        "required":false,
        "content":"<p>You can edit the code by simply clicking on the block and editing it. </p><p>As you can see, Autotool scripts are just normal scripts. Unlike Google Colab there's no magic going on behind the scenes, and you can execute any script your system's shell allows you to.</p><p>On the flip-side, there's no pre-configured environment. For example, below is a Python script which should open a plot chart when executed. Try executing it now:</p>"
      },
@@ -30,11 +32,13 @@
        "id":"7211dcbb-183b-4a2a-8edb-34271eb28abb",
        "type":"script",
        "required":false,
-       "content":"#!/usr/bin/env python3\nimport numpy as np\nfrom matplotlib import pyplot as plt\n\nys = 200 + np.random.randn(100)\nx = [x for x in range(len(ys))]\n\nplt.plot(x, ys, '-')\nplt.fill_between(x, ys, 195, where=(ys > 195), facecolor='g', alpha=0.6)\n\nplt.title(\"Sample Visualization\")\nplt.show()"
+       "content": {
+        "code":"#!/usr/bin/env python3\nimport numpy as np\nfrom matplotlib import pyplot as plt\n\nys = 200 + np.random.randn(100)\nx = [x for x in range(len(ys))]\n\nplt.plot(x, ys, '-')\nplt.fill_between(x, ys, 195, where=(ys > 195), facecolor='g', alpha=0.6)\n\nplt.title(\"Sample Visualization\")\nplt.show()"
+       }
      },
      {
        "id":"55e3044e-0de9-44fa-9781-d195ecdafe13",
-       "type":"markdown",
+       "type":"text",
        "required":false,
        "content":"<p>The above script might have failed to execute for a multitude of reasons. Maybe you don't have python3 installed, or it's not available at the expected path, or you don't have the numpy or matplotlib libraries installed. The main thing to keep in mind is that scripts in Autotool are executed on <em>your system</em>, so make sure you have the correct packages and permissions to run them.</p><p>One more code example below shows how Autotool deals with scripts that require elevated privileges:</p>"
      },
@@ -42,23 +46,25 @@
        "id":"16d37afc-5309-434a-b702-bd890e327dca",
        "type":"script",
        "required":false,
-       "content":"#!/bin/bash\n\n# Trying to use sudo!\nsudo ls -a"
+       "content": {
+        "code": "#!/bin/bash\n\n# Trying to use sudo!\nsudo ls -a"
+       }
      },
      {
        "id":"abc7ef08-2a14-40c0-9ad5-5db8af04914c",
-       "type":"markdown",
+       "type":"text",
        "required":false,
        "content":"<p>Autotool asks for your credentials using <strong>pkexec</strong> whenever a script requires elevated privileges, so you never have to expose your password.</p>"
      },
      {
        "id":"c72db6ff-0cef-4b3b-98c8-fd4921d29e1a",
-       "type":"markdown",
+       "type":"text",
        "required":false,
        "content":"<h3>Text blocks</h3><p>Document your processes with rich text blocks that use markdown syntax shortcuts. For example you can create a heading by writing the following on a new line:</p><p>\"## Some heading\"</p>"
      },
      {
        "id":"8dc052aa-f698-4cd0-8c85-4f6fec739a08",
-       "type":"markdown",
+       "type":"text",
        "required":false,
        "content":"<h3>Form blocks</h3><p>You can define form fields that can connect to scripts as arguments, like in the example below:</p>"
      },
@@ -66,32 +72,36 @@
        "id":"02b8c28c-36d5-4cee-8c9c-248d39550d22",
        "type":"form",
        "required":false,
-       "content":"[{\"id\":\"fcf455a1-a618-43c7-9330-b93f16ba3099\",\"type\":\"text\",\"name\":\"example\",\"label\":\"Example field\",\"placeholder\":\"Write something here\"}]"
+       "content": {
+        "fields": [{"id":"fcf455a1-a618-43c7-9330-b93f16ba3099","type":"text","name":"example","label":"Example field","placeholder":"Write something here"}]
+       }
      },
      {
        "id":"705905f8-4d61-4192-908e-85352f1257fe",
        "type":"script",
        "required":false,
-       "content":"#!/bin/bash\n\n# Parse and display the passed argument\necho ${1#*=}",
+       "content": {
+        "code": "#!/bin/bash\n\n# Parse and display the passed argument\necho ${1#*=}",
        "args":[
          "example"
        ]
+      }
      },
      {
        "id":"5eb8ee86-c848-4785-b458-a08756a92ece",
-       "type":"markdown",
+       "type":"text",
        "required":false,
        "content":"<p>In order to use form field values as arguments they must be named in the context panel (on the right-hand side).</p>"
      },
      {
        "id":"5320d166-d06e-45c1-840a-9ff36849ccb0",
-       "type":"markdown",
+       "type":"text",
        "required":false,
        "content":"<h3>Designating required steps</h3><p>You can mark blocks as required steps that must be checked before subsequent blocks can be executed or completed. For example:</p>"
      },
      {
        "id":"453c3478-f1ed-4b64-9686-c12a55378ee4",
-       "type":"markdown",
+       "type":"text",
        "required":true,
        "content":"<h4>This block is a required step</h4><p>Try executing the script below without completing this step!</p>"
      },
@@ -99,17 +109,19 @@
        "id":"a540c420-d911-42d6-81f9-bdf986a305ed",
        "type":"script",
        "required":false,
-       "content":"#!/bin/bash\necho \"I'm free!\""
+       "content": {
+        "code":"#!/bin/bash\necho \"I'm free!\""
+       }
      },
      {
        "id":"e86777d7-6433-4f94-968a-0b395e1d6ddb",
-       "type":"markdown",
+       "type":"text",
        "required":false,
        "content":"<h3>The inventory panel</h3><p>You might have noticed an item appear in the inventory panel on the left-hand side which is now highlighted in orange. This is a process \"instance\".</p><p>Instances save your progress and results when going through a process and can be saved by pinning them (click the pin icon on the item entry). Unpinned instances disappear when you close Autotool, so make sure to pin the ones you want to keep. Think of unpinned instances as scratch pads to be overwritten and discarded later.</p><p>You can run multiple processes at the same time, with one unpinned instance allocated for each document - so an existing unpinned instance will get overwritten if you launch a new instance for a particular process - and <strong>you can run multiple long-executing scripts in different processes at the same time.</strong></p><p>The inventory panel displays all of your defined processes as well as pinned and unpinned instances.</p>"
      },
      {
        "id":"265085bf-8203-479a-a8c6-8ccba8843c81",
-       "type":"markdown",
+       "type":"text",
        "required":false,
        "content":"<h3>The context panel</h3><p>The panel on the right-hand side displays additional functionality for selected blocks when defining processes, like managing fields in form blocks, and selecting arguments in code blocks.</p>"
      }

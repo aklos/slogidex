@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
+// import App from "./components/App";
 import App from "./components/App";
 import { ContextProvider } from "./context";
 import reportWebVitals from "./reportWebVitals";

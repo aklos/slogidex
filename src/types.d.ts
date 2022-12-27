@@ -1,28 +1,27 @@
 declare module "prismjs/components/prism-core";
 
 namespace Types {
-  export interface SaveState {
+  export interface SaveData {
     darkMode: boolean;
-    documents: Document[];
+    processes: Process[];
   }
 
-  export interface Document {
+  export interface Process {
     id: string;
     name: string;
     steps: Step[];
+    instances: Instance[];
     createdAt: Date;
     updatedAt: Date;
-    instances: Instance[];
-    locked: boolean;
   }
 
   export interface Instance {
     id: string;
-    documentId?: string;
+    test: boolean;
+    pinned: boolean;
+    state: InstanceState;
     createdAt: Date;
     updatedAt: Date;
-    values: StepInstanceValue[];
-    pinned?: boolean;
   }
 
   export interface StepInstanceValue {
@@ -33,7 +32,19 @@ namespace Types {
     status?: ScriptStatus;
   }
 
-  export type StepType = "script" | "markdown" | "form";
+  export interface InstanceState {
+    [stepId: string]: StepState;
+  }
+
+  export interface StepState {
+    completed: boolean;
+    data: string | FieldStates;
+  }
+
+  export interface FieldStates {
+    [fieldId: string]: string | boolean;
+  }
+
   export type ScriptStatus = "initial" | "running" | "completed" | "failed";
   export type FieldValue = { id: string; value: string | boolean };
 
@@ -57,7 +68,23 @@ namespace Types {
     id: string;
     type: StepType;
     required: boolean;
-    content: string;
-    args?: string[];
+    content: StepContent;
+  }
+
+  export type StepType = "script" | "text" | "form";
+  export type StepContent = string | ScriptContent | FormContent;
+
+  export interface ScriptContent {
+    args: string[];
+    code: string;
+  }
+
+  export interface FormContent {
+    fields: FieldInterface[];
+  }
+
+  export interface InvokedScript {
+    stepId: string;
+    status: ScriptStatus;
   }
 }
