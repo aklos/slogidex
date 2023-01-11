@@ -6,6 +6,7 @@ use tauri::Window;
 #[derive(Deserialize, Serialize, Debug)]
 pub struct RunScriptJSON {
     id: String,
+    processId: String,
     instanceId: String,
     args: String,
     script: String,
@@ -14,6 +15,7 @@ pub struct RunScriptJSON {
 #[derive(Deserialize, Serialize, Debug)]
 pub struct ScriptOutput {
     id: String,
+    processId: String,
     instanceId: String,
     output: String,
     error: bool,
@@ -47,6 +49,7 @@ pub async fn run(data: RunScriptJSON, window: Window) {
 
             let output = ScriptOutput {
                 id: data.id.clone(),
+                processId: data.processId.clone(),
                 instanceId: data.instanceId.clone(),
                 output: line_str,
                 error: false,
@@ -74,6 +77,7 @@ pub async fn run(data: RunScriptJSON, window: Window) {
 
             let output = ScriptOutput {
                 id: data.id.clone(),
+                processId: data.processId.clone(),
                 instanceId: data.instanceId.clone(),
                 output: line_str,
                 error: false,
@@ -115,6 +119,7 @@ pub async fn run(data: RunScriptJSON, window: Window) {
     if ecode.success() {
         let final_output = ScriptOutput {
             id: data.id.clone(),
+            processId: data.processId.clone(),
             instanceId: data.instanceId.clone(),
             output: "__finished__".to_string(),
             error: false,
@@ -133,6 +138,7 @@ pub async fn run(data: RunScriptJSON, window: Window) {
     } else {
         let final_output = ScriptOutput {
             id: data.id.clone(),
+            processId: data.processId.clone(),
             instanceId: data.instanceId.clone(),
             output: "__finished__".to_string(),
             error: true,

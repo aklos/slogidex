@@ -1,20 +1,20 @@
-<p align="center"> <img alt="Autotool" width="880" height="240" src="https://github.com/aklos/autotool/blob/main/src/banner.svg"> </p>
+<p> <div align="center"><img alt="Slogidex" width="880" height="240" src="https://github.com/aklos/slogidex/blob/main/src/banner.svg"></div>
+<a href="https://github.com/aklos/slogidex/releases"><img alt="Download latest release" src="https://img.shields.io/badge/Download-latest%20release-brightgreen"></a></p>
 
-Autotool, or "Automation tool", is a desktop application for writing and executing processes inspired by the concept of gradual automation. It's pretty simple: formalize a process into discrete steps, then try to replace some of the steps with automated scripts.
+Slogidex is an evironment for writing and executing processes inspired by the concept of gradual automation. It's pretty simple: formalize a process into discrete steps, then try to replace steps with automated scripts. If you can't, that's fine, just outlining the process can already be helpful for remembering tasks, onboarding team members, or working through harder problems.
 
-The point of Autotool is to make *that* process easier with
+The point of Slogidex is to make that process easier with
 
-- A unified environment for managing processes
+- A unified GUI for managing processes
 - Components for defining processes; like rich text blocks, code blocks, and forms
 - Embedded script execution
+- Instancing and progress tracking
 
-Whether you're doing **devops**, **business operations**, **system administration**, or just **tinkering**, there's probably something you'd like to automate or simplify, and Autotool can help with that.
-
-https://user-images.githubusercontent.com/8189043/203548526-7c0e9f06-ef8f-446d-8f64-ff4b8e8a9e5c.mp4
+Whether you're doing operations, system administration, or just tinkering, there's probably something you'd like to automate or simplify.
 
 ## Supported platforms
 
-Currently Autotool has builds for MacOS and Ubuntu 20.04 (and other debian-based linux distros). **The MacOS build is unsigned, since we don't have access to signing credentials.**
+Currently Slogidex has builds for MacOS and Ubuntu 20.04 (and other debian-based linux distros).
 
 Windows support is coming soon (likely in the earlier Beta releases).
 
@@ -38,5 +38,5 @@ We're happy to accept community contributions. If you're interested in adding a 
 
 ## License
 
-Autotool is an open source project (MIT license) with separate proprietary modules targeted for enterprise users. See the [LICENSE](https://github.com/aklos/autotool/blob/main/LICENSE.md) file for licensing information as it pertains to
+Slogidex is an open source project (MIT license) with separate proprietary modules targeted for enterprise users. See the [LICENSE](https://github.com/aklos/slogidex/blob/main/LICENSE.md) file for licensing information as it pertains to
 files in this repository.

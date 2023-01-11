@@ -7,8 +7,8 @@
     "distDir": "../build"
   },
   "package": {
-    "productName": "Autotool",
-    "version": "0.1.2"
+    "productName": "Slogidex",
+    "version": "0.2.0"
   },
   "tauri": {
     "allowlist": {
@@ -30,7 +30,7 @@
         "icons/icon.ico"
       ],
       "identifier": "com.aklos.dev",
-      "longDescription": "Autotool, or \"Automation tool\", is a desktop application for writing and executing processes inspired by the concept of gradual automation. It's pretty simple: formalize a process into discrete steps, then try to replace some of the steps with automated scripts.",
+      "longDescription": "Slogidex is a desktop application for writing and executing processes inspired by the concept of gradual automation. It's pretty simple: formalize a process into discrete steps, then try to replace some of the steps with automated scripts.",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -55,11 +55,13 @@
     },
     "windows": [
       {
+        "title": "Slogidex",
         "fullscreen": false,
-        "height": 768,
         "resizable": true,
-        "title": "Autotool",
-        "width": 1366
+        "height": 768,
+        "width": 1366,
+        "minHeight": 480,
+        "minWidth": 1024
       }
     ]
   }
