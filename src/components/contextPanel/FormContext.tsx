@@ -1,12 +1,12 @@
 import React from "react";
 import cx from "classnames";
 import { v4 as uuidv4 } from "uuid";
-import Button from "./lib/Button";
-import Input from "./lib/Input";
-import Select from "./lib/Select";
-import Editable from "./lib/Editable";
-import Toggle from "./lib/Toggle";
-import PathInput from "./lib/PathInput";
+import Button from "../lib/Button";
+import Input from "../lib/Input";
+import Select from "../lib/Select";
+import Editable from "../lib/Editable";
+import Toggle from "../lib/Toggle";
+import PathInput from "../lib/PathInput";
 import {
   CardList,
   Folder,
@@ -16,23 +16,22 @@ import {
   Plus,
   ToggleOff,
   Trash3,
-  Trash3Fill,
 } from "react-bootstrap-icons";
 
 interface Props {
-  data: Types.Step;
-  update: (data: Types.Step) => void;
+  step: Types.Step;
+  update: (step: Types.Step) => void;
 }
 
 export default function FormContext(props: Props) {
-  const { data, update } = props;
+  const { step, update } = props;
   const [fieldType, setFieldType] = React.useState<Types.FieldType>("text");
   const [toggledFields, setToggledFields] = React.useState<string[]>([]);
-  const content = data.content as Types.FormContent;
+  const content = step.content as Types.FormContent;
 
   const updateContent = (value: Types.FormContent) => {
-    data.content = value;
-    update(data);
+    step.content = value;
+    update(step);
   };
 
   const addField = React.useCallback(
@@ -47,7 +46,7 @@ export default function FormContext(props: Props) {
 
       updateContent(content);
     },
-    [data]
+    [step]
   );
 
   const updateField = React.useCallback(
@@ -56,7 +55,7 @@ export default function FormContext(props: Props) {
       (content.fields[fieldIndex] as any)[key] = value;
       updateContent(content);
     },
-    [data]
+    [step]
   );
 
   const toggleField = React.useCallback(
@@ -72,7 +71,7 @@ export default function FormContext(props: Props) {
 
       setToggledFields(_toggledFields);
     },
-    [toggledFields, data]
+    [toggledFields, step]
   );
 
   const deleteField = React.useCallback(
@@ -83,7 +82,7 @@ export default function FormContext(props: Props) {
       content.fields.splice(fieldIndex, 1);
       updateContent(content);
     },
-    [data]
+    [step]
   );
 
   const addOption = React.useCallback(
@@ -107,7 +106,7 @@ export default function FormContext(props: Props) {
 
       updateContent(content);
     },
-    [data]
+    [step]
   );
 
   const editOption = React.useCallback(
@@ -127,7 +126,7 @@ export default function FormContext(props: Props) {
 
       updateContent(content);
     },
-    [data]
+    [step]
   );
 
   const deleteOption = React.useCallback(
@@ -147,7 +146,7 @@ export default function FormContext(props: Props) {
 
       updateContent(content);
     },
-    [data]
+    [step]
   );
 
   return (
@@ -201,7 +200,8 @@ export default function FormContext(props: Props) {
               </div>
               <div className="grid grid-cols-1 text-xs pr-2">
                 <Button
-                  Icon={Trash3Fill}
+                  Icon={Trash3}
+                  destructive
                   onClick={() => deleteField(f.id)}
                   title="Delete field"
                 />
@@ -317,6 +317,7 @@ export default function FormContext(props: Props) {
                           </div>
                           <Button
                             Icon={Trash3}
+                            destructive
                             onClick={() => deleteOption(f.id, index)}
                           />
                         </div>
@@ -325,6 +326,7 @@ export default function FormContext(props: Props) {
                     <Button
                       Icon={Plus}
                       label="Add option"
+                      title="Add a select option"
                       onClick={() => addOption(f.id)}
                     />
                   </div>

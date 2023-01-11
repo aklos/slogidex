@@ -14,7 +14,7 @@ export default function FormWidget(props: Props) {
   const { content, valueData, updateFieldValue } = props;
 
   return (
-    <div className="max-w-prose">
+    <div className="max-w-prose p-2">
       {content.fields.length ? (
         content.fields.map((f: Types.FieldInterface) => (
           <Field

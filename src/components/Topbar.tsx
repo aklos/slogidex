@@ -20,6 +20,7 @@ export default function Toolbar() {
         <Button
           Icon={location.pathname === "/" ? HouseFill : House}
           label="Home"
+          title="Go to home page"
           onClick={() => navigate("/")}
         />
       </div>
@@ -27,6 +28,7 @@ export default function Toolbar() {
       <div className="w-80 flex-shrink-0 flex justify-end">
         <Button
           Icon={context.darkMode ? MoonStarsFill : MoonStars}
+          title="Toggle dark mode"
           onClick={() => context.toggleDarkMode()}
         />
       </div>

@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { listen } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/tauri";
 import user_manual from "./user_manual.json";
+import { getArgString } from "./utils";
 
 type Props = { children: any };
 
@@ -14,10 +15,11 @@ type ContextState = {
 type ContextMethods = {
   toggleDarkMode: () => void;
   addProcess: () => string;
+  deleteProcess: (id: string) => void;
   updateProcess: (id: string, data: Types.Process) => void;
   addInstance: (processId: string, test?: boolean) => Types.Instance;
   updateInstance: (processId: string, data: Types.Instance) => void;
-  _selectStep: (id: string) => void;
+  selectStep: (id: string) => void;
   runScript: (processId: string, instanceId: string, stepId: string) => void;
   getInstanceById: (instanceId: string) => Types.Instance;
 };
@@ -60,8 +62,6 @@ class ContextProvider extends React.Component<Props, ContextState> {
     ...saveData,
   } as ContextState;
 
-  /// Refactoring
-
   toggleDarkMode = () => {
     this.setState({ darkMode: !this.state.darkMode }, this.#updateSaveData);
   };
@@ -84,14 +84,19 @@ class ContextProvider extends React.Component<Props, ContextState> {
     return newProcess.id;
   };
 
-  updateProcess = (id: string, data: Types.Process) => {
+  updateProcess = (id: string, process: Types.Process) => {
     const processes = Array.from(this.state.processes);
     const index = processes.findIndex((p) => p.id === id);
-    processes[index] = data;
+    processes[index] = process;
     this.setState({ processes }, this.#updateSaveData);
   };
 
-  deleteProcess = () => {};
+  deleteProcess = (id: string) => {
+    const processes = Array.from(this.state.processes);
+    const index = processes.findIndex((p) => p.id === id);
+    processes.splice(index, 1);
+    this.setState({ processes }, this.#updateSaveData);
+  };
 
   addInstance = (processId: string, test: boolean = false) => {
     const processes = Array.from(this.state.processes);
@@ -101,6 +106,7 @@ class ContextProvider extends React.Component<Props, ContextState> {
       id: uuidv4(),
       test,
       pinned: false,
+      name: "",
       state: {},
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -113,17 +119,17 @@ class ContextProvider extends React.Component<Props, ContextState> {
     return instance;
   };
 
-  updateInstance = (processId: string, data: Types.Instance) => {
+  updateInstance = (processId: string, instance: Types.Instance) => {
     const processes = Array.from(this.state.processes);
     const index = processes.findIndex((p) => p.id === processId);
     const instanceIndex = processes[index].instances.findIndex(
-      (i) => i.id === data.id
+      (i) => i.id === instance.id
     );
-    processes[index].instances[instanceIndex] = data;
+    processes[index].instances[instanceIndex] = instance;
     this.setState({ processes }, this.#updateSaveData);
   };
 
-  _selectStep = (id: string) => {
+  selectStep = (id: string) => {
     this.setState({ selectedStepId: id });
   };
 
@@ -134,10 +140,6 @@ class ContextProvider extends React.Component<Props, ContextState> {
 
     return instances.find((i) => i.id === instanceId);
   };
-
-  getInstanceByStepId = (stepId: string) => {};
-
-  getProcessByInstanceId = (instanceId: string) => {};
 
   runScript = (processId: string, instanceId: string, stepId: string) => {
     const processes = Array.from(this.state.processes);
@@ -150,6 +152,16 @@ class ContextProvider extends React.Component<Props, ContextState> {
     );
     const step = processes[processIndex].steps[stepIndex];
     const instance = processes[processIndex].instances[instanceIndex];
+
+    const args = (step.content as Types.ScriptContent).args || [];
+    let argString = "";
+
+    if (args.length) {
+      argString = getArgString(processes[processIndex], step, instance).replace(
+        /undefined/g,
+        ""
+      );
+    }
 
     if (instance && instance.state[step.id]) {
       instance.state[step.id] = {
@@ -175,7 +187,7 @@ class ContextProvider extends React.Component<Props, ContextState> {
         id: step.id,
         processId: processId,
         instanceId: instanceId,
-        args: "",
+        args: argString,
         script: (step.content as Types.ScriptContent).code,
       }),
     });
@@ -225,10 +237,11 @@ class ContextProvider extends React.Component<Props, ContextState> {
 
     instance.state[message.id] = {
       completed: isFinished && !message.error,
-      data:
+      data: (
         (instance.state[message.id]?.data || "") +
         "\n" +
-        (isFinished ? "" : message.output),
+        (isFinished ? "" : message.output)
+      ).trim(),
     };
 
     processes[processIndex].instances[instanceIndex] = instance;
@@ -246,8 +259,6 @@ class ContextProvider extends React.Component<Props, ContextState> {
   componentDidMount = () => {
     listen("script-output", this.#handleScriptEvent);
   };
-
-  /// End refactoring
 
   #getPublicMethods = () => {
     const methodNames: string[] = Object.getOwnPropertyNames(this).filter(

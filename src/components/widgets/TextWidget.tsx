@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -9,6 +9,7 @@ import Context from "../../context";
 interface Props {
   content: string;
   updateContent: (value: string) => void;
+  editable: boolean;
 }
 
 const Container = styled.div`
@@ -26,7 +27,7 @@ const Container = styled.div`
 `;
 
 export default function TextWidget(props: Props) {
-  const { content, updateContent } = props;
+  const { content, updateContent, editable } = props;
   const context = useContext(Context);
 
   const editor = useEditor({
@@ -42,11 +43,15 @@ export default function TextWidget(props: Props) {
       const value = e.editor.getHTML();
       updateContent(value);
     },
-    editable: true,
+    editable,
   });
 
+  useEffect(() => {
+    editor?.setEditable(editable);
+  }, [editable]);
+
   return (
-    <Container className="prose dark:prose-invert max-w-none">
+    <Container className="prose dark:prose-invert max-w-none p-2">
       <EditorContent editor={editor} />
     </Container>
   );

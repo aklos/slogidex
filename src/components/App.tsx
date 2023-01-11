@@ -5,7 +5,7 @@ import Catalogue from "./Catalogue";
 import { Outlet, Route, Routes, useParams } from "react-router-dom";
 import Overview from "./Overview";
 import Process from "./Process";
-import Toolbar from "./Toolbar";
+import Topbar from "./Topbar";
 
 export default function App() {
   const context = useContext(Context);
@@ -20,7 +20,7 @@ export default function App() {
         )}
       >
         <div className="flex flex-col h-screen">
-          <Toolbar />
+          <Topbar />
           <div className="flex flex-grow">
             <Routes>
               <Route path="/" element={<Container />}>
@@ -58,9 +58,9 @@ function Container() {
 function ProcessWrapper() {
   const context = useContext(Context);
   const params = useParams<{ processId: string; instanceId: string }>();
-  const data = context.processes.find((p) => p.id === params.processId);
+  const process = context.processes.find((p) => p.id === params.processId);
 
-  if (!data) {
+  if (!process) {
     // TODO: Do something here?
     return null;
   }
@@ -69,5 +69,5 @@ function ProcessWrapper() {
     ? context.getInstanceById(params.instanceId)
     : undefined;
 
-  return <Process data={data} instance={instance} />;
+  return <Process process={process} instance={instance} />;
 }

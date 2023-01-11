@@ -19,6 +19,7 @@ namespace Types {
     id: string;
     test: boolean;
     pinned: boolean;
+    name: string;
     state: InstanceState;
     createdAt: Date;
     updatedAt: Date;

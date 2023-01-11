@@ -6,16 +6,35 @@ interface Props {
   Icon: Icon;
   label?: string;
   title?: string;
+  disabled?: boolean;
+  positive?: boolean;
+  destructive?: boolean;
   onClick: () => void;
 }
 
 export default function Button(props: Props) {
-  const { Icon, label, title, onClick } = props;
+  const { Icon, label, title, disabled, positive, destructive, onClick } =
+    props;
   return (
     <button
-      className={cx("p-2 flex items-center")}
+      className={cx(
+        "p-2 flex items-center transition duration-100",
+        "hover:bg-black/10 dark:hover:bg-black/30",
+        {
+          "opacity-30 pointer-events-none": disabled,
+          "text-lime-500 dark:text-lime-400": positive,
+          "text-red-500 dark:text-red-400": destructive,
+        }
+      )}
       title={title}
-      onClick={onClick}
+      onClick={
+        disabled
+          ? undefined
+          : (e) => {
+              e.stopPropagation();
+              onClick();
+            }
+      }
     >
       {Icon ? <Icon /> : null}
       {label ? (

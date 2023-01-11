@@ -16,8 +16,8 @@ export default function Editable(props: {
         className,
         "focus:outline-none",
         "border border-transparent px-2 py-1",
-        "focus:border-gray-200/30",
-        "hover:border-gray-200/10"
+        "focus:border-gray-400/50 dark:focus:border-gray-200/30",
+        "hover:border-gray-400/20 dark:hover:border-gray-200/10"
       )}
       html={children}
       placeholder={placeholder}

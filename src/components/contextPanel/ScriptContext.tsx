@@ -1,16 +1,16 @@
 import React from "react";
-import Toggle from "./lib/Toggle";
+import Toggle from "../lib/Toggle";
 
 interface Props {
   process: Types.Process;
-  data: Types.Step;
-  update: (data: Types.Step) => void;
+  step: Types.Step;
+  update: (step: Types.Step) => void;
 }
 
 export default function ScriptContext(props: Props) {
-  const { process, data, update } = props;
-  const content = data.content as Types.ScriptContent;
-  const stepIndex = process.steps.findIndex((s) => s.id === data.id);
+  const { process, step, update } = props;
+  const content = step.content as Types.ScriptContent;
+  const stepIndex = process.steps.findIndex((s) => s.id === step.id);
 
   const fields = process.steps
     .slice(0, stepIndex)
@@ -24,7 +24,7 @@ export default function ScriptContext(props: Props) {
             .map((f) => (
               <div key={`field_${f.name}`} className="mb-2">
                 <Toggle
-                  value={content.args.includes(f.name)}
+                  value={content.args?.includes(f.name)}
                   label={f.label || f.name}
                   onChange={(v) => {
                     if (v) {
@@ -34,9 +34,9 @@ export default function ScriptContext(props: Props) {
                       content.args.splice(index, 1);
                     }
 
-                    data.content = content;
+                    step.content = content;
 
-                    update(data);
+                    update(step);
                   }}
                 />
               </div>

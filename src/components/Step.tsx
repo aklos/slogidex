@@ -9,24 +9,27 @@ import {
   ArrowUp,
   CheckSquare,
   CheckSquareFill,
+  Square,
   Trash3,
 } from "react-bootstrap-icons";
 import Button from "./lib/Button";
 
 interface Props {
-  data: Types.Step;
+  step: Types.Step;
   state?: Types.StepState;
-  update: (data: Types.Step) => void;
+  update: (step: Types.Step) => void;
   move: (dir: -1 | 1) => void;
   remove: () => void;
   processId: string;
   instanceId?: string;
-  updateInstance: (data: Types.StepState) => void;
+  updateInstance: (stepState: Types.StepState) => void;
+  editable: boolean;
+  completable: boolean;
 }
 
 export default function Step(props: Props) {
   const {
-    data,
+    step,
     state,
     update,
     move,
@@ -34,12 +37,14 @@ export default function Step(props: Props) {
     processId,
     instanceId,
     updateInstance,
+    editable,
+    completable,
   } = props;
   const context = useContext(Context);
 
   const updateContent = (value: Types.StepContent) => {
-    data.content = value;
-    update(data);
+    step.content = value;
+    update(step);
   };
 
   const updateFieldValue = (fieldId: string, value: string | boolean) => {
@@ -49,16 +54,22 @@ export default function Step(props: Props) {
   };
 
   const toggleRequired = () => {
-    data.required = !data.required;
-    update(data);
+    step.required = !step.required;
+    update(step);
+  };
+
+  const toggleCompleted = () => {
+    const _state = state || ({ completed: false } as Types.StepState);
+    _state.completed = !_state.completed;
+    updateInstance(_state);
   };
 
   const widgetMap = () => {
-    switch (data.type) {
+    switch (step.type) {
       case "form":
         return (
           <FormWidget
-            content={data.content as Types.FormContent}
+            content={step.content as Types.FormContent}
             valueData={state?.data as Types.FieldStates}
             updateFieldValue={updateFieldValue}
           />
@@ -68,17 +79,20 @@ export default function Step(props: Props) {
           <ScriptWidget
             processId={processId}
             instanceId={instanceId}
-            stepId={data.id}
+            stepId={step.id}
             state={state}
-            content={data.content as Types.ScriptContent}
+            content={step.content as Types.ScriptContent}
             updateContent={updateContent}
+            editable={editable}
+            completable={completable}
           />
         );
       case "text":
         return (
           <TextWidget
-            content={data.content as string}
+            content={step.content as string}
             updateContent={updateContent}
+            editable={editable}
           />
         );
     }
@@ -86,15 +100,25 @@ export default function Step(props: Props) {
 
   return (
     <section
-      className={cx("relative p-2 border border-transparent group/step", {
-        "border-gray-200/30": context.selectedStepId === data.id,
-        "hover:border-gray-200/10": context.selectedStepId !== data.id,
+      className={cx("relative border border-transparent group/step", {
+        "border-gray-400/50 dark:border-gray-200/30":
+          context.selectedStepId === step.id && editable,
+        "hover:border-gray-200 dark:hover:border-gray-200/10":
+          context.selectedStepId !== step.id && editable,
       })}
-      onClick={() => context._selectStep(data.id)}
+      onClick={() => context.selectStep(step.id)}
     >
-      <div className="absolute z-10 top-0 right-0 text-xs bg-gray-400/20 flex opacity-0 group-hover/step:opacity-100 transition duration-200">
+      <div
+        className={cx(
+          "absolute z-10 top-0 right-0 text-xs bg-gray-400/20 flex opacity-0 transition duration-200",
+          {
+            "pointer-events-none": !editable,
+            "group-hover/step:opacity-100": editable,
+          }
+        )}
+      >
         <Button
-          Icon={data.required ? CheckSquareFill : CheckSquare}
+          Icon={step.required ? CheckSquareFill : CheckSquare}
           onClick={toggleRequired}
           title="Toggle checked requirement"
         />
@@ -102,7 +126,25 @@ export default function Step(props: Props) {
         <Button Icon={ArrowDown} onClick={() => move(1)} title="Move down" />
         <Button Icon={Trash3} onClick={() => remove()} title="Delete block" />
       </div>
-      <div>{widgetMap()}</div>
+      <div className="flex">
+        {step.required ? (
+          <div
+            className={cx("flex-shrink-0 border-r", {
+              "border-gray-400/40": !state?.completed,
+              "border-lime-500 dark:border-lime-400": state?.completed,
+            })}
+          >
+            <Button
+              Icon={state?.completed ? CheckSquareFill : Square}
+              positive={state?.completed}
+              title="Complete this step"
+              onClick={toggleCompleted}
+              disabled={!completable}
+            />
+          </div>
+        ) : null}
+        <div className="w-full">{widgetMap()}</div>
+      </div>
     </section>
   );
 }

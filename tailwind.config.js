@@ -5,10 +5,6 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   darkMode: "class",
   theme: {
-    // fontFamily: {
-    //   sans: ["Roboto Flex"],
-    //   mono: ["monospace"],
-    // },
     extend: {
       transitionProperty: {
         width: "width",

@@ -28,6 +28,7 @@ export default function PathInput(props: {
         <Button
           Icon={Icons.Folder}
           label="Browse"
+          title={`Browse for ${directory ? "folder" : "file"}`}
           onClick={async () => {
             const filepath = await open({ directory });
             onChange(filepath as string);

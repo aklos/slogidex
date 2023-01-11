@@ -1,6 +1,7 @@
 import React from "react";
 import cx from "classnames";
-import { Icon } from "react-bootstrap-icons";
+import { Backspace, Icon } from "react-bootstrap-icons";
+import Button from "./Button";
 
 interface Props {
   Icon?: Icon;
@@ -16,11 +17,11 @@ export default function Input(props: Props) {
 
   return (
     <label className="block">
-      {label ? <div className="mb-1">{label}</div> : null}
+      {label ? <div className="mb-1 font-bold">{label}</div> : null}
       <div className="relative">
         <input
           className={cx(
-            "w-full px-2 py-0.5 border dark:border-stone-900",
+            "w-full px-2 py-1 border dark:border-stone-900",
             "focus:outline-none focus:border-gray-300 dark:focus:border-gray-800",
             "rounded-sm dark:bg-black/50",
             {
@@ -40,6 +41,15 @@ export default function Input(props: Props) {
             )}
           >
             <Icon />
+          </div>
+        ) : null}
+        {value ? (
+          <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
+            <Button
+              Icon={Backspace}
+              title="Clear value"
+              onClick={() => onChange("")}
+            />
           </div>
         ) : null}
       </div>
