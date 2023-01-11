@@ -25,7 +25,7 @@ type ContextMethods = {
 };
 
 const saveData: Types.SaveData = JSON.parse(
-  localStorage.getItem("_autotool") ||
+  localStorage.getItem("slogidex") ||
     // FIXME: Need to set defaults for all SaveData keys or else
     // #updateSaveData doesn't work.
     // Can this be simplified?
@@ -214,7 +214,7 @@ class ContextProvider extends React.Component<Props, ContextState> {
       return accu;
     }, {} as Types.SaveData);
 
-    window.localStorage.setItem("_autotool", JSON.stringify(_saveData));
+    window.localStorage.setItem("slogidex", JSON.stringify(_saveData));
   };
 
   #handleScriptEvent = (e: { payload: { message: string } }) => {
