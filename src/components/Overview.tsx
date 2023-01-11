@@ -8,7 +8,6 @@ export default function Overview() {
   const context = useContext(Context);
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
-      {/* FIXME: Logo is so big that it slows the app down... */}
       <div>
         <img src={context.darkMode ? LogoDark : LogoLight} />
       </div>
