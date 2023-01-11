@@ -1,5 +1,5 @@
-<p> <div align="center"><img alt="Slogidex" width="880" height="240" src="https://github.com/aklos/autotool/blob/main/src/banner.svg"></div>
-<a href="https://github.com/aklos/autotool/releases"><img alt="Download latest release" src="https://img.shields.io/badge/Download-latest%20release-brightgreen"></a></p>
+<p> <div align="center"><img alt="Slogidex" width="880" height="240" src="https://github.com/aklos/slogidex/blob/main/src/banner.svg"></div>
+<a href="https://github.com/aklos/slogidex/releases"><img alt="Download latest release" src="https://img.shields.io/badge/Download-latest%20release-brightgreen"></a></p>
 
 Slogidex is an evironment for writing and executing processes inspired by the concept of gradual automation. It's pretty simple: formalize a process into discrete steps, then try to replace steps with automated scripts. If you can't, that's fine, just outlining the process can already be helpful for remembering tasks, onboarding team members, or working through harder problems.
 
@@ -38,5 +38,5 @@ We're happy to accept community contributions. If you're interested in adding a 
 
 ## License
 
-Slogidex is an open source project (MIT license) with separate proprietary modules targeted for enterprise users. See the [LICENSE](https://github.com/aklos/autotool/blob/main/LICENSE.md) file for licensing information as it pertains to
+Slogidex is an open source project (MIT license) with separate proprietary modules targeted for enterprise users. See the [LICENSE](https://github.com/aklos/slogidex/blob/main/LICENSE.md) file for licensing information as it pertains to
 files in this repository.
