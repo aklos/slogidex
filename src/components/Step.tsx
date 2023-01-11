@@ -1,208 +1,150 @@
-import React from "react";
-import * as Icons from "react-bootstrap-icons";
+import React, { useContext } from "react";
 import cx from "classnames";
-import Button from "./lib/Button";
-import Markdown from "./editors/Markdown";
-import Script from "./editors/Script";
-import Form from "./editors/Form";
 import Context from "../context";
+import FormWidget from "./widgets/FormWidget";
+import ScriptWidget from "./widgets/ScriptWidget";
+import TextWidget from "./widgets/TextWidget";
+import {
+  ArrowDown,
+  ArrowUp,
+  CheckSquare,
+  CheckSquareFill,
+  Square,
+  Trash3,
+} from "react-bootstrap-icons";
+import Button from "./lib/Button";
 
-export default function Step(props: {
-  data: Types.Step;
-  stepValue: Types.StepInstanceValue | null;
-  updateContent: (content: string) => void;
-  updateArgs: (args: string[]) => void;
-  updateStepValue: (value: Types.FieldValue) => void;
-  updateCompleted: (completed: boolean) => void;
-  toggleRequired: () => void;
-  mappedArgs: string;
-  deleteStep: () => void;
-  runScript?: () => void;
-  locked: boolean;
-  moveStep: (dir: -1 | 1) => void;
-  frozen: boolean;
-}) {
+interface Props {
+  step: Types.Step;
+  state?: Types.StepState;
+  update: (step: Types.Step) => void;
+  move: (dir: -1 | 1) => void;
+  remove: () => void;
+  processId: string;
+  instanceId?: string;
+  updateInstance: (stepState: Types.StepState) => void;
+  editable: boolean;
+  completable: boolean;
+}
+
+export default function Step(props: Props) {
   const {
-    data,
-    stepValue,
-    updateContent,
-    updateArgs,
-    updateStepValue,
-    updateCompleted,
-    toggleRequired,
-    deleteStep,
-    mappedArgs,
-    runScript,
-    locked,
-    moveStep,
-    frozen,
+    step,
+    state,
+    update,
+    move,
+    remove,
+    processId,
+    instanceId,
+    updateInstance,
+    editable,
+    completable,
   } = props;
-  const context = React.useContext(Context);
-  const ref = React.useRef(null);
+  const context = useContext(Context);
 
-  // const handleWindowClick = (e: any) => {
-  //   if (ref.current && !(ref.current as any).contains(e.target)) {
-  //     if (context.selectedStep?.id === data.id) {
-  //       context.selectStep(null, null);
-  //     }
-  //   }
-  // };
+  const updateContent = (value: Types.StepContent) => {
+    step.content = value;
+    update(step);
+  };
 
-  // React.useEffect(() => {
-  //   document.addEventListener("mousedown", handleWindowClick);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleWindowClick);
-  //   };
-  // }, []);
+  const updateFieldValue = (fieldId: string, value: string | boolean) => {
+    const _state = state || ({ completed: false, data: {} } as Types.StepState);
+    (_state.data as Types.FieldStates)[fieldId] = value;
+    updateInstance(_state);
+  };
 
-  const editorComponentMap = React.useCallback(() => {
-    switch (data.type) {
+  const toggleRequired = () => {
+    step.required = !step.required;
+    update(step);
+  };
+
+  const toggleCompleted = () => {
+    const _state = state || ({ completed: false } as Types.StepState);
+    _state.completed = !_state.completed;
+    updateInstance(_state);
+  };
+
+  const widgetMap = () => {
+    switch (step.type) {
       case "form":
         return (
-          <Form
-            data={data}
-            stepValue={stepValue}
-            update={
-              locked ? () => null : (value: string) => updateContent(value)
-            }
-            updateValue={(v) => updateStepValue(v)}
-          />
-        );
-      case "markdown":
-        return (
-          <Markdown
-            data={data}
-            update={
-              locked ? () => null : (value: string) => updateContent(value)
-            }
-            locked={locked}
+          <FormWidget
+            content={step.content as Types.FormContent}
+            valueData={state?.data as Types.FieldStates}
+            updateFieldValue={updateFieldValue}
           />
         );
       case "script":
         return (
-          <Script
-            data={data}
-            stepValue={stepValue}
-            update={
-              locked ? () => null : (value: string) => updateContent(value)
-            }
-            run={runScript}
-            mappedArgs={mappedArgs}
-            selected={context.selectedStep?.id === data.id}
-            locked={locked}
-            frozen={frozen}
+          <ScriptWidget
+            processId={processId}
+            instanceId={instanceId}
+            stepId={step.id}
+            state={state}
+            content={step.content as Types.ScriptContent}
+            updateContent={updateContent}
+            editable={editable}
+            completable={completable}
+          />
+        );
+      case "text":
+        return (
+          <TextWidget
+            content={step.content as string}
+            updateContent={updateContent}
+            editable={editable}
           />
         );
     }
-  }, [data, stepValue, updateContent, runScript]);
+  };
 
   return (
-    <div
-      ref={ref}
-      className={cx("group/step relative")}
-      onClick={() =>
-        context.selectStep(
-          data,
-          data.type === "script" ? updateArgs : updateContent
-        )
-      }
-      onFocus={() =>
-        context.selectStep(
-          data,
-          data.type === "script" ? updateArgs : updateContent
-        )
-      }
-      // onBlur={() => context.selectStep(null, null)}
+    <section
+      className={cx("relative border border-transparent group/step", {
+        "border-gray-400/50 dark:border-gray-200/30":
+          context.selectedStepId === step.id && editable,
+        "hover:border-gray-200 dark:hover:border-gray-200/10":
+          context.selectedStepId !== step.id && editable,
+      })}
+      onClick={() => context.selectStep(step.id)}
     >
-      {!locked ? (
-        <div className="absolute z-10 right-0 text-xs bg-gray-400/20 flex opacity-0 group-hover/step:opacity-100 transition duration-200">
-          <Button
-            Icon={data.required ? Icons.CheckSquareFill : Icons.CheckSquare}
-            onClick={toggleRequired}
-            title="Toggle checked requirement"
-          />
-          <Button
-            Icon={Icons.ArrowUp}
-            onClick={() => moveStep(-1)}
-            title="Move up"
-          />
-          <Button
-            Icon={Icons.ArrowDown}
-            onClick={() => moveStep(1)}
-            title="Move down"
-          />
-          <Button
-            style="negative"
-            Icon={Icons.Trash3Fill}
-            onClick={() => deleteStep()}
-            title="Delete block"
-          />
-        </div>
-      ) : null}
       <div
         className={cx(
-          "w-full transition duration-200 border border-transparent",
+          "absolute z-10 top-0 right-0 text-xs bg-gray-400/20 flex opacity-0 transition duration-200",
           {
-            flex: data.required,
-            "group-hover/step:border-gray-400/20":
-              context.selectedStep?.id !== data.id,
-            "border-gray-400/50": context.selectedStep?.id === data.id,
+            "pointer-events-none": !editable,
+            "group-hover/step:opacity-100": editable,
           }
         )}
       >
-        {data.required ? (
-          <div className="flex-shrink-0 border-r-2 border-gray-400/20">
-            {data.type === "script" &&
-            stepValue &&
-            stepValue.status === "running" ? (
-              <div className="px-1.5 py-1 animate-spin">
-                <Icons.DashCircleDotted />
-              </div>
-            ) : frozen ? (
-              <div
-                className="px-1.5 py-1 opacity-20"
-                title="Required steps not completed"
-              >
-                {data.type === "script" ? (
-                  <Icons.CaretRightSquare />
-                ) : (
-                  <Icons.Square />
-                )}
-              </div>
-            ) : (
-              <Button
-                Icon={
-                  data.type === "script"
-                    ? stepValue?.completed
-                      ? Icons.CheckSquareFill
-                      : Icons.CaretRightSquare
-                    : stepValue?.completed
-                    ? Icons.CheckSquareFill
-                    : Icons.Square
-                }
-                onClick={() => {
-                  if (data.type === "script" && runScript) {
-                    if (stepValue?.completed) {
-                      updateCompleted(!stepValue?.completed);
-                    } else {
-                      runScript();
-                    }
-                  } else {
-                    updateCompleted(!stepValue?.completed);
-                  }
-                }}
-              />
-            )}
+        <Button
+          Icon={step.required ? CheckSquareFill : CheckSquare}
+          onClick={toggleRequired}
+          title="Toggle checked requirement"
+        />
+        <Button Icon={ArrowUp} onClick={() => move(-1)} title="Move up" />
+        <Button Icon={ArrowDown} onClick={() => move(1)} title="Move down" />
+        <Button Icon={Trash3} onClick={() => remove()} title="Delete block" />
+      </div>
+      <div className="flex">
+        {step.required ? (
+          <div
+            className={cx("flex-shrink-0 border-r", {
+              "border-gray-400/40": !state?.completed,
+              "border-lime-500 dark:border-lime-400": state?.completed,
+            })}
+          >
+            <Button
+              Icon={state?.completed ? CheckSquareFill : Square}
+              positive={state?.completed}
+              title="Complete this step"
+              onClick={toggleCompleted}
+              disabled={!completable}
+            />
           </div>
         ) : null}
-        <div
-          className={cx("w-full", {
-            "": data.required,
-          })}
-        >
-          {editorComponentMap()}
-        </div>
+        <div className="w-full">{widgetMap()}</div>
       </div>
-    </div>
+    </section>
   );
 }

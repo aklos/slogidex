@@ -22,15 +22,13 @@ export default function PathInput(props: {
           onChange={onChange}
           label={label}
           placeholder={placeholder}
-          large={large}
         />
       </div>
       <div className="flex-shrink-0 mb-[1px]">
         <Button
           Icon={Icons.Folder}
           label="Browse"
-          large={large}
-          border
+          title={`Browse for ${directory ? "folder" : "file"}`}
           onClick={async () => {
             const filepath = await open({ directory });
             onChange(filepath as string);

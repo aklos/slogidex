@@ -1,57 +1,44 @@
 import React from "react";
-import * as Icons from "react-bootstrap-icons";
 import cx from "classnames";
+import { Icon } from "react-bootstrap-icons";
 
 interface Props {
-  Icon?: Icons.Icon;
-  onClick?: () => void;
-  style?: "normal" | "positive" | "negative";
+  Icon: Icon;
   label?: string;
   title?: string;
-  border?: boolean;
-  underline?: boolean;
   disabled?: boolean;
-  large?: boolean;
+  positive?: boolean;
+  destructive?: boolean;
+  onClick: () => void;
 }
 
 export default function Button(props: Props) {
-  const {
-    Icon,
-    onClick,
-    style,
-    title,
-    label,
-    border,
-    underline,
-    disabled,
-    large,
-  } = props;
-
+  const { Icon, label, title, disabled, positive, destructive, onClick } =
+    props;
   return (
     <button
       className={cx(
-        "flex items-center hover:bg-black/10 hover:dark:bg-white/10 rounded-sm",
+        "p-2 flex items-center transition duration-100",
+        "hover:bg-black/10 dark:hover:bg-black/30",
         {
-          "py-1 h-[28px]": !large,
-          "py-1.5 h-[36px]": large,
-          "px-2": label,
-          "px-1.5": !label,
-          "text-lime-400": style === "positive",
-          "text-rose-400": style === "negative",
-          "border border-gray-400": border,
-          "underline underline-offset-1": underline,
-          "opacity-50 pointer-events-none": disabled,
+          "opacity-30 pointer-events-none": disabled,
+          "text-lime-500 dark:text-lime-400": positive,
+          "text-red-500 dark:text-red-400": destructive,
         }
       )}
       title={title}
-      onClick={onClick}
-      disabled={disabled}
+      onClick={
+        disabled
+          ? undefined
+          : (e) => {
+              e.stopPropagation();
+              onClick();
+            }
+      }
     >
       {Icon ? <Icon /> : null}
       {label ? (
-        <span className={cx("pl-2", { "pr-2": !Icon, "pr-1": Icon })}>
-          {label}
-        </span>
+        <span className={cx({ "ml-1.5 text-sm": !!Icon })}>{label}</span>
       ) : null}
     </button>
   );
