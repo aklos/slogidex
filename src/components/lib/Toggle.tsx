@@ -11,11 +11,11 @@ export default function Toggle(props: {
   const { value, onChange, label, large } = props;
   return (
     <label
-      className={cx("flex items-center px-2 rounded-sm", "border-2", {
+      className={cx("flex items-center px-2 rounded-sm cursor-pointer", {
         "py-1": !large,
         "py-1.5 text-base": large,
         "border-gray-300 dark:border-gray-400/30": !value,
-        "border-gray-400 dark:border-gray-400": value,
+        "bg-black/10 dark:bg-white/10": value,
       })}
     >
       <input

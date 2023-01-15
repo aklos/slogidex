@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "Slogidex",
-    "version": "0.2.0"
+    "version": "0.2.1"
   },
   "tauri": {
     "allowlist": {
@@ -61,7 +61,7 @@
         "height": 768,
         "width": 1366,
         "minHeight": 480,
-        "minWidth": 1024
+        "minWidth": 1366
       }
     ]
   }

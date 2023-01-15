@@ -5,14 +5,16 @@ import Context from "../../context";
 import Button from "../lib/Button";
 import FormContext from "./FormContext";
 import ScriptContext from "./ScriptContext";
+import TableOfContents from "./TableOfContents";
 
 interface Props {
   process: Types.Process;
   step?: Types.Step;
+  instance?: Types.Instance;
 }
 
 export default function ContextPanel(props: Props) {
-  const { process, step } = props;
+  const { process, step, instance } = props;
   const context = useContext(Context);
   const [showPanel, togglePanel] = useState(false);
 
@@ -26,15 +28,15 @@ export default function ContextPanel(props: Props) {
   };
 
   const contextMap = () => {
-    if (!step) {
-      return;
+    if (!step || (instance && !instance.test)) {
+      return <TableOfContents process={process} />;
     }
 
     switch (step.type) {
       case "form":
         return <FormContext step={step} update={updateStep} />;
       case "text":
-        return null;
+        return <TableOfContents process={process} />;
       case "script":
         return (
           <ScriptContext process={process} step={step} update={updateStep} />
@@ -45,19 +47,11 @@ export default function ContextPanel(props: Props) {
   return (
     <div
       className={cx(
-        "flex-shrink-0 border-l dark:border-black",
-        "w-96 2xl:w-80 flex",
-        "fixed 2xl:relative",
-        "z-10 h-screen right-0 drop-shadow-xl",
-        "2xl:right-auto 2xl:h-full 2xl:drop-shadow-none",
-        "bg-stone-100 dark:bg-stone-900",
-        {
-          "-mr-96 transform -translate-x-[32px] 2xl:mr-0 2xl:translate-x-0":
-            !showPanel,
-        }
+        "flex flex-shrink-0 z-10",
+        "bg-stone-100 dark:bg-stone-900 text-sm"
       )}
     >
-      <div className="relative w-9 h-full 2xl:hidden border-r dark:border-black">
+      <div className="w-8 2xl:hidden h-full relative border-r dark:border-black">
         <div className="absolute top-1/2 -translate-y-1/2">
           <Button
             Icon={showPanel ? ArrowBarRight : ArrowBarLeft}
@@ -66,7 +60,14 @@ export default function ContextPanel(props: Props) {
           />
         </div>
       </div>
-      <div className="w-full">{contextMap()}</div>
+      <div
+        className={cx("w-80 2xl:block", {
+          hidden: !showPanel,
+          block: showPanel,
+        })}
+      >
+        {contextMap()}
+      </div>
     </div>
   );
 }
