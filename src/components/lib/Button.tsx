@@ -21,7 +21,7 @@ export default function Button(props: Props) {
         "p-2 flex items-center transition duration-100",
         "hover:bg-black/10 dark:hover:bg-black/30",
         {
-          "opacity-30 pointer-events-none": disabled,
+          "opacity-20 pointer-events-none": disabled,
           "text-lime-500 dark:text-lime-400": positive,
           "text-red-500 dark:text-red-400": destructive,
         }

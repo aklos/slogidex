@@ -19,6 +19,7 @@ export default function Editable(props: {
         "focus:border-gray-400/50 dark:focus:border-gray-200/30",
         "hover:border-gray-400/20 dark:hover:border-gray-200/10"
       )}
+      title="Edit"
       html={children}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value, (e.target as any).cleaned)}

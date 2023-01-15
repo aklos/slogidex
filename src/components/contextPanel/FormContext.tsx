@@ -8,6 +8,7 @@ import Editable from "../lib/Editable";
 import Toggle from "../lib/Toggle";
 import PathInput from "../lib/PathInput";
 import {
+  ArrowsExpand,
   CardList,
   Folder,
   Fonts,
@@ -151,9 +152,10 @@ export default function FormContext(props: Props) {
 
   return (
     <div className="max-h-screen flex flex-col">
-      <div className="p-4 border-b border-gray-300 dark:border-black flex items-center">
+      <div className="p-2 border-b border-gray-300 dark:border-black flex items-end">
         <div className="w-full">
           <Select
+            label="Add a new form field"
             value={fieldType}
             onChange={(value: string) => setFieldType(value as Types.FieldType)}
             options={[
@@ -178,11 +180,11 @@ export default function FormContext(props: Props) {
         {content.fields.map((f) => (
           <li
             key={f.id}
-            className="odd:bg-stone-300 even:bg-stone-300/50 dark:odd:bg-stone-800 dark:even:bg-stone-800/50 border-b dark:border-stone-900"
+            className="odd:bg-black/5 even:bg-black/10 dark:odd:bg-white/5 dark:even:bg-white/10 border-b dark:border-black"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="pl-4">
+                <div className="pl-2">
                   {f.type === "text" ? <Fonts /> : null}
                   {f.type === "number" ? <Hash /> : null}
                   {f.type === "file" ? <Folder /> : null}
@@ -207,16 +209,16 @@ export default function FormContext(props: Props) {
                 />
               </div>
             </div>
-            <div className="mb-1 flex justify-center">
+            <div className="flex justify-center border-t dark:border-black">
               <Button
-                Icon={GripHorizontal}
+                Icon={ArrowsExpand}
                 onClick={() => toggleField(f.id)}
-                title="Toggle field panel"
+                title="Toggle field properties"
               />
             </div>
             <div
               className={cx("overflow-hidden transition-height duration-200", {
-                "h-auto px-4 py-2": toggledFields.includes(f.id),
+                "h-auto p-2": toggledFields.includes(f.id),
                 "h-0 p-0": !toggledFields.includes(f.id),
               })}
             >

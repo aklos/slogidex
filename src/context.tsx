@@ -71,7 +71,14 @@ class ContextProvider extends React.Component<Props, ContextState> {
     const newProcess = {
       id: uuidv4(),
       name: "New process",
-      steps: [],
+      steps: [
+        {
+          id: uuidv4(),
+          type: "text" as Types.StepType,
+          required: false,
+          content: "",
+        },
+      ],
       instances: [],
       createdAt: new Date(),
       updatedAt: new Date(),
