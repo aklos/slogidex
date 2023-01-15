@@ -15,7 +15,7 @@ export default function Toolbar() {
   const location = useLocation();
 
   return (
-    <nav className="w-full h-8 border-b dark:border-black flex items-center">
+    <nav className="w-full h-8 flex items-center bg-slate-200 dark:bg-black/50">
       <div className="w-80 flex-shrink-0">
         <Button
           Icon={location.pathname === "/" ? HouseFill : House}

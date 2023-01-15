@@ -10,6 +10,7 @@ import {
   CheckSquare,
   CheckSquareFill,
   Square,
+  SquareFill,
   Trash3,
 } from "react-bootstrap-icons";
 import Button from "./lib/Button";
@@ -49,7 +50,22 @@ export default function Step(props: Props) {
 
   const updateFieldValue = (fieldId: string, value: string | boolean) => {
     const _state = state || ({ completed: false, data: {} } as Types.StepState);
+
     (_state.data as Types.FieldStates)[fieldId] = value;
+
+    const allFieldsFilled = (step.content as Types.FormContent).fields.reduce(
+      (accu, curr) => {
+        if ((_state.data as Types.FieldStates)[curr.id] !== undefined) {
+          return accu;
+        }
+
+        return false;
+      },
+      true
+    );
+
+    _state.completed = allFieldsFilled;
+
     updateInstance(_state);
   };
 
@@ -98,16 +114,12 @@ export default function Step(props: Props) {
     }
   };
 
+  const status =
+    context.invokedScripts.find((x) => x.stepId === step.id)?.status ||
+    "initial";
+
   return (
-    <section
-      className={cx("relative border border-transparent group/step", {
-        "border-gray-400/50 dark:border-gray-200/30":
-          context.selectedStepId === step.id && editable,
-        "hover:border-gray-200 dark:hover:border-gray-200/10":
-          context.selectedStepId !== step.id && editable,
-      })}
-      onClick={() => context.selectStep(step.id)}
-    >
+    <section className="mr-8 relative group/step">
       <div
         className={cx(
           "absolute z-10 top-0 right-0 text-xs bg-gray-400/20 flex opacity-0 transition duration-200",
@@ -127,23 +139,40 @@ export default function Step(props: Props) {
         <Button Icon={Trash3} onClick={() => remove()} title="Delete block" />
       </div>
       <div className="flex">
-        {step.required ? (
-          <div
-            className={cx("flex-shrink-0 border-r", {
-              "border-gray-400/40": !state?.completed,
-              "border-lime-500 dark:border-lime-400": state?.completed,
-            })}
-          >
+        <div
+          className={cx("flex-shrink-0 border-r-2 w-8 z-10", {
+            "border-transparent": !state?.completed,
+            "border-lime-500 dark:border-lime-400": state?.completed,
+            "border-red-500 dark:border-red-400": status === "failed",
+          })}
+        >
+          {step.required ? (
             <Button
-              Icon={state?.completed ? CheckSquareFill : Square}
+              Icon={
+                state?.completed
+                  ? CheckSquareFill
+                  : completable
+                  ? Square
+                  : SquareFill
+              }
               positive={state?.completed}
               title="Complete this step"
               onClick={toggleCompleted}
               disabled={!completable}
             />
-          </div>
-        ) : null}
-        <div className="w-full">{widgetMap()}</div>
+          ) : null}
+        </div>
+        <div
+          className={cx("w-full relative border border-transparent -ml-[1px]", {
+            "border-gray-400/50 dark:border-gray-200/30":
+              context.selectedStepId === step.id && editable,
+            "hover:border-gray-200 dark:hover:border-gray-200/10":
+              context.selectedStepId !== step.id && editable,
+          })}
+          onClick={() => context.selectStep(step.id)}
+        >
+          {widgetMap()}
+        </div>
       </div>
     </section>
   );

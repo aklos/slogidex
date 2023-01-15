@@ -46,7 +46,7 @@ export default function ScriptContext(props: Props) {
     });
 
   return (
-    <div className="p-4">
+    <div className="p-2">
       <div className="font-bold mb-2">Script argument fields</div>
       {fields.length ? (
         fields

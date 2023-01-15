@@ -15,7 +15,7 @@ export default function App() {
       <div
         className={cx(
           "relative w-screen h-full",
-          "font-sans text-neutral",
+          "font-sans text-gray-900",
           "bg-stone-50 dark:bg-stone-800 dark:text-gray-300"
         )}
       >
@@ -40,7 +40,7 @@ export default function App() {
 
 function Container() {
   return (
-    <div className="w-full flex overflow-hidden">
+    <div className="w-full flex">
       <Catalogue />
       <div className="w-full flex">
         <Outlet />

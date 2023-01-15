@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import cx from "classnames";
 import Blockies from "react-blockies";
-import { format, formatDistance } from "date-fns";
+import { formatDistance } from "date-fns";
 import {
   Search,
   Play,
@@ -9,6 +9,7 @@ import {
   PinFill,
   PinAngle,
   Clock,
+  Dot,
 } from "react-bootstrap-icons";
 import Context from "../context";
 import Input from "./lib/Input";
@@ -25,7 +26,7 @@ export default function Catalogue() {
   return (
     <div
       className={cx(
-        "w-80 flex-shrink-0 border-r dark:border-black",
+        "w-80 flex-shrink-0",
         "bg-stone-100 dark:bg-stone-900",
         "text-sm"
       )}
@@ -80,14 +81,11 @@ function ProcessEntry(props: {
     <li>
       <div
         className={cx(
-          "border-b dark:border-black cursor-pointer",
+          "dark:border-black cursor-pointer",
           "transition duration-100",
           {
-            "hover:bg-blue-300/10": !selected,
-            "bg-blue-300/40 dark:bg-blue-800/10":
-              selected && instance && !instance.test,
-            "font-bold bg-blue-300 dark:bg-blue-800":
-              selected && (!instance || instance.test),
+            "border-b hover:bg-blue-400/5 dark:hover:bg-blue-800/5": !selected,
+            "border-b bg-blue-400/10 dark:bg-blue-800/10": selected,
           }
         )}
         onClick={(e) => {
@@ -115,7 +113,7 @@ function ProcessEntry(props: {
         </div>
       </div>
       {selected && process.instances.length ? (
-        <ul className="bg-black/5 dark:bg-black/20 border-b dark:border-black">
+        <ul className="border-b dark:border-black">
           {process.instances
             .filter((i) => !i.test)
             .sort((a, b) => b.createdAt.valueOf() - a.createdAt.valueOf())
@@ -155,8 +153,8 @@ function InstanceEntry(props: {
   return (
     <li
       className={cx("pl-2 py-0.5 text-xs transition duration-100", {
-        "hover:bg-yellow-100/10 cursor-pointer": !selected,
-        "bg-yellow-300 dark:bg-yellow-400 text-gray-900": selected,
+        "hover:bg-yellow-800/5 cursor-pointer": !selected,
+        "bg-yellow-300/10 dark:bg-yellow-400/10": selected,
       })}
       onClick={(e) => {
         e.stopPropagation();
@@ -165,19 +163,19 @@ function InstanceEntry(props: {
     >
       <div className="flex items-center justify-between">
         <div className="w-full flex items-center">
+          <div>
+            <Dot />
+          </div>
           <div
             className={cx("w-full mr-2", {
               italic: !instance.name,
-              "font-bold": selected,
             })}
           >
-            {selected ? (
+            <div className={cx({ "pointer-events-none": !selected })}>
               <Editable onChange={updateName}>
                 {instance.name || "Instance"}
               </Editable>
-            ) : (
-              instance.name || "Instance"
-            )}
+            </div>
           </div>
           <div
             className="flex items-center flex-shrink-0 mr-1"

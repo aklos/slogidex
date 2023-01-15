@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import cx from "classnames";
 import { v4 as uuidv4 } from "uuid";
 import { Plus, Trash3 } from "react-bootstrap-icons";
@@ -8,6 +8,7 @@ import ContextPanel from "./contextPanel/ContextPanel";
 import Editable from "./lib/Editable";
 import Button from "./lib/Button";
 import { useNavigate } from "react-router-dom";
+import ProgressBar from "./ProgressBar";
 
 interface Props {
   process: Types.Process;
@@ -16,6 +17,7 @@ interface Props {
 
 export default function Process(props: Props) {
   const { process, instance } = props;
+  const ref = useRef<HTMLDivElement>(null);
   const context = useContext(Context);
   const navigate = useNavigate();
 
@@ -66,87 +68,77 @@ export default function Process(props: Props) {
   const editable = !instance || instance.test;
 
   return (
-    <div className="w-full relative flex">
+    <div className="w-full flex">
       <div
-        className={cx(
-          "w-full p-2 h-[calc(100vh_-_32px)] 2xl:mr-0 overflow-auto",
-          {
-            "mr-[32px] 2xl:mr-0": editable,
-          }
-        )}
+        id="process"
+        ref={ref}
+        className={cx("w-full h-[calc(100vh_-_32px)] flex overflow-auto")}
       >
-        <section className="pb-2 border-b dark:border-black/30">
-          <h1 className={cx("flex items-center justify-between")}>
-            <div className="text-2xl font-bold">
+        <div className="w-full p-2">
+          <section className="pb-2 mx-8 border-b dark:border-black/30">
+            <h1 className={cx("flex items-center justify-between")}>
+              <div className="text-2xl font-bold">
+                {editable ? (
+                  <Editable onChange={updateName}>{process.name}</Editable>
+                ) : (
+                  <div className="p-2">{process.name}</div>
+                )}
+              </div>
               {editable ? (
-                <Editable onChange={updateName}>{process.name}</Editable>
-              ) : (
-                <div className="p-2">{process.name}</div>
-              )}
-            </div>
-            {editable ? (
-              <Button
-                Icon={Trash3}
-                label="Delete"
-                title="Delete this process"
-                destructive
-                onClick={() => context.deleteProcess(process.id)}
-              />
-            ) : null}
-          </h1>
-        </section>
-        <div>
-          <Divider index={-1} process={process} editable={editable} />
-        </div>
-        {process.steps.map((s, index) => {
-          const completable = process.steps
-            .slice(0, index)
-            .filter((_s) => _s.required)
-            .reduce((accu, curr) => {
-              if (instance?.state[curr.id]?.completed) {
-                return accu;
-              }
-
-              return false;
-            }, true);
-
-          return (
-            <div key={s.id}>
-              <Step
-                step={s}
-                state={instance?.state[s.id]}
-                update={(newStepData: Types.Step) =>
-                  updateStep(s.id, newStepData)
+                <Button
+                  Icon={Trash3}
+                  label="Delete"
+                  title="Delete this process"
+                  destructive
+                  onClick={() => context.deleteProcess(process.id)}
+                />
+              ) : null}
+            </h1>
+          </section>
+          <div>
+            <Divider index={-1} process={process} editable={editable} />
+          </div>
+          {process.steps.map((s, index) => {
+            const completable = process.steps
+              .slice(0, index)
+              .filter((_s) => _s.required)
+              .reduce((accu, curr) => {
+                if (instance?.state[curr.id]?.completed) {
+                  return accu;
                 }
-                move={(dir: -1 | 1) => moveStep(s.id, dir)}
-                remove={() => removeStep(s.id)}
-                processId={process.id}
-                instanceId={instance?.id}
-                updateInstance={(newStateData: Types.StepState) =>
-                  updateInstance(s.id, newStateData)
-                }
-                editable={editable}
-                completable={completable}
-              />
-              <Divider index={index} process={process} editable={editable} />
-            </div>
-          );
-        })}
-        <div className="h-16"></div>
-      </div>
-      <div
-        className={cx("bg-stone-100 dark:bg-stone-900", {
-          "hidden 2xl:block": instance && !instance.test,
-        })}
-      >
-        <div
-          className={cx("w-full", {
-            "opacity-0 pointer-events-none": instance && !instance.test,
+
+                return false;
+              }, true);
+
+            return (
+              <div id={s.id} key={s.id}>
+                <Step
+                  step={s}
+                  state={instance?.state[s.id]}
+                  update={(newStepData: Types.Step) =>
+                    updateStep(s.id, newStepData)
+                  }
+                  move={(dir: -1 | 1) => moveStep(s.id, dir)}
+                  remove={() => removeStep(s.id)}
+                  processId={process.id}
+                  instanceId={instance?.id}
+                  updateInstance={(newStateData: Types.StepState) =>
+                    updateInstance(s.id, newStateData)
+                  }
+                  editable={editable}
+                  completable={completable}
+                />
+                <Divider index={index} process={process} editable={editable} />
+              </div>
+            );
           })}
-        >
-          <ContextPanel process={process} step={selectedStep} />
+          <div className="h-16"></div>
         </div>
+        {instance && !instance.test ? (
+          <ProgressBar process={process} instance={instance} />
+        ) : null}
       </div>
+      <ContextPanel process={process} step={selectedStep} instance={instance} />
     </div>
   );
 }

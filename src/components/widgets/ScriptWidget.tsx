@@ -6,7 +6,7 @@ import "prismjs/components/prism-bash";
 import "prismjs/components/prism-python";
 import "prismjs/themes/prism-solarizedlight.css";
 import Button from "../lib/Button";
-import { DashCircle, Play } from "react-bootstrap-icons";
+import { DashCircle, Play, PlayCircle, PlayFill } from "react-bootstrap-icons";
 import Context from "../../context";
 import { useNavigate } from "react-router-dom";
 import { getArgString } from "../../utils";
@@ -58,12 +58,12 @@ export default function ScriptWidget(props: Props) {
   const args = process && step ? getArgString(process, step, instance) : "";
 
   return (
-    <div className="bg-stone-200 dark:bg-stone-900">
+    <div className="bg-stone-200/70 dark:bg-stone-900">
       <div className="flex">
         <div className="text-lg">
           {["initial", "completed", "failed"].includes(status) ? (
             <Button
-              Icon={Play}
+              Icon={PlayCircle}
               title="Run the script"
               onClick={run}
               disabled={!completable}
@@ -74,7 +74,7 @@ export default function ScriptWidget(props: Props) {
             </div>
           )}
         </div>
-        <div className="p-2 relative">
+        <div className="p-2 relative w-full">
           {args ? (
             <div className="font-mono text-sm mb-1 opacity-50">
               <span>[{args}]</span>
