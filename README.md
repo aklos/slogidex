@@ -22,12 +22,12 @@ Windows support is coming soon (likely in the earlier Beta releases).
 
 ### Requirements
 
-- [Install Rust](https://www.rust-lang.org/tools/install)
+- [Install Tauri prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites/)
 - [Install yarn](https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable)
 
 ### Setup
 
-1. Install tauri dependencies with: `yarn install`
+1. Install dependencies with: `yarn install`
 2. Then start the development build with: `yarn tauri dev`
 
 This will install and compile all required packages then launch the application for testing.
