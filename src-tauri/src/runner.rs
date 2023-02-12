@@ -24,7 +24,7 @@ fn create_command_builder(
     if need_permissions == true {
         if cfg!(target_os = "macos") {
             command.arg("-e");
-            command.arg(format!(r#"do shell script \"{}\" with administrator privileges"#, &command_string));            
+            command.arg(format!(r#"do shell script "{}" with administrator privileges"#, &command_string));            
         } else {
             command.arg(&command_string);
         }
