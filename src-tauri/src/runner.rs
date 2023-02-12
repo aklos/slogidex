@@ -14,13 +14,23 @@ fn create_command_builder(
     need_permissions: bool
 ) -> Command {
     let mut command = match need_permissions {
-        true => Command::new("pkexec"),
+        true => match cfg!(target_os = "linux") {
+            true => Command::new("pkexec"),
+            false => Command::new("osascript"),
+        },
         false => Command::new(&command_string),
     };
     
     if need_permissions == true {
-        command.arg(&command_string);
+        if cfg!(target_os = "macos") {
+            command.arg("-e");
+            command.arg(format!(r#"do shell script "{}" with administrator privileges without altering line endings"#, &command_string));            
+        } else {
+            command.arg(&command_string);
+        }
     }
+
+    println!("{:?}", command);
     
     // let mut command = Command::new(&command_string);
     // let mut command = Command::new(file);
