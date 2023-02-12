@@ -14,7 +14,7 @@ fn create_command_builder(
     need_permissions: bool
 ) -> Command {
     let mut command = match need_permissions {
-        true => match cfg!(linux) {
+        true => match cfg!(target_os = "linux") {
             true => Command::new("pkexec"),
             false => Command::new("osascript"),
         },
@@ -22,9 +22,9 @@ fn create_command_builder(
     };
     
     if need_permissions == true {
-        if cfg!(macos) {
+        if cfg!(target_os = "macos") {
             command.arg("-e");
-            command.arg(format!(r#"do shell script "{}" with administrator privileges"#, &command_string));            
+            command.arg(format!(r#""do shell script \"{}\" with administrator privileges""#, &command_string));            
         } else {
             command.arg(&command_string);
         }
